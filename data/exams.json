@@ -1,0 +1,12 @@
+[
+  {
+    "name": "PowerSwitch Campus Deploy",
+    "category": "DELL",
+    "subcategory": "Network"
+  },
+  {
+    "name": "PowerSwitch Data Center Deploy",
+    "category": "DELL",
+    "subcategory": "Network"
+  }
+]

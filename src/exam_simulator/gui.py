@@ -82,8 +82,8 @@ class App(tk.Tk):
         ttk.Button(top, text="Editar", command=self.edit_selected).pack(side="left", padx=4)
         ttk.Button(top, text="Remover", command=self.remove_selected).pack(side="left", padx=4)
 
-        self.tree = ttk.Treeview(self.tab_bank, columns=("qid", "type", "category"), show="headings")
-        for c in ("qid", "type", "category"):
+        self.tree = ttk.Treeview(self.tab_bank, columns=("qid", "type", "category", "subcategory", "exam"), show="headings")
+        for c in ("qid", "type", "category", "subcategory", "exam"):
             self.tree.heading(c, text=c)
         self.tree.pack(fill="both", expand=True, padx=8, pady=8)
 
@@ -116,7 +116,7 @@ class App(tk.Tk):
         for i in self.tree.get_children():
             self.tree.delete(i)
         for q in self.bank.questions:
-            self.tree.insert("", "end", values=(q.qid, q.type, q.category))
+            self.tree.insert("", "end", values=(q.qid, q.type, q.category, q.subcategory, q.exam or q.category))
 
     def import_json(self) -> None:
         path = filedialog.askopenfilename(filetypes=[("JSON", "*.json")])
@@ -164,7 +164,8 @@ class App(tk.Tk):
             w.destroy()
         q = self.simulator.questions[self.current_index]
         self.progress_var.set(f"Progresso: {self.current_index + 1}/{len(self.simulator.questions)}")
-        ttk.Label(self.question_frame, text=f"[{q.category}] {q.question}", wraplength=900).pack(anchor="w", pady=8)
+        label_parts = [q.category, q.subcategory, q.exam or q.category]
+        ttk.Label(self.question_frame, text=f"[{' / '.join(part for part in label_parts if part)}] {q.question}", wraplength=900).pack(anchor="w", pady=8)
         if q.type == "multiple_choice":
             options = q.options[:]
             random.shuffle(options)
@@ -222,6 +223,8 @@ class App(tk.Tk):
                 {
                     "qid": q.qid,
                     "category": q.category,
+                    "subcategory": q.subcategory,
+                    "exam": q.exam or q.category,
                     "is_correct": self.simulator._is_correct(q, self.simulator.answers.get(q.qid, None)),
                 }
             )
@@ -284,6 +287,8 @@ class QuestionDialog(tk.Toplevel):
         self.type_var = tk.StringVar(value=getattr(existing, "type", "multiple_choice"))
         self.qid_var = tk.StringVar(value=getattr(existing, "qid", ""))
         self.cat_var = tk.StringVar(value=getattr(existing, "category", "General"))
+        self.subcat_var = tk.StringVar(value=getattr(existing, "subcategory", ""))
+        self.exam_var = tk.StringVar(value=getattr(existing, "exam", "") or getattr(existing, "category", "General"))
         self.question_var = tk.StringVar(value=getattr(existing, "question", ""))
 
         ttk.Label(self, text="ID").pack(anchor="w")
@@ -292,6 +297,10 @@ class QuestionDialog(tk.Toplevel):
         ttk.Combobox(self, textvariable=self.type_var, values=["multiple_choice", "drag_and_drop"], state="readonly").pack(fill="x")
         ttk.Label(self, text="Categoria").pack(anchor="w")
         ttk.Entry(self, textvariable=self.cat_var).pack(fill="x")
+        ttk.Label(self, text="Subcategoria").pack(anchor="w")
+        ttk.Entry(self, textvariable=self.subcat_var).pack(fill="x")
+        ttk.Label(self, text="Exam").pack(anchor="w")
+        ttk.Entry(self, textvariable=self.exam_var).pack(fill="x")
         ttk.Label(self, text="Enunciado").pack(anchor="w")
         ttk.Entry(self, textvariable=self.question_var).pack(fill="x")
         ttk.Label(self, text="Estrutura (JSON)").pack(anchor="w")
@@ -300,12 +309,21 @@ class QuestionDialog(tk.Toplevel):
 
         default_payload = {}
         if existing and existing.type == "multiple_choice":
-            default_payload = {"options": existing.options, "correct_answers": existing.correct_answers, "explanation": existing.explanation}
+            default_payload = {
+                "options": existing.options,
+                "correct_answers": existing.correct_answers,
+                "allow_multiple": existing.allow_multiple,
+                "tags": existing.tags,
+                "exhibit_image": existing.exhibit_image,
+                "explanation": existing.explanation,
+            }
         elif existing:
             default_payload = {
                 "items": existing.items,
                 "targets": existing.targets,
                 "correct_mapping": existing.correct_mapping,
+                "tags": existing.tags,
+                "exhibit_image": existing.exhibit_image,
                 "explanation": existing.explanation,
             }
         self.payload.insert("1.0", json.dumps(default_payload, indent=2, ensure_ascii=False))
@@ -318,9 +336,14 @@ class QuestionDialog(tk.Toplevel):
                 qid=self.qid_var.get(),
                 type="multiple_choice",
                 category=self.cat_var.get(),
+                subcategory=self.subcat_var.get(),
+                exam=self.exam_var.get(),
                 question=self.question_var.get(),
+                tags=struct.get("tags", []),
+                exhibit_image=struct.get("exhibit_image", ""),
                 options=struct.get("options", []),
                 correct_answers=struct.get("correct_answers", []),
+                allow_multiple=struct.get("allow_multiple", len(struct.get("correct_answers", [])) > 1),
                 explanation=struct.get("explanation", ""),
             )
         else:
@@ -328,7 +351,11 @@ class QuestionDialog(tk.Toplevel):
                 qid=self.qid_var.get(),
                 type="drag_and_drop",
                 category=self.cat_var.get(),
+                subcategory=self.subcat_var.get(),
+                exam=self.exam_var.get(),
                 question=self.question_var.get(),
+                tags=struct.get("tags", []),
+                exhibit_image=struct.get("exhibit_image", ""),
                 items=struct.get("items", []),
                 targets=struct.get("targets", []),
                 correct_mapping=struct.get("correct_mapping", {}),

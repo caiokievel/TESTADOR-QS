@@ -1,0 +1,28 @@
+<article class="report-panel">
+  <div class="report-panel-head">
+    <h2>{{ title }}</h2>
+  </div>
+  <div class="table-wrap flat">
+    <table>
+      <thead><tr><th>Nome</th><th>Acuracia</th><th>Acertos</th><th>Erros</th><th>Respostas</th></tr></thead>
+      <tbody>
+        {% for row in rows %}
+          <tr>
+            <td>{{ row.label }}</td>
+            <td>
+              <div class="metric-cell">
+                <span>{{ row.accuracy|floatformat:1 }}%</span>
+                <div class="metric-bar"><span style="width: {{ row.accuracy_width }}%"></span></div>
+              </div>
+            </td>
+            <td>{{ row.correct }}</td>
+            <td>{{ row.wrong }}</td>
+            <td>{{ row.answered }}</td>
+          </tr>
+        {% empty %}
+          <tr><td colspan="5">{{ empty_text }}</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</article>

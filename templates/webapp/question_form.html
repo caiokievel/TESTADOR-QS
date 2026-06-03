@@ -4,7 +4,7 @@
 <section class="page-head">
   <h1>{% if existing %}Editar Questão{% else %}Nova Questão{% endif %}</h1>
 </section>
-<form class="form-panel" method="post">
+<form class="form-panel" method="post" enctype="multipart/form-data">
   {% csrf_token %}
   <label>ID
     <input name="qid" value="{{ qid }}" required>
@@ -15,12 +15,63 @@
       <option value="drag_and_drop" {% if type == "drag_and_drop" %}selected{% endif %}>drag_and_drop</option>
     </select>
   </label>
-  <label>Categoria
-    <input name="category" value="{{ category }}">
+  <label>Exam
+    <select name="exam" required>
+      <option value="">Selecione</option>
+      {% for item in available_exams %}
+        <option value="{{ item.name }}" {% if item.name == exam %}selected{% endif %}>{{ item.name }} - {{ item.category }}{% if item.subcategory %} / {{ item.subcategory }}{% endif %}</option>
+      {% endfor %}
+    </select>
+    <a href="{% url 'webapp:classifications' %}">Gerenciar exames</a>
   </label>
   <label>Enunciado
     <textarea name="question" rows="3" required>{{ question }}</textarea>
   </label>
+  <fieldset class="image-dropzone" id="exhibit-zone">
+    <legend>Imagem do enunciado</legend>
+    <input type="hidden" name="pasted_exhibit_image" id="pasted-exhibit-image">
+    <label>Upload da imagem
+      <input type="file" name="exhibit_image" id="exhibit-file" accept="image/png,image/jpeg,image/gif,image/webp">
+    </label>
+    <div class="paste-target" tabindex="0">
+      Cole uma imagem aqui com Ctrl+V
+    </div>
+    <img id="exhibit-preview" class="exhibit-preview" alt="Preview da imagem" {% if exhibit_filename %}src="{% url 'webapp:exhibit_image' exhibit_filename %}"{% endif %} {% if not exhibit_filename %}hidden{% endif %}>
+    {% if exhibit_filename %}
+      <label class="inline-check">
+        <input type="checkbox" name="remove_exhibit_image" value="1">
+        Remover imagem atual
+      </label>
+    {% endif %}
+  </fieldset>
+  <label>Explanation
+    <textarea name="explanation" rows="4" placeholder="Link de documentacao ou texto curto de explicacao">{{ explanation }}</textarea>
+  </label>
+  <label class="inline-check">
+    <input type="checkbox" name="allow_multiple" value="1" {% if allow_multiple %}checked{% endif %}>
+    Permitir multiplas respostas para questoes multiple_choice
+  </label>
+  <div class="tag-dropdown-field">
+    <div class="field-label">Tags</div>
+    <div class="dropdown tag-dropdown">
+      <button class="dropdown-toggle tag-dropdown-button" type="button" id="tag-dropdown-button" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">
+        <span id="tag-dropdown-summary">Selecionar tags</span>
+      </button>
+      <div class="dropdown-menu tag-dropdown-menu" aria-labelledby="tag-dropdown-button">
+        {% for tag in available_tags %}
+          <label class="dropdown-item tag-option">
+            <input class="tag-checkbox" type="checkbox" name="tags" value="{{ tag }}" {% if tag in selected_tags %}checked{% endif %}>
+            <span class="tag-option-label">{{ tag }}</span>
+          </label>
+        {% empty %}
+          <div class="dropdown-item text-body-secondary">Nenhuma tag cadastrada.</div>
+        {% endfor %}
+        <div class="dropdown-divider"></div>
+        <a class="dropdown-item" href="{% url 'webapp:tags' %}">Gerenciar tags</a>
+      </div>
+    </div>
+    <div class="tag-list" id="selected-tag-list"></div>
+  </div>
   <label>Estrutura JSON
     <textarea name="payload" rows="12" spellcheck="false">{{ payload }}</textarea>
   </label>
@@ -29,4 +80,61 @@
     <a class="button" href="{% url 'webapp:bank' %}">Cancelar</a>
   </div>
 </form>
+<script>
+  const zone = document.getElementById("exhibit-zone");
+  const fileInput = document.getElementById("exhibit-file");
+  const pastedInput = document.getElementById("pasted-exhibit-image");
+  const preview = document.getElementById("exhibit-preview");
+  const tagSummary = document.getElementById("tag-dropdown-summary");
+  const selectedTagList = document.getElementById("selected-tag-list");
+  const tagCheckboxes = Array.from(document.querySelectorAll(".tag-checkbox"));
+
+  function showPreview(src) {
+    preview.src = src;
+    preview.hidden = false;
+  }
+
+  fileInput.addEventListener("change", () => {
+    const file = fileInput.files[0];
+    if (file) {
+      pastedInput.value = "";
+      showPreview(URL.createObjectURL(file));
+    }
+  });
+
+  zone.addEventListener("paste", (event) => {
+    for (const item of event.clipboardData.items) {
+      if (item.type.startsWith("image/")) {
+        const file = item.getAsFile();
+        const reader = new FileReader();
+        reader.onload = () => {
+          fileInput.value = "";
+          pastedInput.value = reader.result;
+          showPreview(reader.result);
+        };
+        reader.readAsDataURL(file);
+        event.preventDefault();
+        break;
+      }
+    }
+  });
+
+  function refreshTags() {
+    const selected = tagCheckboxes.filter((checkbox) => checkbox.checked).map((checkbox) => checkbox.value);
+    tagSummary.textContent = selected.length ? `${selected.length} tag(s) selecionada(s)` : "Selecionar tags";
+    selectedTagList.innerHTML = "";
+    tagCheckboxes.forEach((checkbox) => {
+      checkbox.closest(".tag-option").classList.toggle("selected", checkbox.checked);
+    });
+    selected.forEach((tag) => {
+      const chip = document.createElement("span");
+      chip.className = "tag-pill";
+      chip.textContent = tag;
+      selectedTagList.appendChild(chip);
+    });
+  }
+
+  tagCheckboxes.forEach((checkbox) => checkbox.addEventListener("change", refreshTags));
+  refreshTags();
+</script>
 {% endblock %}

@@ -5,18 +5,27 @@
 <section class="page-head split">
   <div>
     <h1>Questão {{ index|add:1 }} de {{ total }}</h1>
-    <p>{{ question.category }}</p>
+    <p>{{ exam_config.category }}{% if exam_config.subcategory %} / {{ exam_config.subcategory }}{% endif %} / {{ exam_config.name }}</p>
   </div>
   <a class="button" href="{% url 'webapp:exam_finish' %}">Finalizar</a>
 </section>
 <form class="exam-card" method="post">
   {% csrf_token %}
   <p class="question-text">{{ question.question }}</p>
+  {% if exhibit_filename %}
+    <figure class="question-exhibit">
+      <img src="{% url 'webapp:exhibit_image' exhibit_filename %}" alt="Imagem de apoio da questao">
+    </figure>
+  {% endif %}
   {% if question.type == "multiple_choice" %}
     <div class="answers">
       {% for option in options %}
         <label class="choice">
-          <input type="checkbox" name="answer" value="{{ option }}" {% if answer and option in answer %}checked{% endif %}>
+          {% if question.allow_multiple %}
+            <input type="checkbox" name="answer" value="{{ option }}" {% if answer and option in answer %}checked{% endif %}>
+          {% else %}
+            <input type="radio" name="answer" value="{{ option }}" {% if answer and option in answer %}checked{% endif %}>
+          {% endif %}
           <span>{{ option }}</span>
         </label>
       {% endfor %}

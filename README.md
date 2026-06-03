@@ -7,12 +7,14 @@ questoes, simulados e relatorios continua usando arquivos JSON em `data/`.
 
 - Interface web acessivel pelo navegador.
 - Banco de questoes em JSON.
+- Tags pre-cadastradas para classificar questoes.
 - Questoes de multipla escolha e drag and drop por selecao de destino.
 - Cadastro, edicao, remocao, importacao e exportacao de questoes.
 - Simulado com ordem aleatoria de questoes e alternativas.
 - Marcacao para revisao, navegacao e nota minima configuravel.
 - Resultado final com percentual e aprovacao.
 - Relatorios com acuracia geral, ranking de erros e desempenho por categoria.
+- Relatorios com desempenho por tag quando os simulados possuem questoes tagueadas.
 - Exportacao de relatorios em CSV e JSON.
 
 ## Estrutura
@@ -74,6 +76,11 @@ O aplicativo usa a pasta `data/`:
 - `data/questions.json`: banco de questoes.
 - `data/history.json`: historico dos simulados finalizados.
 - `data/settings.json`: configuracoes como nota de aprovacao.
+- `data/tags.json`: tags pre-cadastradas disponiveis para questoes.
+- `data/categories.json`: categorias pre-cadastradas, como fabricantes.
+- `data/subcategories.json`: subcategorias pre-cadastradas, como segmentos.
+- `data/exams.json`: exames pre-cadastrados com categoria e subcategoria.
+- `data/exhibits/`: imagens de apoio anexadas ao enunciado das questoes.
 - `data/django.sqlite3`: banco interno do Django para sessoes.
 
 ## Rodar como servico Linux
@@ -124,3 +131,9 @@ A interface Tkinter foi mantida. No Linux ou Windows com Python configurado:
 ```bash
 PYTHONPATH=src python -m exam_simulator.main
 ```
+
+## Template visual
+
+A interface web usa assets do Materio Bootstrap HTML + Django Admin Template.
+O template e seus assets foram incorporados sob licenca MIT. A copia da licenca
+esta em `third_party/materio/LICENSE`.

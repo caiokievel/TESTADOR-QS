@@ -16,6 +16,35 @@
 </div>
 <section class="actions-row">
   <a class="button primary" href="{% url 'webapp:exam_home' %}">Novo simulado</a>
-  <a class="button" href="{% url 'webapp:reports' %}">Ver relatórios</a>
+  <a class="button" href="{% url 'webapp:reports' %}">Ver relatorios</a>
+</section>
+<section class="review-list">
+  <h2>Revisao das questoes</h2>
+  {% for item in attempt.question_results %}
+    <article class="review-item">
+      <div class="review-status {% if item.is_correct %}ok{% else %}miss{% endif %}">
+        {% if item.is_correct %}Correta{% else %}Revisar{% endif %}
+      </div>
+      <div>
+        <h3>{{ item.qid }} - {{ item.category }}{% if item.subcategory %} / {{ item.subcategory }}{% endif %} / {{ item.exam }}</h3>
+        <p>{{ item.question }}</p>
+        {% if item.exhibit_filename %}
+          <figure class="question-exhibit">
+            <img src="{% url 'webapp:exhibit_image' item.exhibit_filename %}" alt="Imagem de apoio da questao">
+          </figure>
+        {% endif %}
+        {% if item.explanation %}
+          <div class="explanation">
+            <strong>Explanation</strong>
+            {% if item.explanation|slice:":8" == "https://" or item.explanation|slice:":7" == "http://" %}
+              <a href="{{ item.explanation }}" target="_blank" rel="noopener noreferrer">{{ item.explanation }}</a>
+            {% else %}
+              <p>{{ item.explanation|linebreaksbr }}</p>
+            {% endif %}
+          </div>
+        {% endif %}
+      </div>
+    </article>
+  {% endfor %}
 </section>
 {% endblock %}

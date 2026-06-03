@@ -1,0 +1,54 @@
+{% extends "webapp/base.html" %}
+{% block title %}{{ exam }} - Testador QS{% endblock %}
+{% block content %}
+<section class="page-head split">
+  <div>
+    <h1>{{ exam }}</h1>
+    <p>{{ category }}{% if subcategory %} / {{ subcategory }}{% endif %} - {{ questions|length }} questoes cadastradas</p>
+  </div>
+  <div class="actions-row">
+    <a class="button" href="{% url 'webapp:bank' %}">Voltar aos exames</a>
+    <a class="button primary" href="{% url 'webapp:question_new' %}">Adicionar questao</a>
+  </div>
+</section>
+<div class="table-wrap">
+  <table>
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Tipo</th>
+        <th>Tags</th>
+        <th>Imagem</th>
+        <th>Enunciado</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for q in questions %}
+        <tr>
+          <td>{{ q.qid }}</td>
+          <td>{{ q.type }}</td>
+          <td>
+            <div class="tag-list">
+              {% for tag in q.tags %}
+                <span class="tag-pill">{{ tag }}</span>
+              {% empty %}
+                <span class="text-body-secondary">-</span>
+              {% endfor %}
+            </div>
+          </td>
+          <td>{% if q.exhibit_image %}<span class="tag-pill">Sim</span>{% else %}<span class="text-body-secondary">-</span>{% endif %}</td>
+          <td>{{ q.question }}</td>
+          <td class="row-actions">
+            <a href="{% url 'webapp:question_edit' q.qid %}">Editar</a>
+            <form action="{% url 'webapp:question_delete' q.qid %}" method="post">
+              {% csrf_token %}
+              <button class="link danger" type="submit">Remover</button>
+            </form>
+          </td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

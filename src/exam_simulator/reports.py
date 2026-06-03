@@ -26,24 +26,42 @@ class ReportManager:
         history = self.load_history()
         if not history:
             return {}
-        question_stats: Dict[str, dict] = defaultdict(lambda: {"answers": 0, "correct": 0, "wrong": 0, "category": "General"})
+        question_stats: Dict[str, dict] = defaultdict(
+            lambda: {"answers": 0, "correct": 0, "wrong": 0, "category": "General", "subcategory": "", "exam": ""}
+        )
         total_correct = 0
         total_answered = 0
         by_category = defaultdict(lambda: {"correct": 0, "answered": 0})
+        by_subcategory = defaultdict(lambda: {"correct": 0, "answered": 0})
+        by_exam = defaultdict(lambda: {"correct": 0, "answered": 0})
+        by_tag = defaultdict(lambda: {"correct": 0, "answered": 0})
 
         for attempt in history:
             total_correct += attempt.get("correct", 0)
             total_answered += attempt.get("answered", 0)
             for q in attempt.get("question_results", []):
                 qid = q["qid"]
+                category = q.get("category", "General")
+                subcategory = q.get("subcategory", "")
+                exam = q.get("exam") or category
                 question_stats[qid]["answers"] += 1
-                question_stats[qid]["category"] = q.get("category", "General")
+                question_stats[qid]["category"] = category
+                question_stats[qid]["subcategory"] = subcategory
+                question_stats[qid]["exam"] = exam
                 if q.get("is_correct"):
                     question_stats[qid]["correct"] += 1
-                    by_category[q.get("category", "General")]["correct"] += 1
+                    by_category[category]["correct"] += 1
+                    by_subcategory[subcategory]["correct"] += 1
+                    by_exam[exam]["correct"] += 1
                 else:
                     question_stats[qid]["wrong"] += 1
-                by_category[q.get("category", "General")]["answered"] += 1
+                by_category[category]["answered"] += 1
+                by_subcategory[subcategory]["answered"] += 1
+                by_exam[exam]["answered"] += 1
+                for tag in q.get("tags", []):
+                    if q.get("is_correct"):
+                        by_tag[tag]["correct"] += 1
+                    by_tag[tag]["answered"] += 1
 
         rankings = sorted(question_stats.items(), key=lambda x: x[1]["wrong"], reverse=True)
         return {
@@ -51,6 +69,9 @@ class ReportManager:
             "question_stats": question_stats,
             "error_ranking": rankings,
             "category_performance": by_category,
+            "subcategory_performance": by_subcategory,
+            "exam_performance": by_exam,
+            "tag_performance": by_tag,
             "history": history,
         }
 

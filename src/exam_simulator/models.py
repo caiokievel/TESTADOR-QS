@@ -12,13 +12,18 @@ class BaseQuestion:
     type: QuestionType
     category: str
     question: str
+    subcategory: str = ""
+    exam: str = ""
     explanation: str = ""
+    tags: List[str] = field(default_factory=list)
+    exhibit_image: str = ""
 
 
 @dataclass
 class MultipleChoiceQuestion(BaseQuestion):
     options: List[str] = field(default_factory=list)
     correct_answers: List[str] = field(default_factory=list)
+    allow_multiple: bool = False
 
 
 @dataclass

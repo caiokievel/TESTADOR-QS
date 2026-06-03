@@ -50,8 +50,13 @@ class QuestionBank:
                         type=qtype,
                         category=item.get("category", "General"),
                         question=item["question"],
+                        subcategory=item.get("subcategory", ""),
+                        exam=item.get("exam") or item.get("category", "General"),
+                        tags=_clean_tags(item.get("tags", [])),
+                        exhibit_image=item.get("exhibit_image", ""),
                         options=item.get("options", []),
                         correct_answers=item.get("correct_answers", []),
+                        allow_multiple=item.get("allow_multiple", len(item.get("correct_answers", [])) > 1),
                         explanation=item.get("explanation", ""),
                     )
                 )
@@ -62,6 +67,10 @@ class QuestionBank:
                         type=qtype,
                         category=item.get("category", "General"),
                         question=item["question"],
+                        subcategory=item.get("subcategory", ""),
+                        exam=item.get("exam") or item.get("category", "General"),
+                        tags=_clean_tags(item.get("tags", [])),
+                        exhibit_image=item.get("exhibit_image", ""),
                         items=item.get("items", []),
                         targets=item.get("targets", []),
                         correct_mapping=item.get("correct_mapping", {}),
@@ -79,12 +88,17 @@ class QuestionBank:
                 "qid": q.qid,
                 "type": q.type,
                 "category": q.category,
+                "subcategory": q.subcategory,
+                "exam": q.exam,
                 "question": q.question,
                 "explanation": q.explanation,
+                "tags": _clean_tags(q.tags),
+                "exhibit_image": q.exhibit_image,
             }
             if q.type == "multiple_choice":
                 base["options"] = q.options
                 base["correct_answers"] = q.correct_answers
+                base["allow_multiple"] = q.allow_multiple
             else:
                 base["items"] = q.items
                 base["targets"] = q.targets
@@ -104,3 +118,9 @@ class QuestionBank:
             if q.qid == qid:
                 return i
         return None
+
+
+def _clean_tags(tags: object) -> list[str]:
+    if not isinstance(tags, list):
+        return []
+    return sorted({" ".join(str(tag).strip().split()) for tag in tags if str(tag).strip()}, key=str.lower)
