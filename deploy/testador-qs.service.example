@@ -1,0 +1,17 @@
+[Unit]
+Description=Testador QS
+After=network.target
+
+[Service]
+WorkingDirectory=/opt/testador-qs
+Environment=PYTHONPATH=/opt/testador-qs/src
+Environment=TESTADOR_QS_DEBUG=0
+Environment=TESTADOR_QS_ALLOWED_HOSTS=127.0.0.1,localhost,IP_DO_SERVIDOR
+Environment=TESTADOR_QS_SECRET_KEY=troque-esta-chave
+ExecStart=/opt/testador-qs/.venv/bin/gunicorn exam_simulator.web.wsgi:application --bind 0.0.0.0:8000
+Restart=always
+User=www-data
+Group=www-data
+
+[Install]
+WantedBy=multi-user.target

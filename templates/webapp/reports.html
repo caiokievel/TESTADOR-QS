@@ -1,0 +1,44 @@
+{% extends "webapp/base.html" %}
+{% block title %}Relatórios - Testador QS{% endblock %}
+{% block content %}
+<section class="page-head split">
+  <div>
+    <h1>Relatórios</h1>
+    {% if metrics %}
+      <p>Acurácia geral: {{ metrics.global_accuracy|floatformat:2 }}%</p>
+    {% else %}
+      <p>Sem histórico ainda.</p>
+    {% endif %}
+  </div>
+  <div class="actions-row">
+    <a class="button" href="{% url 'webapp:export_reports_csv' %}">CSV</a>
+    <a class="button" href="{% url 'webapp:export_reports_json' %}">JSON</a>
+  </div>
+</section>
+{% if metrics %}
+  <section class="report-grid">
+    <article>
+      <h2>Ranking de erros</h2>
+      <table>
+        <thead><tr><th>Questão</th><th>Erros</th><th>Respostas</th></tr></thead>
+        <tbody>
+          {% for qid, stats in metrics.error_ranking %}
+            <tr><td>{{ qid }}</td><td>{{ stats.wrong }}</td><td>{{ stats.answers }}</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </article>
+    <article>
+      <h2>Por categoria</h2>
+      <table>
+        <thead><tr><th>Categoria</th><th>Acertos</th><th>Respostas</th></tr></thead>
+        <tbody>
+          {% for category, stats in metrics.category_performance.items %}
+            <tr><td>{{ category }}</td><td>{{ stats.correct }}</td><td>{{ stats.answered }}</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </article>
+  </section>
+{% endif %}
+{% endblock %}

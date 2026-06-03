@@ -1,0 +1,49 @@
+{% extends "webapp/base.html" %}
+{% block title %}Banco - Testador QS{% endblock %}
+{% block content %}
+<section class="page-head split">
+  <div>
+    <h1>Banco de Questões</h1>
+    <p>{{ questions|length }} questões cadastradas</p>
+  </div>
+  <a class="button primary" href="{% url 'webapp:question_new' %}">Adicionar</a>
+</section>
+<form class="toolbar" action="{% url 'webapp:import_questions' %}" method="post" enctype="multipart/form-data">
+  {% csrf_token %}
+  <input type="file" name="questions_file" accept="application/json">
+  <button type="submit">Importar JSON</button>
+  <a class="button" href="{% url 'webapp:export_questions' %}">Exportar JSON</a>
+</form>
+<div class="table-wrap">
+  <table>
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Tipo</th>
+        <th>Categoria</th>
+        <th>Enunciado</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for q in questions %}
+        <tr>
+          <td>{{ q.qid }}</td>
+          <td>{{ q.type }}</td>
+          <td>{{ q.category }}</td>
+          <td>{{ q.question }}</td>
+          <td class="row-actions">
+            <a href="{% url 'webapp:question_edit' q.qid %}">Editar</a>
+            <form action="{% url 'webapp:question_delete' q.qid %}" method="post">
+              {% csrf_token %}
+              <button class="link danger" type="submit">Remover</button>
+            </form>
+          </td>
+        </tr>
+      {% empty %}
+        <tr><td colspan="5">Nenhuma questão cadastrada.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

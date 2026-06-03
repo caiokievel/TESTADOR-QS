@@ -1,0 +1,16 @@
+[
+  {
+    "qid": "Q002",
+    "type": "drag_and_drop",
+    "category": "Data Center",
+    "question": "Match each protocol with its function.",
+    "items": ["BGP", "VRRP", "LACP"],
+    "targets": ["Routing protocol", "Gateway redundancy", "Link aggregation"],
+    "correct_mapping": {
+      "BGP": "Routing protocol",
+      "VRRP": "Gateway redundancy",
+      "LACP": "Link aggregation"
+    },
+    "explanation": "BGP is used for routing, VRRP for gateway redundancy, and LACP for link aggregation."
+  }
+]

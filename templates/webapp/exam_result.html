@@ -1,0 +1,21 @@
+{% extends "webapp/base.html" %}
+{% block title %}Resultado - Testador QS{% endblock %}
+{% block content %}
+<section class="page-head">
+  <h1>Resultado</h1>
+  <p>{{ attempt.finished_at }}</p>
+</section>
+<section class="stats-grid">
+  <article class="stat"><span>Respondidas</span><strong>{{ result.answered }}/{{ result.total }}</strong></article>
+  <article class="stat"><span>Acertos</span><strong>{{ result.correct }}</strong></article>
+  <article class="stat"><span>Erros</span><strong>{{ result.wrong }}</strong></article>
+  <article class="stat"><span>Percentual</span><strong>{{ result.percent|floatformat:2 }}%</strong></article>
+</section>
+<div class="result-banner {% if result.approved %}approved{% else %}failed{% endif %}">
+  {% if result.approved %}Aprovado{% else %}Reprovado{% endif %}
+</div>
+<section class="actions-row">
+  <a class="button primary" href="{% url 'webapp:exam_home' %}">Novo simulado</a>
+  <a class="button" href="{% url 'webapp:reports' %}">Ver relatórios</a>
+</section>
+{% endblock %}

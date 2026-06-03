@@ -1,0 +1,25 @@
+{% extends "webapp/base.html" %}
+{% block title %}Painel - Testador QS{% endblock %}
+{% block content %}
+<section class="page-head">
+  <h1>Painel</h1>
+</section>
+<section class="stats-grid">
+  <article class="stat">
+    <span>Questões</span>
+    <strong>{{ question_count }}</strong>
+  </article>
+  <article class="stat">
+    <span>Simulados finalizados</span>
+    <strong>{{ history_count }}</strong>
+  </article>
+  <article class="stat">
+    <span>Acurácia geral</span>
+    <strong>{% if has_metrics %}{{ global_accuracy|floatformat:2 }}%{% else %}-{% endif %}</strong>
+  </article>
+</section>
+<section class="actions-row">
+  <a class="button primary" href="{% url 'webapp:exam_home' %}">Iniciar simulado</a>
+  <a class="button" href="{% url 'webapp:bank' %}">Gerenciar banco</a>
+</section>
+{% endblock %}

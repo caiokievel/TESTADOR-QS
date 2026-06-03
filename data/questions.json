@@ -1,0 +1,3233 @@
+[
+  {
+    "qid": "D-PDC-DY-23-Q001",
+    "type": "multiple_choice",
+    "category": "PowerSwitch Data Center Deploy",
+    "question": "Refer to the exhibit. Which configuration will allow S1 to ping S2’s Lo0 address?",
+    "explanation": "",
+    "options": [
+      "S1(config-router)# ip route 144.254.32.1 192.168.32.2/32",
+      "S1(config-router)# ip route 192.168.32.2 144.254.32.1/32",
+      "S1(config)# ip route 144.254.32.1/32 192.168.32.2",
+      "S1(config)# ip route 192.168.32.2 144.254.32.1/32"
+    ],
+    "correct_answers": [
+      "S1(config)# ip route 144.254.32.1/32 192.168.32.2"
+    ]
+  },
+  {
+    "qid": "D-PDC-DY-23-Q002",
+    "type": "multiple_choice",
+    "category": "PowerSwitch Data Center Deploy",
+    "question": "When installing OS10 on a switch from a USB drive, what format is used for the file system?",
+    "explanation": "",
+    "options": [
+      "HFS+",
+      "FAT32",
+      "NTFS",
+      "HFS"
+    ],
+    "correct_answers": [
+      "FAT32"
+    ]
+  },
+  {
+    "qid": "D-PDC-DY-23-Q003",
+    "type": "multiple_choice",
+    "category": "PowerSwitch Data Center Deploy",
+    "question": "What do bridge protocol data units provide?",
+    "explanation": "",
+    "options": [
+      "Special data frames to exchange STP information",
+      "Metadata transferred connecting two network bridges",
+      "Configuration data exchanged during a VLTi setup",
+      "Bridge information part of the LLDP protocol"
+    ],
+    "correct_answers": [
+      "Special data frames to exchange STP information"
+    ]
+  },
+  {
+    "qid": "D-PDC-DY-23-Q004",
+    "type": "multiple_choice",
+    "category": "PowerSwitch Data Center Deploy",
+    "question": "A network administrator has to configure a virtual IP address using VRRP on interface VLAN 100 within OS10. What are the correct steps to accomplish this?",
+    "explanation": "",
+    "options": [
+      "OS10(config)# interface vlan 100 OS10(conf-if-vl-100)# ip address 10.0.100.2/24 OS10(conf-if-vl-100)# vrrp-group 256 OS10(conf-vlan100-vrid-256)# virtual-address 10.0.100.1",
+      "OS10(config)# interface vlan 100 OS10(conf-if-vl-100)# ip address 10.0.100.2/24 OS10(conf-if-vl-100)# standby-group 250 OS10(conf-vlan100-vrid-250)# virtual-address 10.0.100.1",
+      "OS10(config)# interface vlan 100 OS10(conf-if-vl-100)# ip address 10.0.100.1/24 OS10(conf-if-vl-100)# vrrp-group 250 OS10(conf-vlan100-vrid-250)# virtual-address 10.0.100.2",
+      "OS10(config)# interface vlan 100 OS10(conf-if-vl-100)# ip address 10.0.100.1/24 OS10(conf-if-vl-100)# standby-group 256 OS10(conf-vlan100-vrid-256)# standby-address 10.0.100.2"
+    ],
+    "correct_answers": [
+      "OS10(config)# interface vlan 100 OS10(conf-if-vl-100)# ip address 10.0.100.1/24 OS10(conf-if-vl-100)# vrrp-group 250 OS10(conf-vlan100-vrid-250)# virtual-address 10.0.100.2"
+    ]
+  },
+  {
+    "qid": "D-PDC-DY-23-Q005",
+    "type": "multiple_choice",
+    "category": "PowerSwitch Data Center Deploy",
+    "question": "What are mandatory LLDPDU TLV's?",
+    "explanation": "",
+    "options": [
+      "0123",
+      "0124",
+      "0456",
+      "1234"
+    ],
+    "correct_answers": [
+      "0123"
+    ]
+  },
+  {
+    "qid": "D-PDC-DY-23-Q006",
+    "type": "multiple_choice",
+    "category": "PowerSwitch Data Center Deploy",
+    "question": "What is the function of UFD?",
+    "explanation": "",
+    "options": [
+      "Detects the loss of downstream activity.",
+      "Load balances upstream activity.",
+      "Prevents the loss of upstream activity.",
+      "Detects the loss of upstream activity."
+    ],
+    "correct_answers": [
+      "Detects the loss of upstream activity."
+    ]
+  },
+  {
+    "qid": "D-PDC-DY-23-Q007",
+    "type": "multiple_choice",
+    "category": "PowerSwitch Data Center Deploy",
+    "question": "Using the MAC 8c-ec-4b-5b-61-9d, what is a valid EUI-64 link local address?",
+    "explanation": "",
+    "options": [
+      "2001::a9:8eec:4bff:fc5b:619d",
+      "fe80::a9:8cec:4bff:fe5b:619d",
+      "ff80:a9:8eec:4bff:fe5b:619d",
+      "fe80::a9:8eec:4bff:fe5b:619d"
+    ],
+    "correct_answers": [
+      "fe80::a9:8cec:4bff:fe5b:619d"
+    ]
+  },
+  {
+    "qid": "D-PDC-DY-23-Q008",
+    "type": "multiple_choice",
+    "category": "PowerSwitch Data Center Deploy",
+    "question": "In a PIM Sparse Mode (PIM-SM) based multicast topology, what function does the Rendezvous Point provide?",
+    "explanation": "",
+    "options": [
+      "The node is used to provide IGMP snooping across a layer 3 boundary.",
+      "The root node of the source tree topology is used to provide routing between the source and receiver.",
+      "The root node of the shared tree topology is used to provide routing between the source and receiver.",
+      "The node is used to provide IGMP snooping on a layer 2 shared segment."
+    ],
+    "correct_answers": [
+      "The root node of the shared tree topology is used to provide routing between the source and receiver."
+    ]
+  },
+  {
+    "qid": "D-PDC-DY-23-Q009",
+    "type": "multiple_choice",
+    "category": "PowerSwitch Data Center Deploy",
+    "question": "What does the command aaa authentication login default group radius local do?",
+    "explanation": "",
+    "options": [
+      "First, a RADUIS server authenticates the users. If the credentials are incorrect, the local router database is used.",
+      "First, a RADUIS server authenticates the users. If the server fails to respond, a remote router database is used.",
+      "First, a RADIUS server authenticates the users. If the server fails to respond, the local router database is used.",
+      "First, the router local database authenticates the users. If it fails to respond, a RADUIS server authenticates the users."
+    ],
+    "correct_answers": [
+      "First, a RADIUS server authenticates the users. If the server fails to respond, the local router database is used."
+    ]
+  },
+  {
+    "qid": "D-PDC-DY-23-Q010",
+    "type": "multiple_choice",
+    "category": "PowerSwitch Data Center Deploy",
+    "question": "What is the default PIM-SSM IP range?",
+    "explanation": "",
+    "options": [
+      "224.0.0.0/4",
+      "224.0.0.0/24",
+      "232.0.0.0/8",
+      "232.0.0.0/4"
+    ],
+    "correct_answers": [
+      "232.0.0.0/8"
+    ]
+  },
+  {
+    "qid": "D-PDC-DY-23-Q011",
+    "type": "multiple_choice",
+    "category": "PowerSwitch Data Center Deploy",
+    "question": "A network administrator wants to limit the amount of bandwidth that video traffic can consume. Which type of policy map should be used?",
+    "explanation": "",
+    "options": [
+      "Queuing",
+      "It is not possible to limit bandwidth using policy maps",
+      "Control plane",
+      "Application"
+    ],
+    "correct_answers": [
+      "Queuing"
+    ]
+  },
+  {
+    "qid": "D-PDC-DY-23-Q012",
+    "type": "multiple_choice",
+    "category": "PowerSwitch Data Center Deploy",
+    "question": "How are ACLs processed?",
+    "explanation": "",
+    "options": [
+      "LIFO",
+      "FIFO",
+      "Randomly",
+      "Sequentially"
+    ],
+    "correct_answers": [
+      "Sequentially"
+    ]
+  },
+  {
+    "qid": "D-PDC-DY-23-Q013",
+    "type": "multiple_choice",
+    "category": "PowerSwitch Data Center Deploy",
+    "question": "What is a benefit of multicast over unicast and broadcast communication",
+    "explanation": "",
+    "options": [
+      "Latency is mitigated",
+      "Bandwidth equally distributed to all devices",
+      "Minimum network bandwidth use",
+      "Increase of the network load"
+    ],
+    "correct_answers": [
+      "Minimum network bandwidth use"
+    ]
+  },
+  {
+    "qid": "D-PDC-DY-23-Q014",
+    "type": "multiple_choice",
+    "category": "PowerSwitch Data Center Deploy",
+    "question": "What must be done before configuring any routing protocol in a VRF instance?",
+    "explanation": "",
+    "options": [
+      "Assign an IP address to at least one of the interfaces assigned to the VRF instance",
+      "Create a routing group for each VRF instance",
+      "Assign each VRF instance to a routing group",
+      "Nothing, VRF routing protocols are assigned automatically"
+    ],
+    "correct_answers": [
+      "Assign an IP address to at least one of the interfaces assigned to the VRF instance"
+    ]
+  },
+  {
+    "qid": "D-PDC-DY-23-Q015",
+    "type": "multiple_choice",
+    "category": "PowerSwitch Data Center Deploy",
+    "question": "Refer to the exhibit. Which three commands are used when deploying an automated Leaf and Spine topology using SFS? (Select 3)",
+    "explanation": "",
+    "options": [
+      "Leaf1(conf)# smartfabric l3fabric enable role LEAF vlti ethernet 1/1/10",
+      "Spine1(conf)# smartfabric l3fabric enable role SPINE prefer",
+      "Spine1(conf)# smartfabric l3fabric enable role SPINE downstream ethernet 1/1/1-1/1/2",
+      "Leaf2(conf)# smartfabric l3fabric enable role LEAF vlti ethernet 1/1/10",
+      "Spine1(conf)# smartfabric l3fabric enable role SPINE"
+    ],
+    "correct_answers": [
+      "Leaf1(conf)# smartfabric l3fabric enable role LEAF vlti ethernet 1/1/10",
+      "Spine1(conf)# smartfabric l3fabric enable role SPINE prefer",
+      "Leaf2(conf)# smartfabric l3fabric enable role LEAF vlti ethernet 1/1/10"
+    ]
+  },
+  {
+    "qid": "D-PDC-DY-23-Q016",
+    "type": "multiple_choice",
+    "category": "PowerSwitch Data Center Deploy",
+    "question": "What is the maximum number of LLDP neighbors supported per system with OS10?",
+    "explanation": "",
+    "options": [
+      "250",
+      "256",
+      "384",
+      "512"
+    ],
+    "correct_answers": [
+      "256"
+    ]
+  },
+  {
+    "qid": "D-PDC-DY-23-Q017",
+    "type": "multiple_choice",
+    "category": "PowerSwitch Data Center Deploy",
+    "question": "Which best describes traffic flow in a campus network environment?",
+    "explanation": "",
+    "options": [
+      "North-East",
+      "South-West",
+      "East-West",
+      "North-South"
+    ],
+    "correct_answers": [
+      "East-West"
+    ]
+  },
+  {
+    "qid": "D-PDC-DY-23-Q018",
+    "type": "multiple_choice",
+    "category": "PowerSwitch Data Center Deploy",
+    "question": "Which command mode allows configuration of switches L2 and L3 interfaces?",
+    "explanation": "",
+    "options": [
+      "EXEC Mode",
+      "Interface",
+      "Configuration",
+      "Global"
+    ],
+    "correct_answers": [
+      "Interface"
+    ]
+  },
+  {
+    "qid": "D-PDC-DY-23-Q019",
+    "type": "multiple_choice",
+    "category": "PowerSwitch Data Center Deploy",
+    "question": "A network administrator has configured Policy-based-Routing and applied it on interface ethernet 1/1/3. What command can be used to verify that the policy is applied?",
+    "explanation": "",
+    "options": [
+      "show ip policy brief",
+      "show ip policy",
+      "show interface ethernet 1/1/3 policy-map",
+      "show ip policy map"
+    ],
+    "correct_answers": [
+      "show interface ethernet 1/1/3 policy-map"
+    ]
+  },
+  {
+    "qid": "D-PDC-DY-23-Q020",
+    "type": "multiple_choice",
+    "category": "PowerSwitch Data Center Deploy",
+    "question": "Which switch mode is used to manage files and display switch information?",
+    "explanation": "",
+    "options": [
+      "Interface",
+      "Network",
+      "Exec",
+      "Configuration"
+    ],
+    "correct_answers": [
+      "Exec"
+    ]
+  },
+  {
+    "qid": "D-PDC-DY-23-Q021",
+    "type": "multiple_choice",
+    "category": "PowerSwitch Data Center Deploy",
+    "question": "Two (2) Dell EMC Networking OS10 switches in a VLT configuration need to be upgraded. How will the reload of these switches proceed to result in the default initial state?",
+    "explanation": "",
+    "options": [
+      "Reload the primary VLT node. This process will automatically trigger the reload of the secondary node after it has completely recovered.",
+      "Reload the primary VLT node and wait for it to join as secondary. Wait until after delay restore timer has expired. Reload VLT secondary node and wait for it to join as secondary.",
+      "Reload the primary VLT node.This will automatically trigger the simultaneous reload of the secondary node.",
+      "Reload the primary VLT node and wait for it to join as primary. Wait until after delay restore timer has expired. Reload VLT secondary node and wait for it to join as secondary."
+    ],
+    "correct_answers": [
+      "Reload the primary VLT node. This process will automatically trigger the reload of the secondary node after it has completely recovered."
+    ]
+  },
+  {
+    "qid": "D-PDC-DY-23-Q022",
+    "type": "multiple_choice",
+    "category": "PowerSwitch Data Center Deploy",
+    "question": "What is the default transmission interval of an LLDPDU in SmartFabric OS10?",
+    "explanation": "",
+    "options": [
+      "2",
+      "10",
+      "20",
+      "30"
+    ],
+    "correct_answers": [
+      "10"
+    ]
+  },
+  {
+    "qid": "D-PDC-DY-23-Q023",
+    "type": "multiple_choice",
+    "category": "PowerSwitch Data Center Deploy",
+    "question": "Which multicast address is used by all OSPF routers?",
+    "explanation": "",
+    "options": [
+      "239.0.0.4",
+      "239.0.0.6",
+      "224.0.0.5",
+      "224.0.0.6"
+    ],
+    "correct_answers": [
+      "224.0.0.5"
+    ]
+  },
+  {
+    "qid": "D-PDC-DY-23-Q024",
+    "type": "multiple_choice",
+    "category": "PowerSwitch Data Center Deploy",
+    "question": "When configuring a vrf instance for the management interface that has been in use, what step must be done first to configure it?",
+    "explanation": "",
+    "options": [
+      "Configure a management route",
+      "Remove the default route",
+      "Remove all configured settings",
+      "Configure an IP Address"
+    ],
+    "correct_answers": [
+      "Remove all configured settings"
+    ]
+  },
+  {
+    "qid": "D-PDC-DY-23-Q025",
+    "type": "multiple_choice",
+    "category": "PowerSwitch Data Center Deploy",
+    "question": "Refer to the exhibit. Where is the rendezvous point for the group 239.255.255.250?",
+    "explanation": "",
+    "options": [
+      "10.0.13.1",
+      "10.0.14.1",
+      "eth1/1/54",
+      "vlan300"
+    ],
+    "correct_answers": [
+      "10.0.14.1"
+    ]
+  },
+  {
+    "qid": "D-PDC-DY-23-Q026",
+    "type": "multiple_choice",
+    "category": "PowerSwitch Data Center Deploy",
+    "question": "What does an ABR do with a Type 7 LSA it receives from an attached NSSA?",
+    "explanation": "",
+    "options": [
+      "It translates the Type 7 to a Type 5, and floods the LSA",
+      "Nothing, since Type 7 originated external routing information is rejected by an ABR",
+      "It floods the Type 7 to the rest of the OSPF domain",
+      "It summarizes the information in the Type 7 LSA in a new Type 3 LSA"
+    ],
+    "correct_answers": [
+      "It translates the Type 7 to a Type 5, and floods the LSA"
+    ]
+  },
+  {
+    "qid": "D-PDC-DY-23-Q027",
+    "type": "multiple_choice",
+    "category": "PowerSwitch Data Center Deploy",
+    "question": "Which IEEE standard defines the Multiple Spanning Tree Protocol?",
+    "explanation": "",
+    "options": [
+      "802.1s",
+      "802.1w",
+      "802.1d",
+      "802.1ad"
+    ],
+    "correct_answers": [
+      "802.1s"
+    ]
+  },
+  {
+    "qid": "D-PDC-DY-23-Q028",
+    "type": "multiple_choice",
+    "category": "PowerSwitch Data Center Deploy",
+    "question": "A network administrator wants to configure a timing protocol with these requirements: - Hardware time stamping to achieve sub microsecond synchronization. - Master IP address: 192.168.1.100. - Use interface Ethernet 1/1/1 to enable timing protocol. Which configuration supports the requirements?",
+    "explanation": "",
+    "options": [
+      "OS10(config)# ptp clock boundary OS10(config)# ptp domain 1 OS10(config)# ptp system time enable OS10(config-if-eth1/1/1)# ptp enable OS10(config-if-eth1/1/1)# ptp role slave OS10(config-if-eth1/1/1)# ptp transport ipv4 unicast slave OS10(config-if-eth1/1/1-ptp-ipv4-slave)# master 192.168.1.100",
+      "OS10(config-if-eth1/1/1)# ntp authenticate OS10(config-if-eth1/1/1)# ntp trusted-key 345 OS10(config-if-eth1/1/1)# ntp authentication-key 345 md5 0 5A60910FED211F02 OS10(config-if-eth1/1/1)# ntp server 192.168.1.100 key 345 OS10(config-if-eth1/1/1)# ntp master 7",
+      "OS10(config)# ntp authenticate OS10(config)# ntp trusted-key 345 OS10(co345 md5 0 5A60910FED211F02 OS10(config)# ntp server 192.168.1.100 key 345 OS10(config-if-eth1/1/1)# nfig)# ntp authentication-key ntp master 7",
+      "OS10(config)# ptp clock boundary OS10(config)# ptp domain 1 OS10(config)# ptp system time enable OS10(config)# ptp enable OS10(config)# ptp role master OS10(config)# ptp transport ipv4 unicast slave OS10(config-if-eth1/1/1)# master 192.168.1.100"
+    ],
+    "correct_answers": [
+      "OS10(config)# ptp clock boundary OS10(config)# ptp domain 1 OS10(config)# ptp system time enable OS10(config-if-eth1/1/1)# ptp enable OS10(config-if-eth1/1/1)# ptp role slave OS10(config-if-eth1/1/1)# ptp transport ipv4 unicast slave OS10(config-if-eth1/1/1-ptp-ipv4-slave)# master 192.168.1.100"
+    ]
+  },
+  {
+    "qid": "D-PDC-DY-23-Q029",
+    "type": "multiple_choice",
+    "category": "PowerSwitch Data Center Deploy",
+    "question": "When using Policy-Based Routing, what is a valid action?",
+    "explanation": "",
+    "options": [
+      "Set source IP address",
+      "Drop packet",
+      "Set destination TCP port number",
+      "Set 802.1Q VLAN ID"
+    ],
+    "correct_answers": [
+      "Drop packet"
+    ]
+  },
+  {
+    "qid": "D-PDC-DY-23-Q030",
+    "type": "multiple_choice",
+    "category": "PowerSwitch Data Center Deploy",
+    "question": "What type of network in a Data Center flattens the core and aggregation layers into a single tier?",
+    "explanation": "",
+    "options": [
+      "Leaf",
+      "Leaf-spine",
+      "Spine",
+      "TRILL"
+    ],
+    "correct_answers": [
+      "Leaf-spine"
+    ]
+  },
+  {
+    "qid": "D-PDC-DY-23-Q031",
+    "type": "multiple_choice",
+    "category": "PowerSwitch Data Center Deploy",
+    "question": "In a Layer 3 Leaf-Spine topology what can be used to move Layer 2 traffic between racks?",
+    "explanation": "",
+    "options": [
+      "VXLAN",
+      "Trunks",
+      "Port channel",
+      "VLT"
+    ],
+    "correct_answers": [
+      "VXLAN"
+    ]
+  },
+  {
+    "qid": "D-PDC-DY-23-Q032",
+    "type": "multiple_choice",
+    "category": "PowerSwitch Data Center Deploy",
+    "question": "What is an advantage of UFD?",
+    "explanation": "",
+    "options": [
+      "Reduces connectivity loss.",
+      "Detects the loss of downstream connectivity.",
+      "Reduces network complexity.",
+      "Prevents the loss of upstream connectivity."
+    ],
+    "correct_answers": [
+      "Detects the loss of downstream connectivity."
+    ]
+  },
+  {
+    "qid": "D-PDC-DY-23-Q033",
+    "type": "multiple_choice",
+    "category": "PowerSwitch Data Center Deploy",
+    "question": "Which Ethernet interface speeds do Dell Networking OS10 switches support?",
+    "explanation": "",
+    "options": [
+      "10, 16, and 40Gb",
+      "1, 10, and 25Gb",
+      "1, 2, and 100Gb",
+      "4, 8, and 32Gb"
+    ],
+    "correct_answers": [
+      "1, 10, and 25Gb"
+    ]
+  },
+  {
+    "qid": "D-PDC-DY-23-Q034",
+    "type": "multiple_choice",
+    "category": "PowerSwitch Data Center Deploy",
+    "question": "Refer to the exhibit. No static routing has been configured. For iBGP loopback-based peering, which statement is correct?",
+    "explanation": "",
+    "options": [
+      "It is not necessary for the routing table on S1 to have an entry for the loopback network of S3.",
+      "S1 should have the Loopback network of S3 in its routing table for loopback-based peering.",
+      "For iBGP peering, physical interface addresses must be used.",
+      "A static route on S1 to 144.254.32.1/32 will eliminate the need for loopback-based peering with S3."
+    ],
+    "correct_answers": [
+      "S1 should have the Loopback network of S3 in its routing table for loopback-based peering."
+    ]
+  },
+  {
+    "qid": "D-PDC-DY-23-Q035",
+    "type": "multiple_choice",
+    "category": "PowerSwitch Data Center Deploy",
+    "question": "A network administrator must restrict packets that are destined to the CPU of an OS10 switch. How do they accomplish this?",
+    "explanation": "",
+    "options": [
+      "IP fragment ACLs",
+      "Control-plane ACLs",
+      "Management-plane ACLs",
+      "Static null routes"
+    ],
+    "correct_answers": [
+      "Control-plane ACLs"
+    ]
+  },
+  {
+    "qid": "D-PDC-DY-23-Q036",
+    "type": "multiple_choice",
+    "category": "PowerSwitch Data Center Deploy",
+    "question": "What are the correct commands that configure the DHCP lease from pool DC1 to never expire?",
+    "explanation": "",
+    "options": [
+      "OS10(config)# ip dhcp server OS10(config-dhcp)# pool DC1 accounting OS10(config-dhcp-DC1)#no lease expire",
+      "OS10(config)# ip dhcp server OS10(config-dhcp)# pool DC1 accounting OS10(config-dhcp-DC1)# no expire",
+      "OS10(config)#dhcp server OS10(config-dhcp)# pool DC1 OS10(config-dhcp-DC1)# no lease expire",
+      "OS10(config)# ip dhcp server OS10(config-dhcp)# pool DC1 OS10(config-dhcp-DC1)#lease infinite"
+    ],
+    "correct_answers": [
+      "OS10(config)# ip dhcp server OS10(config-dhcp)# pool DC1 OS10(config-dhcp-DC1)#lease infinite"
+    ]
+  },
+  {
+    "qid": "D-PDC-DY-23-Q037",
+    "type": "multiple_choice",
+    "category": "PowerSwitch Data Center Deploy",
+    "question": "A network administrator is implementing VRRP on a switch and has configured VLAN 10 to use a matching VRRP group ID 10. Which two commands indicate default VRRP settings? (Select 2)",
+    "explanation": "",
+    "options": [
+      "OS10(config)# vrrp version 2",
+      "OS10(conf-vlan10-vrid-10)# preempt",
+      "OS10(conf-vlan10-vrid-10)# priority 10",
+      "OS10(conf-vlan10-vrid-10)# advertise-interval secs 10"
+    ],
+    "correct_answers": [
+      "OS10(config)# vrrp version 2",
+      "OS10(conf-vlan10-vrid-10)# preempt"
+    ]
+  },
+  {
+    "qid": "D-PDC-DY-23-Q038",
+    "type": "multiple_choice",
+    "category": "PowerSwitch Data Center Deploy",
+    "question": "What is the valid range of VLAN IDs for Dell EMC Networking OS10 switches?",
+    "explanation": "",
+    "options": [
+      "1-4096",
+      "1-4093",
+      "0-4092",
+      "0-4095"
+    ],
+    "correct_answers": [
+      "1-4093"
+    ]
+  },
+  {
+    "qid": "D-PDC-DY-23-Q039",
+    "type": "multiple_choice",
+    "category": "PowerSwitch Data Center Deploy",
+    "question": "ACLs have which two actions?",
+    "explanation": "",
+    "options": [
+      "Modify or drop.",
+      "Forward or erase.",
+      "Redistribute or forward.",
+      "Permit or deny."
+    ],
+    "correct_answers": [
+      "Permit or deny."
+    ]
+  },
+  {
+    "qid": "D-PDC-DY-23-Q040",
+    "type": "multiple_choice",
+    "category": "PowerSwitch Data Center Deploy",
+    "question": "Refer to the exhibit: From S1, a ping to the host address of 192.168.37.3 is not successful. The routing table on S1 shows three directly connected networks (including the Lo0 network of S1). Network 192.168.34.0/24 and the Lo0 networks of S2 and S3 are the only OSPF-learned networks in the routing table. The system on the 192.168.37.0/24 network can ping S3. Which command offers a solution to the inability to ping the host address from S1?",
+    "explanation": "",
+    "options": [
+      "S1(config-router-ospf-1)# ip route 192.168.37.0/24 interface null 0",
+      "S3(config-router-ospf-1)# update-source loopback 0",
+      "S3(config-router-ospf-1)# redistribute connected",
+      "S1(config-router-ospf-1)# network 192.168.37.0/24"
+    ],
+    "correct_answers": [
+      "S3(config-router-ospf-1)# redistribute connected"
+    ]
+  },
+  {
+    "qid": "D-PDC-DY-23-Q041",
+    "type": "multiple_choice",
+    "category": "PowerSwitch Data Center Deploy",
+    "question": "A network administrator is designing a Layer 2 topology and requires separate spanning- tree roots to avoid having a given port blocked for all instances. Which spanning-tree protocols will meet this need?",
+    "explanation": "",
+    "options": [
+      "STP & RSTP",
+      "RSTP-PV & MSTP",
+      "STP & RSTP-PV",
+      "RSTP & MSTP"
+    ],
+    "correct_answers": [
+      "RSTP-PV & MSTP"
+    ]
+  },
+  {
+    "qid": "D-PDC-DY-23-Q042",
+    "type": "multiple_choice",
+    "category": "PowerSwitch Data Center Deploy",
+    "question": "What configuration must be common on iBGP neighbors to form an iBGP adjacency?",
+    "explanation": "",
+    "options": [
+      "Local preference",
+      "Router-ID",
+      "AS number",
+      "Loopback interfaces"
+    ],
+    "correct_answers": [
+      "AS number"
+    ]
+  },
+  {
+    "qid": "D-PDC-DY-23-Q043",
+    "type": "multiple_choice",
+    "category": "PowerSwitch Data Center Deploy",
+    "question": "Refer to the exhibit. The output shown is from which command?",
+    "explanation": "",
+    "options": [
+      "S3(config-router-ospf-1)# show ip ospf database",
+      "S3(config-router-ospf-1)# show ip ospf topology",
+      "S3(config-router-ospf-1)# show ip ospf lsa",
+      "S3(config-router-ospf-1)# show ip ospf statistics"
+    ],
+    "correct_answers": [
+      "S3(config-router-ospf-1)# show ip ospf database"
+    ]
+  },
+  {
+    "qid": "D-PDC-DY-23-Q044",
+    "type": "multiple_choice",
+    "category": "PowerSwitch Data Center Deploy",
+    "question": "A router must be configured to allow multiple multicast servers for the same group to be presented only to ports where active listeners reside. Each listener may exclude non-preferred servers. What is the minimum multicast configuration level required on the router?",
+    "explanation": "",
+    "options": [
+      "IGMPv2 with snooping PIM-SSM",
+      "IGMPv3 with snooping PIM-SSM",
+      "IGMPv3 with snooping PIM-SM",
+      "IGMPv3 without snooping PIM-SSM"
+    ],
+    "correct_answers": [
+      "IGMPv3 with snooping PIM-SSM"
+    ]
+  },
+  {
+    "qid": "D-PDC-DY-23-Q045",
+    "type": "multiple_choice",
+    "category": "PowerSwitch Data Center Deploy",
+    "question": "A router needs to be configured to allow multiple multicast servers for the same group to be presented only to ports where active listeners reside. Each listener may exclude non-preferred servers. What is the minimum multicast configuration level required on the router?",
+    "explanation": "",
+    "options": [
+      "IGMPv3 without snooping PIM-SSM",
+      "IGMPv2 with snooping PIM-SSM",
+      "IGMPv3 with snooping PIM-SSM",
+      "IGMPv3 with snooping PIM-SM"
+    ],
+    "correct_answers": [
+      "IGMPv3 with snooping PIM-SSM"
+    ]
+  },
+  {
+    "qid": "D-PDC-DY-23-Q046",
+    "type": "multiple_choice",
+    "category": "PowerSwitch Data Center Deploy",
+    "question": "How many VRRP groups can be configured on a VRRP router?",
+    "explanation": "",
+    "options": [
+      "128",
+      "255",
+      "256",
+      "512"
+    ],
+    "correct_answers": [
+      "255"
+    ]
+  },
+  {
+    "qid": "D-PDC-DY-23-Q047",
+    "type": "multiple_choice",
+    "category": "PowerSwitch Data Center Deploy",
+    "question": "ACL's have which two (2) actions?",
+    "explanation": "",
+    "options": [
+      "Redistribute or forward",
+      "Forward or erase",
+      "Permit or deny",
+      "Modify or drop"
+    ],
+    "correct_answers": [
+      "Permit or deny"
+    ]
+  },
+  {
+    "qid": "D-PDC-DY-23-Q048",
+    "type": "multiple_choice",
+    "category": "PowerSwitch Data Center Deploy",
+    "question": "Multicast flood restrict is a feature enabled by default on OS10 switches to ensure that no traffic drop occurs. What is a recommended configuration step for its implementation?",
+    "explanation": "",
+    "options": [
+      "Configure the interface between the PIM routers as a dynamic multicast router port",
+      "Enable IGMP snooping on the VLAN interfaces between two PIM routers with no IGMP receivers",
+      "Disable IGMP snooping on the VLAN between two PIM routers with no IGMP receivers on that VLAN",
+      "Configure the interface between the PIM routers and the rendezvous point as a static multicast router port"
+    ],
+    "correct_answers": [
+      "Configure the interface between the PIM routers and the rendezvous point as a static multicast router port"
+    ]
+  },
+  {
+    "qid": "D-PDC-DY-23-Q049",
+    "type": "multiple_choice",
+    "category": "PowerSwitch Data Center Deploy",
+    "question": "What is the range of values that can be used when using the vlt-port-channel command?",
+    "explanation": "",
+    "options": [
+      "1-128",
+      "1-512",
+      "1-1024",
+      "1-256"
+    ],
+    "correct_answers": [
+      "1-256"
+    ]
+  },
+  {
+    "qid": "D-PDC-DY-23-Q050",
+    "type": "multiple_choice",
+    "category": "PowerSwitch Data Center Deploy",
+    "question": "A network administrator must configure separate rendezvous points for multicast groups 232.0.0.100 and 225.0.0.100. Which commands are used for this configuration?",
+    "explanation": "",
+    "options": [
+      "OS10(config)# ip multicast rp-address 1.1.1.1 group-address 232.0.0.100/32 OS10(config)# ip multicast rp-address 2.2.2.2 group-address 225.0.0.100/32",
+      "OS10(config)# ip pim rp-address 1.1.1.1 group-address 232.0.0.100/32 OS10(config)# ip pim rp-address 2.2.2.2 group-address 225.0.0.100/32",
+      "OS10(config)# ip pim rp-address 232.0.0.100/32 group-address 1.1.1.1 OS10(config)# ip pim rp-address 225.0.0.100/32 group-address 2.2.2.2",
+      "OS10(config)# ip pim rp-address 232.0.0.100/32 source-address 1.1.1.1 OS10(config)# ip pim rp-address 225.0.0.100/32 source-address 2.2.2.2"
+    ],
+    "correct_answers": [
+      "OS10(config)# ip pim rp-address 1.1.1.1 group-address 232.0.0.100/32 OS10(config)# ip pim rp-address 2.2.2.2 group-address 225.0.0.100/32"
+    ]
+  },
+  {
+    "qid": "D-PDC-DY-23-Q051",
+    "type": "multiple_choice",
+    "category": "PowerSwitch Data Center Deploy",
+    "question": "A customer reports they can no longer access their services and a network administrator has been assigned to investigate. A UFD disabled error status appears on all ports. What caused the issue?",
+    "explanation": "",
+    "options": [
+      "Spanning tree Loop-guard was implemented on the uplink-state group.",
+      "One of the upstream interfaces is an uplink-state group went down.",
+      "There was no issue; this is normal behavior.",
+      "Both a port channel and its members were assigned to an uplink-state group."
+    ],
+    "correct_answers": [
+      "One of the upstream interfaces is an uplink-state group went down."
+    ]
+  },
+  {
+    "qid": "D-PDC-DY-23-Q052",
+    "type": "multiple_choice",
+    "category": "PowerSwitch Data Center Deploy",
+    "question": "Refer to the exhibit. What will happen when a network administrator enters the shutdown command?",
+    "explanation": "",
+    "options": [
+      "Maintains existing BGP sessions but no longer establishes new ones",
+      "Terminates any established BGP sessions for the specified neighbor",
+      "Stops any traffic from being sent on the physical interface used to reach neighbor 192.168.200.1",
+      "Terminates established BGP sessions for the specified ASN (64567)"
+    ],
+    "correct_answers": [
+      "Terminates any established BGP sessions for the specified neighbor"
+    ]
+  },
+  {
+    "qid": "D-PDC-DY-23-Q053",
+    "type": "multiple_choice",
+    "category": "PowerSwitch Data Center Deploy",
+    "question": "Match the IGMP versions and features in the source column to the feature or version where they first appeared. There are more packet descriptions than IGMP versions.",
+    "explanation": "",
+    "options": [
+      "IGMP Version 1 - a) Queries can be sent out either as general queries or group-specific queries IGMP Version 2 - b) IGMP Version 3 IGMP Version 2 - c) Routers send out a ‘query’ every 60 seconds Exclude Mode - e) Enhances by adding Source-Based-Filtering",
+      "IGMP Version 1 - a) Queries can be sent out either as general queries or group-specific queries IGMP Version 2 - b) IGMP Version 3 IGMP Version 2 - d) IGMP Version 2 Exclude Mode - e) Enhances by adding Source-Based-Filtering",
+      "IGMP Version 1 - c) Routers send out a ‘query’ every 60 seconds IGMP Version 2 - b) IGMP Version 3 IGMP Version 2 - d) IGMP Version 2 Exclude Mode - e) Enhances by adding Source-Based-Filtering",
+      "IGMP Version 1 - c) Routers send out a ‘query’ every 60 seconds IGMP Version 2 - b) IGMP Version 3 IGMP Version 2 - d) IGMP Version 2 Exclude Mode - a) Queries can be sent out either as general queries or group-specific queries"
+    ],
+    "correct_answers": [
+      "IGMP Version 1 - c) Routers send out a ‘query’ every 60 seconds IGMP Version 2 - b) IGMP Version 3 IGMP Version 2 - d) IGMP Version 2 Exclude Mode - e) Enhances by adding Source-Based-Filtering"
+    ]
+  },
+  {
+    "qid": "D-PDC-DY-23-Q054",
+    "type": "multiple_choice",
+    "category": "PowerSwitch Data Center Deploy",
+    "question": "What is the purpose of the DHCP Relay Agent?",
+    "explanation": "",
+    "options": [
+      "Forwards DHCP requests from a client to the server on another subnet",
+      "Forwards DHCP responses from one server to clients",
+      "Broadcasts DHCP requests from clients to all servers",
+      "Assigns network addresses and subnet masks to DHCP clients if the server fails to respond"
+    ],
+    "correct_answers": [
+      "Forwards DHCP requests from a client to the server on another subnet"
+    ]
+  },
+  {
+    "qid": "D-PDC-DY-23-Q055",
+    "type": "multiple_choice",
+    "category": "PowerSwitch Data Center Deploy",
+    "question": "What is an attribute of OS10 Enterprise Edition?",
+    "explanation": "",
+    "options": [
+      "Includes full programmability",
+      "No license needed",
+      "Free download",
+      "Provides a GUI"
+    ],
+    "correct_answers": [
+      "Includes full programmability"
+    ]
+  },
+  {
+    "qid": "D-PDC-DY-23-Q056",
+    "type": "multiple_choice",
+    "category": "PowerSwitch Data Center Deploy",
+    "question": "A network administrator is troubleshooting a PBR implementation and needs to know how many packets have matched the route-map criteria. How do they view this information in OS10?",
+    "explanation": "",
+    "options": [
+      "OS10# show route-map",
+      "OS10# show interface statistics",
+      "OS10# show route-map route-map-statistics",
+      "OS10# show route-map pbr-statistics"
+    ],
+    "correct_answers": [
+      "OS10# show route-map route-map-statistics"
+    ]
+  },
+  {
+    "qid": "D-PDC-DY-23-Q057",
+    "type": "multiple_choice",
+    "category": "PowerSwitch Data Center Deploy",
+    "question": "What is a benefit of adding a virtual router partition in OS10?",
+    "explanation": "",
+    "options": [
+      "Allows VRRP to work in an active-active manner.",
+      "Allow production traffic to have multiple redundant gateways.",
+      "Allows for management interface to have an isolated routing table.",
+      "Allows multiple logical IP subnets on a single LAN segment."
+    ],
+    "correct_answers": [
+      "Allows for management interface to have an isolated routing table."
+    ]
+  },
+  {
+    "qid": "D-PDC-DY-23-Q058",
+    "type": "multiple_choice",
+    "category": "PowerSwitch Data Center Deploy",
+    "question": "When configuring VRRP in tandem with VLT, what is the default VRRP mode?",
+    "explanation": "",
+    "options": [
+      "active-active",
+      "primary-standby",
+      "active-standby",
+      "master-backup"
+    ],
+    "correct_answers": [
+      "active-active",
+      "master-backup"
+    ]
+  },
+  {
+    "qid": "D-PDC-DY-23-Q059",
+    "type": "multiple_choice",
+    "category": "PowerSwitch Data Center Deploy",
+    "question": "What is an advantage of running LLDP?",
+    "explanation": "",
+    "options": [
+      "Automatic error detection and correction of the port",
+      "Reduces spanning-tree convergence",
+      "Provides detailed software version information",
+      "Simplifies the use of network management"
+    ],
+    "correct_answers": [
+      "Simplifies the use of network management"
+    ]
+  },
+  {
+    "qid": "D-PDC-DY-23-Q060",
+    "type": "multiple_choice",
+    "category": "PowerSwitch Data Center Deploy",
+    "question": "Interface Ethernet 1/1/3 has been configured with an IP address, and the interface is UP. How does the routing table present the associated network?",
+    "explanation": "",
+    "options": [
+      "Static",
+      "Directly connected",
+      "Dynamic",
+      "Default"
+    ],
+    "correct_answers": [
+      "Directly connected"
+    ]
+  },
+  {
+    "qid": "D-PDC-DY-23-Q061",
+    "type": "multiple_choice",
+    "category": "PowerSwitch Data Center Deploy",
+    "question": "You have been asked to examine a BGP configuration for a co-worker who is having difficulty establishing BGP peering. The address shown is that of the neighbor's Lo0 interface. Given the configuration shown, what would be your recommendation? S3(config-router-bgp-65042)# neighbor 192.168.32.1 S3(config-router-neighbor)# remote-as 65042",
+    "explanation": "",
+    "options": [
+      "Modify the existing configuration to be: S3(config-router-bgp-65042)# neighbor 192.168.32.1/24 S3(config-router-neighbor)# peer-as 65042",
+      "Add the following to the existing configuration: S3(config-router-neighbor)# update- source loopback 0 S3(config-router-neighbor)# no shutdown",
+      "Issue the no shutdown command and verify that the BGP state is ESTABLISHED",
+      "Issue the no shutdown command and verify that the BGP state is ACTIVE"
+    ],
+    "correct_answers": [
+      "Add the following to the existing configuration: S3(config-router-neighbor)# update- source loopback 0 S3(config-router-neighbor)# no shutdown"
+    ]
+  },
+  {
+    "qid": "D-PDC-DY-23-Q062",
+    "type": "multiple_choice",
+    "category": "PowerSwitch Data Center Deploy",
+    "question": "The VLAN tag is located between which fields in the Ethernet frame?",
+    "explanation": "",
+    "options": [
+      "Destination MAC and Source MAC",
+      "Ether Type/Size and Data",
+      "Preamble and Destination MAC",
+      "Source MAC and Ether Type/Size"
+    ],
+    "correct_answers": [
+      "Source MAC and Ether Type/Size"
+    ]
+  },
+  {
+    "qid": "D-PDC-DY-23-Q063",
+    "type": "multiple_choice",
+    "category": "PowerSwitch Data Center Deploy",
+    "question": "What is a valid OS10 iBGP configuration?",
+    "explanation": "",
+    "options": [
+      "S2(config)# router bgp 64507 S2(config-router-bgp-64507)# peer-as 64507 S2(config-router-bgp-64507)# neighbor 192.168.32.1 S2(config-router-neighbor)# update-source loopback 0 S2(config-router-neighbor)# no shutdown",
+      "S2(config)# router bgp 64507 S2(config-router-bgp-64507)# neighbor 192.168.32.1 S2(config-router-bgp-64507)# remote-as 64507 S2(config-router-bgp-64507)# update-source loopback 0 S2(config-router-bgp-64507)# no shutdown",
+      "S2(config)# router bgp 64507 S2(config-router-bgp-64507)# neighbor 192.168.32.1 S2(config-router-neighbor)# remote-as 64507 S2(config-router-neighbor)# update-source loopback 0 S2(config-router-neighbor)# no shutdown",
+      "S2(config)# router bgp 64507 S2(config-router-bgp-64507)# remote-as 64507 S2(config-router-bgp-64507)# neighbor 192.168.32.1 S2(config-router-neighbor)# update-source loopback 0 S2(config-router-neighbor)# no shutdown"
+    ],
+    "correct_answers": [
+      "S2(config)# router bgp 64507 S2(config-router-bgp-64507)# neighbor 192.168.32.1 S2(config-router-neighbor)# remote-as 64507 S2(config-router-neighbor)# update-source loopback 0 S2(config-router-neighbor)# no shutdown"
+    ]
+  },
+  {
+    "qid": "D-PDC-DY-23-Q064",
+    "type": "multiple_choice",
+    "category": "PowerSwitch Data Center Deploy",
+    "question": "Which OSPF router is responsible for originating Network Link State Advertisements?",
+    "explanation": "",
+    "options": [
+      "Designated Router",
+      "Internal Router",
+      "Area Border Router",
+      "Backbone Router"
+    ],
+    "correct_answers": [
+      "Designated Router"
+    ]
+  },
+  {
+    "qid": "D-PDC-DY-23-Q065",
+    "type": "multiple_choice",
+    "category": "PowerSwitch Data Center Deploy",
+    "question": "How are BGP neighbor relationships created?",
+    "explanation": "",
+    "options": [
+      "Dynamically discovered when BGP is enabled on a specific interface",
+      "Statically assigned using BGP MED (Multi-Exit Discriminator)",
+      "Dynamically discovered using BGP Origin Code",
+      "Statically assigned using the IP address of the BGP neighbor"
+    ],
+    "correct_answers": [
+      "Statically assigned using the IP address of the BGP neighbor"
+    ]
+  },
+  {
+    "qid": "D-PDC-DY-23-Q066",
+    "type": "multiple_choice",
+    "category": "PowerSwitch Data Center Deploy",
+    "question": "How does a DHCP Client make a request to a DHCP server following an offer?",
+    "explanation": "",
+    "options": [
+      "Multicast",
+      "ACK",
+      "Broadcast",
+      "Unicast"
+    ],
+    "correct_answers": [
+      "Broadcast"
+    ]
+  },
+  {
+    "qid": "D-PDC-DY-23-Q067",
+    "type": "multiple_choice",
+    "category": "PowerSwitch Data Center Deploy",
+    "question": "Which router types are contained in a single-area OSPF implementation?",
+    "explanation": "",
+    "options": [
+      "Stub router and ABR",
+      "ABR and ASBR",
+      "Internal router and ASBR",
+      "Backbone router and Internal router"
+    ],
+    "correct_answers": [
+      "Backbone router and Internal router"
+    ]
+  },
+  {
+    "qid": "D-PDC-DY-23-Q068",
+    "type": "multiple_choice",
+    "category": "PowerSwitch Data Center Deploy",
+    "question": "What does the stratum value of 16 mean on an NTP server?",
+    "explanation": "",
+    "options": [
+      "Device is a reference clock.",
+      "Device has the highest synchronized accuracy.",
+      "Device has the lowest synchronized accuracy.",
+      "Device is unsynchronized."
+    ],
+    "correct_answers": [
+      "Device is unsynchronized."
+    ]
+  },
+  {
+    "qid": "D-PDC-DY-23-Q069",
+    "type": "multiple_choice",
+    "category": "PowerSwitch Data Center Deploy",
+    "question": "A network administrator has recently configured eBGP to use source addressing from its loopback interfaces. Customers later report that eBGP routes are not being learned. What could be the cause of this issue?",
+    "explanation": "",
+    "options": [
+      "BGP devices must be configured with the multihop command when using loopback interfaces",
+      "BGPv4 does not support the use of loopback interfaces",
+      "BGP devices must be configured to use source addressing from its physical interfaces only",
+      "The network administrator neglected to issue the no shutdown command to bring the loopback interface online"
+    ],
+    "correct_answers": [
+      "BGP devices must be configured with the multihop command when using loopback interfaces"
+    ]
+  },
+  {
+    "qid": "D-PDC-DY-23-Q070",
+    "type": "multiple_choice",
+    "category": "PowerSwitch Data Center Deploy",
+    "question": "Which two options describe the differences between Layer 2 and Layer 3 QoS? (Select 2)",
+    "explanation": "",
+    "options": [
+      "DSCP priorities are a combination of Class Selector and Drop Precedence.",
+      "CoS priorities are encoded in the IP header.",
+      "802.1P trust-maps only trigger against 802.1Q tagged traffic.",
+      "DSCP implements seven unique traffic classes for packet queueing."
+    ],
+    "correct_answers": [
+      "DSCP priorities are a combination of Class Selector and Drop Precedence.",
+      "802.1P trust-maps only trigger against 802.1Q tagged traffic."
+    ]
+  },
+  {
+    "qid": "D-PDC-DY-23-Q071",
+    "type": "multiple_choice",
+    "category": "PowerSwitch Data Center Deploy",
+    "question": "With what feature is the downstream ethernet 1/1/9:1-1/1/9:4 command associated?",
+    "explanation": "",
+    "options": [
+      "Downlink Failure Detection",
+      "Uplink Failure Detection",
+      "Unidirectional Forwarding Detection",
+      "Bidirectional Forwarding Detection"
+    ],
+    "correct_answers": [
+      "Uplink Failure Detection"
+    ]
+  },
+  {
+    "qid": "D-PDC-DY-23-Q072",
+    "type": "multiple_choice",
+    "category": "PowerSwitch Data Center Deploy",
+    "question": "What is the size of the VLAN tag in an Ethernet frame?",
+    "explanation": "",
+    "options": [
+      "4 bytes",
+      "8 bytes",
+      "1 byte",
+      "2 bytes"
+    ],
+    "correct_answers": [
+      "4 bytes"
+    ]
+  },
+  {
+    "qid": "D-PDC-DY-23-Q073",
+    "type": "multiple_choice",
+    "category": "PowerSwitch Data Center Deploy",
+    "question": "Which two commands display if a port is currently active in a VLAN?",
+    "explanation": "",
+    "options": [
+      "\"show interface vlan\" and \"show interfaces status\"",
+      "\"show interface vlan\" and \"show startup-configuration\"",
+      "\"show startup-configuration\" and \"show vlan\"",
+      "\"show vlan\" and \"show interfaces status\""
+    ],
+    "correct_answers": [
+      "\"show vlan\" and \"show interfaces status\""
+    ]
+  },
+  {
+    "qid": "D-PDC-DY-23-Q074",
+    "type": "multiple_choice",
+    "category": "PowerSwitch Data Center Deploy",
+    "question": "Refer to the exhibit: What happens when a network administrator enters the shutdown command?",
+    "explanation": "",
+    "options": [
+      "Terminates established BGP sessions for the specified ASN (64567).",
+      "Maintains existing BGP sessions but no longer establishes new ones.",
+      "Stops any traffic from being sent on the physical interface that is used to reach neighbor 192.168.200.1.",
+      "Terminates any established BGP sessions for the specified neighbor."
+    ],
+    "correct_answers": [
+      "Terminates any established BGP sessions for the specified neighbor."
+    ]
+  },
+  {
+    "qid": "D-PDC-DY-23-Q075",
+    "type": "multiple_choice",
+    "category": "PowerSwitch Data Center Deploy",
+    "question": "Which LSA type contains information about routes redistributed into OSPF?",
+    "explanation": "",
+    "options": [
+      "3",
+      "10",
+      "5",
+      "8"
+    ],
+    "correct_answers": [
+      "5"
+    ]
+  },
+  {
+    "qid": "D-PDC-DY-23-Q076",
+    "type": "multiple_choice",
+    "category": "PowerSwitch Data Center Deploy",
+    "question": "In an NSSA, which type of LSA is used for redistribution?",
+    "explanation": "",
+    "options": [
+      "3",
+      "4",
+      "5",
+      "7"
+    ],
+    "correct_answers": [
+      "7"
+    ]
+  },
+  {
+    "qid": "D-PDC-DY-23-Q077",
+    "type": "multiple_choice",
+    "category": "PowerSwitch Data Center Deploy",
+    "question": "What are the benefits associated with a multiple-area OSPF implementation?",
+    "explanation": "",
+    "options": [
+      "Lower costs by replacing traditional routers with distribution layer switches.",
+      "Lack of summarization between areas allow specific routes in the routing table.",
+      "All routes are easy to find since routing table entries are larger.",
+      "Each router has a more manageable LSDB."
+    ],
+    "correct_answers": [
+      "Each router has a more manageable LSDB."
+    ]
+  },
+  {
+    "qid": "D-PDC-DY-23-Q078",
+    "type": "multiple_choice",
+    "category": "PowerSwitch Data Center Deploy",
+    "question": "A network administrator must configure a virtual IP address using VRRP on interface VLAN 100 within OS10. What are the correct steps to accomplish this?",
+    "explanation": "",
+    "options": [
+      "OS10(config)# interface vlan 100 OS10(conf-if-vl-100)# ip address 10.0.100.1/24 OS10(conf-if-vl-100)# standby-group 256 OS10(conf-vlan100-vrid-256)# standby-address 10.0.100.2",
+      "OS10(config)# interface vlan 100 OS10(conf-if-vl-100)# ip address 10.0.100.2/24 OS10(conf-if-vl-100)# standby-group 250 OS10(conf-vlan100-vrid-250)# virtual-address 10.0.100.1",
+      "OS10(config)# interface vlan 100 OS10(conf-if-vl-100)# ip address 10.0.100.2/24 OS10(conf-if-vl-100)# vrrp-group 256 OS10(conf-vlan100-vrid-256)# virtual-address 10.0.100.1",
+      "OS10(config)# interface vlan 100 OS10(conf-if-vl-100)# ip address 10.0.100.1/24 OS10(conf-if-vl-100)# vrrp-group 250 OS10(conf-vlan100-vrid-250)# virtual-address 10.0.100.2"
+    ],
+    "correct_answers": [
+      "OS10(config)# interface vlan 100 OS10(conf-if-vl-100)# ip address 10.0.100.2/24 OS10(conf-if-vl-100)# vrrp-group 256 OS10(conf-vlan100-vrid-256)# virtual-address 10.0.100.1"
+    ]
+  },
+  {
+    "qid": "D-PDC-DY-23-Q079",
+    "type": "multiple_choice",
+    "category": "PowerSwitch Data Center Deploy",
+    "question": "Which multicast address do all OSPF routers use?",
+    "explanation": "",
+    "options": [
+      "224.0.0.6",
+      "239.0.0.6",
+      "239.0.0.4",
+      "224.0.0.5"
+    ],
+    "correct_answers": [
+      "224.0.0.5"
+    ]
+  },
+  {
+    "qid": "D-PDC-DY-23-Q080",
+    "type": "multiple_choice",
+    "category": "PowerSwitch Data Center Deploy",
+    "question": "In a PIM Sparse Mode based multicast topology, what role does the Rendezvous Point provide?",
+    "explanation": "",
+    "options": [
+      "The node is used to provide (S,G) across a Layer 3 boundary.",
+      "The location PIM sends traffic before invoking SPT.",
+      "The node is used to provide (*,G) on a Layer 2 shared segment.",
+      "The first-hop router is used to provide routing between the source and receiver."
+    ],
+    "correct_answers": [
+      "The location PIM sends traffic before invoking SPT."
+    ]
+  },
+  {
+    "qid": "D-PDC-DY-23-Q081",
+    "type": "multiple_choice",
+    "category": "PowerSwitch Data Center Deploy",
+    "question": "Order the best path criteria for BGP path selection.",
+    "explanation": "",
+    "options": [
+      "Highest Weight Highest Local Preference Shortest AS Path Lowest Origin Code Lowest MED",
+      "Highest Local Preference Shortest AS Path Lowest Origin Code Lowest MED Highest Weight",
+      "Shortest AS Path Lowest Origin Code Lowest MED Highest Weight Highest Local Preference",
+      "Lowest Origin Code Lowest MED Highest Weight Highest Local Preference Shortest AS Path"
+    ],
+    "correct_answers": [
+      "Highest Weight Highest Local Preference Shortest AS Path Lowest Origin Code Lowest MED"
+    ]
+  },
+  {
+    "qid": "D-PDC-DY-23-Q082",
+    "type": "multiple_choice",
+    "category": "PowerSwitch Data Center Deploy",
+    "question": "A network administrator is troubleshooting VLT behavior where all VLT port channels are down on both VLT peers. What type of mismatch can cause this issue?",
+    "explanation": "",
+    "options": [
+      "Spanning-tree mismatch at port level",
+      "VLT LAG ID mismatch",
+      "Spanning-tree mismatch at global level",
+      "System MAC mismatch"
+    ],
+    "correct_answers": [
+      "System MAC mismatch"
+    ]
+  },
+  {
+    "qid": "D-PDC-DY-23-Q083",
+    "type": "multiple_choice",
+    "category": "PowerSwitch Data Center Deploy",
+    "question": "How are ACLs processed?",
+    "explanation": "",
+    "options": [
+      "LIFO",
+      "FIFO",
+      "Randomly",
+      "Sequentially"
+    ],
+    "correct_answers": [
+      "Sequentially"
+    ]
+  },
+  {
+    "qid": "D-PDC-DY-23-Q084",
+    "type": "multiple_choice",
+    "category": "PowerSwitch Data Center Deploy",
+    "question": "A network administrator needs to configure separate rendezvous points for multicast groups 232.0.0.100 and 225.0.0.100. How would they accomplish this?",
+    "explanation": "",
+    "options": [
+      "OS10(config)# ip pim rp-address 1.1.1.1 group-address 232.0.0.100/32 OS10(config)# ip pim rp-address 2.2.2.2 group-address 225.0.0.100/32",
+      "OS10(config)# ip pim rp-address 232.0.0.100/32 group-address 1.1.1.1 OS10(config)# ip pim rp-address 225.0.0.100/32 group-address 2.2.2.2",
+      "OS10(config)# ip multicast rp-address 1.1.1.1 group-address 232.0.0.100/32 OS10(config)# ip multicast rp-address 2.2.2.2 group-address 225.0.0.100/32",
+      "OS10(config)# ip pim rp-address 232.0.0.100/32 source-address 1.1.1.1 OS10(config)# ip pim rp-address 225.0.0.100/32 source-address 2.2.2.2"
+    ],
+    "correct_answers": [
+      "OS10(config)# ip pim rp-address 1.1.1.1 group-address 232.0.0.100/32 OS10(config)# ip pim rp-address 2.2.2.2 group-address 225.0.0.100/32"
+    ]
+  },
+  {
+    "qid": "D-PDC-DY-23-Q085",
+    "type": "multiple_choice",
+    "category": "PowerSwitch Data Center Deploy",
+    "question": "Data center switches have been configured to authenticate users using a RADIUS server. A user that successfully logs into a switch has been given netoperator rights, when they expected sysadmin rights. What is a possible reason for the user being assigned netoperator rights?",
+    "explanation": "",
+    "options": [
+      "The user must enter enable mode to receive sysadmin rights",
+      "The username does NOT exist in the RADIUS server",
+      "The RADIUS server did NOT respond with a Dell-EMC-Group-Name value",
+      "The RADIUS server is not reachable by the switch"
+    ],
+    "correct_answers": [
+      "The RADIUS server did NOT respond with a Dell-EMC-Group-Name value"
+    ]
+  },
+  {
+    "qid": "D-PDC-DY-23-Q086",
+    "type": "multiple_choice",
+    "category": "PowerSwitch Data Center Deploy",
+    "question": "Two Dell Networking OS10 switches in a VLT configuration must be upgraded. How will the reload of these switches proceed to result in the default initial state?",
+    "explanation": "",
+    "options": [
+      "Reload the primary VLT node and wait for it to join as primary. Wait until after delay restore timer has expired. Reload VLT secondary node and wait for it to join as secondary.",
+      "Reload the primary VLT node. This will automatically trigger the simultaneous reload of the secondary node.",
+      "Reload the primary VLT node. This process will automatically trigger the reload of the secondary node after it has recovered.",
+      "Reload the primary VLT node and wait for it to join as secondary. Wait until after delay restore timer has expired. Reload VLT secondary node and wait for it to join as secondary."
+    ],
+    "correct_answers": [
+      "Reload the primary VLT node and wait for it to join as primary. Wait until after delay restore timer has expired. Reload VLT secondary node and wait for it to join as secondary."
+    ]
+  },
+  {
+    "qid": "D-PDC-DY-23-Q087",
+    "type": "multiple_choice",
+    "category": "PowerSwitch Data Center Deploy",
+    "question": "A network administrator wants servers to avoid spanning-tree convergence immediately after connecting to a leaf switch. Which spanning-tree feature would allow this?",
+    "explanation": "",
+    "options": [
+      "spanning-tree vlan priority 0",
+      "spanning-tree port-type disabled",
+      "spanning-tree port-priority 0",
+      "spanning-tree port-type edge"
+    ],
+    "correct_answers": [
+      "spanning-tree port-type edge"
+    ]
+  },
+  {
+    "qid": "D-PDC-DY-23-Q088",
+    "type": "multiple_choice",
+    "category": "PowerSwitch Data Center Deploy",
+    "question": "Which OS10 configuration will result in successfully assigning an IP address to interface 1/1/3, a 10G Ethernet interface?",
+    "explanation": "",
+    "options": [
+      "S3(config)# interface ethernet 1/1/3 S3(conf-if-eth1/1/3)# ip address 144.254.33.1/24 S3(conf-if-eth1/1/3)# no switchport",
+      "S3(config)# interface ethernet 1/1/3 S3(conf-if-eth1/1/3)# no switchport S3(conf-if-eth1/1/3)# ip address 144.254.33.1/24",
+      "S3(config)# interface tengigabitethernet 1/1/3 S3(conf-if-eth1/1/3)# ip address 144.254.33.1/24 S3(conf-if-eth1/1/3)# no shutdown",
+      "S3(config)# interface ethernet 1/1/3 S3(conf-if-eth1/1/3)# ip address 144.254.33.1/24 S3(conf-if-eth1/1/3)# no shutdown"
+    ],
+    "correct_answers": [
+      "S3(config)# interface ethernet 1/1/3 S3(conf-if-eth1/1/3)# no switchport S3(conf-if-eth1/1/3)# ip address 144.254.33.1/24"
+    ]
+  },
+  {
+    "qid": "D-PDC-DY-23-Q089",
+    "type": "multiple_choice",
+    "category": "PowerSwitch Data Center Deploy",
+    "question": "An administrator has created a layer three trust-map and wants to verify that the priorities are associated with the correct group. Which command shows the required data?",
+    "explanation": "",
+    "options": [
+      "OS10# show qos maps type trust-map-dot1p L3-trust-map",
+      "OS10# show cos maps type trust-map-dot1p L3-trust-map",
+      "OS10# show qos maps type trust-map-dscp L3-trust-map",
+      "OS10# show dscp maps type trust-map-type3 L3-trust-map"
+    ],
+    "correct_answers": [
+      "OS10# show qos maps type trust-map-dscp L3-trust-map"
+    ]
+  },
+  {
+    "qid": "D-PDC-DY-23-Q090",
+    "type": "multiple_choice",
+    "category": "PowerSwitch Data Center Deploy",
+    "question": "What version of IGMP is required by PIM-SSM receivers?",
+    "explanation": "",
+    "options": [
+      "IGMP 1",
+      "IGMP 3",
+      "IGMP 2",
+      "IGMP snooping"
+    ],
+    "correct_answers": [
+      "IGMP 3"
+    ]
+  },
+  {
+    "qid": "D-PDC-DY-23-Q091",
+    "type": "multiple_choice",
+    "category": "PowerSwitch Data Center Deploy",
+    "question": "Which LSA types are used in a single area OSPF topology?",
+    "explanation": "",
+    "options": [
+      "4, 5 and 7",
+      "1 and 7",
+      "1, 2 and 5",
+      "2, 3 and 5"
+    ],
+    "correct_answers": [
+      "1, 2 and 5"
+    ]
+  },
+  {
+    "qid": "D-PDC-DY-23-Q092",
+    "type": "multiple_choice",
+    "category": "PowerSwitch Data Center Deploy",
+    "question": "When implementing automation, which rationale should be considered?",
+    "explanation": "",
+    "options": [
+      "Enable the network to be managed as a single fabric.",
+      "Provide workflow for system administrators.",
+      "Simplify the network topology.",
+      "Automate corrective loop actions."
+    ],
+    "correct_answers": [
+      "Enable the network to be managed as a single fabric."
+    ]
+  },
+  {
+    "qid": "D-PDC-DY-23-Q093",
+    "type": "multiple_choice",
+    "category": "PowerSwitch Data Center Deploy",
+    "question": "Which LSA type provides information necessary to reach routers originating type 5 LSA’s in other areas?",
+    "explanation": "",
+    "options": [
+      "ASBR-Summary (Type 4)",
+      "Summary (Type 3)",
+      "NSSA (Type 7)",
+      "Router (Type 1)"
+    ],
+    "correct_answers": [
+      "ASBR-Summary (Type 4)"
+    ]
+  },
+  {
+    "qid": "D-PDC-DY-23-Q094",
+    "type": "multiple_choice",
+    "category": "PowerSwitch Data Center Deploy",
+    "question": "Match the type of OSPF packets with its description. There are more packet descriptions than OSPF packets.",
+    "explanation": "",
+    "options": [
+      "OSPF Packet type 1 - a) Link State Request OSPF Packet type 2 - b) Hello OSPF Packet type 3 - c) Database Description OSPF Packet type 4 - d) Link State Acknowledgement OSPF Packet type 5 - e) Link State Update",
+      "OSPF Packet type 1 - a) Link State Request OSPF Packet type 2 - f) Link Local Address OSPF Packet type 3 - c) Database Description OSPF Packet type 4 - d) Link State Acknowledgement OSPF Packet type 5 - e) Link State Update",
+      "OSPF Packet type 1 - a) Link State Request OSPF Packet type 2 - f) Link Local Address OSPF Packet type 3 - e) Link State Update OSPF Packet type 4 - d) Link State Acknowledgement OSPF Packet type 5 - c) Database Description",
+      "OSPF Packet type 1 - a) Link State Request OSPF Packet type 2 - f) Link Local Address OSPF Packet type 3 - b) Hello OSPF Packet type 4 - d) Link State Acknowledgement OSPF Packet type 5 - c) Database Description"
+    ],
+    "correct_answers": [
+      "OSPF Packet type 1 - a) Link State Request OSPF Packet type 2 - b) Hello OSPF Packet type 3 - c) Database Description OSPF Packet type 4 - d) Link State Acknowledgement OSPF Packet type 5 - e) Link State Update"
+    ]
+  },
+  {
+    "qid": "D-PDC-DY-23-Q095",
+    "type": "multiple_choice",
+    "category": "PowerSwitch Data Center Deploy",
+    "question": "Which two statements are true regarding VRF? (Select 2)",
+    "explanation": "",
+    "options": [
+      "The control and data plane are not isolated in each virtual router (VR) so that traffic flows across VRs.",
+      "The control and data plane are isolated in each virtual router (VR) so that traffic does not flow across VRs.",
+      "By default, all the front panel ports and logical interfaces are part of the default VRF instance.",
+      "By default, all the front panel ports and logical interfaces are part of the non-default VRF instance.",
+      "OS10 supports a management VRF instance, a default VRF instance, and up to 4096 non-default VRF instances."
+    ],
+    "correct_answers": [
+      "The control and data plane are isolated in each virtual router (VR) so that traffic does not flow across VRs.",
+      "By default, all the front panel ports and logical interfaces are part of the default VRF instance."
+    ]
+  },
+  {
+    "qid": "D-PDC-DY-23-Q096",
+    "type": "multiple_choice",
+    "category": "PowerSwitch Data Center Deploy",
+    "question": "When implementing QoS on a 10Gb connection, 6Gb is required by the customer. What QoS level best fits the requirement while keeping resource use to a minimum?",
+    "explanation": "",
+    "options": [
+      "Differentiated service",
+      "Guaranteed service",
+      "FIFO",
+      "Best-effort service"
+    ],
+    "correct_answers": [
+      "Differentiated service"
+    ]
+  },
+  {
+    "qid": "D-PDC-DY-23-Q097",
+    "type": "multiple_choice",
+    "category": "PowerSwitch Data Center Deploy",
+    "question": "When using Policy Based Routing what is a valid matching criterion?",
+    "explanation": "",
+    "options": [
+      "802.1Q VLAN ID",
+      "Destination TCP port number",
+      "AAA security credentials",
+      "Source hostname"
+    ],
+    "correct_answers": [
+      "Destination TCP port number"
+    ]
+  },
+  {
+    "qid": "D-PDC-DY-23-Q098",
+    "type": "multiple_choice",
+    "category": "PowerSwitch Data Center Deploy",
+    "question": "To which VRF instance are all new logical interfaces automatically assigned?",
+    "explanation": "",
+    "options": [
+      "Default",
+      "User",
+      "Non-default",
+      "Management"
+    ],
+    "correct_answers": [
+      "Default"
+    ]
+  },
+  {
+    "qid": "D-PDC-DY-23-Q099",
+    "type": "multiple_choice",
+    "category": "PowerSwitch Data Center Deploy",
+    "question": "How are downstream ports disabled in OS10 when UFD is configured and an upstream failure is detected?",
+    "explanation": "",
+    "options": [
+      "Ports are disabled based on mac address",
+      "In order starting with highest port number",
+      "All ports are disabled at the same time",
+      "In order starting with lowest port number"
+    ],
+    "correct_answers": [
+      "All ports are disabled at the same time"
+    ]
+  },
+  {
+    "qid": "D-PDC-DY-23-Q100",
+    "type": "multiple_choice",
+    "category": "PowerSwitch Data Center Deploy",
+    "question": "In a VRRP configured environment without VLT, how does the backup VRRP peer respond to ARP requests?",
+    "explanation": "",
+    "options": [
+      "Sends an ICMP redirect message",
+      "Responds to ARP requests with the MAC address of the master peer's IP",
+      "Does not respond to ARP requests",
+      "Responds to ARP requests with the MAC address of the virtual IP address"
+    ],
+    "correct_answers": [
+      "Does not respond to ARP requests"
+    ]
+  },
+  {
+    "qid": "D-PDC-DY-23-Q101",
+    "type": "multiple_choice",
+    "category": "PowerSwitch Data Center Deploy",
+    "question": "A customer has disabled LLDP on the management interface of the switch. What is the proper command to re- enable it?",
+    "explanation": "",
+    "options": [
+      "OS10(config)# lldp enable OS10(config)#lldp transmit OS10(config)#lldp receive",
+      "OS10(config)# interface mgmt 1/1/1 OS10(conf-if-ma-1/1/1)#lldp med enable OS10(conf-if-ma-1/1/1)#lldp timer 10",
+      "OS10(config)# interface mgmt 1/1/1 OS10(conf-if-ma-1/1/1)#lldp transmit OS10(conf-if-ma-1/1/1)#lldp receive",
+      "OS10(config)# interface mgmt 1/1/1 OS10(conf-if-ma-1/1/1)#lldp tly-select OS10(conf-if-ma-1/1/1)#lldp dot1tlv"
+    ],
+    "correct_answers": [
+      "OS10(config)# interface mgmt 1/1/1 OS10(conf-if-ma-1/1/1)#lldp transmit OS10(conf-if-ma-1/1/1)#lldp receive"
+    ]
+  },
+  {
+    "qid": "D-PDC-DY-23-Q102",
+    "type": "multiple_choice",
+    "category": "PowerSwitch Data Center Deploy",
+    "question": "What is a valid RADIUS Authentication command?",
+    "explanation": "",
+    "options": [
+      "OS10(config)# radius-server timeout never",
+      "OS10(config)# radius-server timeout 1500",
+      "OS10(config)# radius-server retransmit 10",
+      "OS10(config)# radius-server retransmit 150"
+    ],
+    "correct_answers": [
+      "OS10(config)# radius-server retransmit 10"
+    ]
+  },
+  {
+    "qid": "D-PDC-DY-23-Q103",
+    "type": "multiple_choice",
+    "category": "PowerSwitch Data Center Deploy",
+    "question": "What is a design consideration in an active/active UFD implementation?",
+    "explanation": "",
+    "options": [
+      "All switches should have extra capacity to accommodate a switch failure",
+      "Some performance degradation may occur due to a short downtime",
+      "Downlinks must be configured in equal pairs in both switches",
+      "Uplinks must be configured in equal pairs in both switches"
+    ],
+    "correct_answers": [
+      "Uplinks must be configured in equal pairs in both switches"
+    ]
+  },
+  {
+    "qid": "D-PDC-DY-23-Q104",
+    "type": "multiple_choice",
+    "category": "PowerSwitch Data Center Deploy",
+    "question": "Of the following descriptions, which two describe SmartFabric Services components. (Select 2)",
+    "explanation": "",
+    "options": [
+      "SFS Agents exist on all fabric switches except the current Primary.",
+      "The External Fabric Manager does not employ an SFS Agent.",
+      "The CPS distributed databased contains target configurations for all devices.",
+      "Each fabric switch's local CPS database is advertised into the fabric.",
+      "An SFS Controller is an endpoint that sends configuration changes to the fabric Primary."
+    ],
+    "correct_answers": [
+      "The CPS distributed databased contains target configurations for all devices.",
+      "Each fabric switch's local CPS database is advertised into the fabric."
+    ]
+  },
+  {
+    "qid": "D-PDC-DY-23-Q105",
+    "type": "multiple_choice",
+    "category": "PowerSwitch Data Center Deploy",
+    "question": "What is a characteristic of a static LAG on a Dell Networking OS10 switch?",
+    "explanation": "",
+    "options": [
+      "Uses LACP for configuration only",
+      "Does not allow reconfiguration of the predefined ports",
+      "Does not use any protocol for configuration and management",
+      "Uses LACP for management only"
+    ],
+    "correct_answers": [
+      "Does not use any protocol for configuration and management"
+    ]
+  },
+  {
+    "qid": "D-PDC-DY-23-Q106",
+    "type": "multiple_choice",
+    "category": "PowerSwitch Data Center Deploy",
+    "question": "What is a valid OS10 default route configuration?",
+    "explanation": "",
+    "options": [
+      "S1(config-router)# ip route 0.0.0.0/0 144.254.32.1",
+      "S1(config)# ip route 0.0.0.0/0 interface ethernet 1/1/1",
+      "S1(config)# ip route 0.0.0.0 144.254.32.1",
+      "S1(config-router)# ip route 0.0.0.0/32 interface ethernet 1/1/1"
+    ],
+    "correct_answers": [
+      "S1(config)# ip route 0.0.0.0/0 interface ethernet 1/1/1"
+    ]
+  },
+  {
+    "qid": "D-PDC-DY-23-Q107",
+    "type": "multiple_choice",
+    "category": "PowerSwitch Data Center Deploy",
+    "question": "From which range can a network administrator choose when setting the RSTP priority value?",
+    "explanation": "",
+    "options": [
+      "1-6400",
+      "0-61440",
+      "0-614400",
+      "1-64"
+    ],
+    "correct_answers": [
+      "0-61440"
+    ]
+  },
+  {
+    "qid": "D-PDC-DY-23-Q108",
+    "type": "multiple_choice",
+    "category": "PowerSwitch Data Center Deploy",
+    "question": "An administrator wants to create a configuration that is not immediately active in the running configuration until a batch commit command is entered. Which command will allow this process?",
+    "explanation": "",
+    "options": [
+      "0S10(config)# start candidate",
+      "0S10# start candidate",
+      "0S10# start transaction",
+      "0S10(config)# start transaction"
+    ],
+    "correct_answers": [
+      "0S10# start transaction"
+    ]
+  },
+  {
+    "qid": "D-PDC-DY-23-Q109",
+    "type": "multiple_choice",
+    "category": "PowerSwitch Data Center Deploy",
+    "question": "What is a design consideration in an active/active UFD implementation?",
+    "explanation": "",
+    "options": [
+      "All switches should have extra capacity to accommodate a switch failure",
+      "Some performance degradation may occur due to a short downtime",
+      "Downlinks must be configured in equal pairs in both switches",
+      "Uplinks must be configured in equal pairs in both switches"
+    ],
+    "correct_answers": [
+      "All switches should have extra capacity to accommodate a switch failure"
+    ]
+  },
+  {
+    "qid": "D-PDC-DY-23-Q110",
+    "type": "multiple_choice",
+    "category": "PowerSwitch Data Center Deploy",
+    "question": "There is a spanning tree mismatch at the global level. PVST+ is configured on a VLT peer. All VLT port channels go down on both VLT peers. A syslog error message is generated. What is the correct action to resolve the issue?",
+    "explanation": "",
+    "options": [
+      "Verify the VLT LAG ID is configured correctly on both VLT peers.",
+      "Enable RSTP on both VLT peers.",
+      "Use the show VLT detail and show VLT brief commands to view the VLT port channel status information.",
+      "Perform a mismatch check after the VLT peer is established."
+    ],
+    "correct_answers": [
+      "Enable RSTP on both VLT peers."
+    ]
+  },
+  {
+    "qid": "D-PDC-DY-23-Q111",
+    "type": "multiple_choice",
+    "category": "PowerSwitch Data Center Deploy",
+    "question": "Exhibit What is the VRRP state of OS10-A after a router with a default VRRP admin priority with VRID100 comes online?",
+    "explanation": "",
+    "options": [
+      "master-state",
+      "standby-state",
+      "backup-state",
+      "primary-state"
+    ],
+    "correct_answers": [
+      "master-state"
+    ]
+  },
+  {
+    "qid": "D-PDC-DY-23-Q112",
+    "type": "multiple_choice",
+    "category": "PowerSwitch Data Center Deploy",
+    "question": "A network administrator needs to restrict packets that are destined to the CPU of an OS10 switch. How do they accomplish this?",
+    "explanation": "",
+    "options": [
+      "IP fragment ACLs",
+      "Control-plane ACLs",
+      "Management-plane ACLs",
+      "Static null routes"
+    ],
+    "correct_answers": [
+      "Control-plane ACLs"
+    ]
+  },
+  {
+    "qid": "D-PDC-DY-23-Q113",
+    "type": "multiple_choice",
+    "category": "PowerSwitch Data Center Deploy",
+    "question": "How are multiple hardware based ACLs filtered?",
+    "explanation": "",
+    "options": [
+      "NTP",
+      "DHCP",
+      "NPU",
+      "IP"
+    ],
+    "correct_answers": [
+      "NPU"
+    ]
+  },
+  {
+    "qid": "D-PDC-DY-23-Q114",
+    "type": "multiple_choice",
+    "category": "PowerSwitch Data Center Deploy",
+    "question": "What is one of the configuration requirements for VLT on OS10?",
+    "explanation": "",
+    "options": [
+      "Manually reconfigure the VLT MAC address. Configure the VLT MAC address on both VLT peers.",
+      "Create a VLT domain on each peer using the vlt-domain command.",
+      "Configure a port channel for VLTi",
+      "Configure a time interval to delay bringing up VLT ports after reload when the VLTi is turned on after failure."
+    ],
+    "correct_answers": [
+      "Create a VLT domain on each peer using the vlt-domain command."
+    ]
+  },
+  {
+    "qid": "D-PDC-DY-23-Q115",
+    "type": "multiple_choice",
+    "category": "PowerSwitch Data Center Deploy",
+    "question": "A company wants to document the steps that are needed for their upcoming deployment that are required to configure a single logical L2 domain from the perspective of attached devices that are terminating on separate nodes. What three steps are recommended to meet these requirements? (Select 3)",
+    "explanation": "",
+    "options": [
+      "Configure the VLT heartbeat.",
+      "Configure VLT port channel.",
+      "Create a virtual router.",
+      "Configure virtual IP addresses.",
+      "Configure the discovery-interface."
+    ],
+    "correct_answers": [
+      "Configure the VLT heartbeat.",
+      "Configure VLT port channel.",
+      "Configure the discovery-interface."
+    ]
+  },
+  {
+    "qid": "D-PDC-DY-23-Q116",
+    "type": "multiple_choice",
+    "category": "PowerSwitch Data Center Deploy",
+    "question": "Which two steps are required when configuring ports to operate in a VLT port channel? (Select 2)",
+    "explanation": "",
+    "options": [
+      "Configure the channel-group member under the physical interface.",
+      "Configure the port channel interface as a VLT port channel.",
+      "Configure the channel-group member under the port channel interface.",
+      "Configure the physical interface as a VLT port channel."
+    ],
+    "correct_answers": [
+      "Configure the channel-group member under the physical interface.",
+      "Configure the port channel interface as a VLT port channel."
+    ]
+  },
+  {
+    "qid": "D-PDC-DY-23-Q117",
+    "type": "multiple_choice",
+    "category": "PowerSwitch Data Center Deploy",
+    "question": "Two OS10 switches reside within a VLT domain with statically configured primary- priorities. The current primary peer, switch OS10-A, has a priority of 100, while the secondary peer, OS10-B, has a priority of 200. If OS10-A reboots and comes back online, what roles will the VLT peers be assigned?",
+    "explanation": "",
+    "options": [
+      "OS10-A will be primary and OS10-B will be secondary.",
+      "OS10-A will be secondary and OS10-B will be master.",
+      "OS10-A will be standby and OS10-B will be primary.",
+      "OS10-A will be secondary and OS10-B will be primary."
+    ],
+    "correct_answers": [
+      "OS10-A will be primary and OS10-B will be secondary."
+    ]
+  },
+  {
+    "qid": "D-PDC-DY-23-Q118",
+    "type": "multiple_choice",
+    "category": "PowerSwitch Data Center Deploy",
+    "question": "When creating an alias in OS10 what is the maximum number of variable input parameters that can be defined?",
+    "explanation": "",
+    "options": [
+      "6",
+      "9",
+      "3",
+      "12"
+    ],
+    "correct_answers": [
+      "9"
+    ]
+  },
+  {
+    "qid": "D-PDC-DY-23-Q119",
+    "type": "multiple_choice",
+    "category": "PowerSwitch Data Center Deploy",
+    "question": "On what does PBR base routing decisions?",
+    "explanation": "",
+    "options": [
+      "Dijkstra Algorithm",
+      "Batch traffic",
+      "Administrator-defined forwarding",
+      "Shortest path"
+    ],
+    "correct_answers": [
+      "Administrator-defined forwarding"
+    ]
+  },
+  {
+    "qid": "D-PDC-DY-23-Q120",
+    "type": "multiple_choice",
+    "category": "PowerSwitch Data Center Deploy",
+    "question": "Three switches are inter-connected via trunk ports. Assuming the default OS10 switch configuration. Which switch is elected as the root bridge for the spanning-tree instance of VLAN 1?",
+    "explanation": "",
+    "options": [
+      "The one with the lowest MAC address",
+      "The one with the lowest IP address",
+      "The one with the highest MAC address",
+      "The one with the highest IP address"
+    ],
+    "correct_answers": [
+      "The one with the lowest MAC address"
+    ]
+  },
+  {
+    "qid": "D-PDC-DY-23-Q121",
+    "type": "multiple_choice",
+    "category": "PowerSwitch Data Center Deploy",
+    "question": "What does BGP use for reliable transport?",
+    "explanation": "",
+    "options": [
+      "DCCP",
+      "SCTP",
+      "TCP",
+      "UDP"
+    ],
+    "correct_answers": [
+      "TCP"
+    ]
+  },
+  {
+    "qid": "D-PDC-DY-23-Q122",
+    "type": "multiple_choice",
+    "category": "PowerSwitch Data Center Deploy",
+    "question": "Match the QoS terms to their descriptions. Answer:",
+    "explanation": "",
+    "options": [],
+    "correct_answers": []
+  },
+  {
+    "qid": "D-PDC-DY-23-Q123",
+    "type": "multiple_choice",
+    "category": "PowerSwitch Data Center Deploy",
+    "question": "Refer to the exhibit: A network administrator is validating a VLT domain configuration using the show vlt all command. Which user configurable VLT setting shows a default value?",
+    "explanation": "",
+    "options": [
+      "VLT MAC address",
+      "Delay-restore timer",
+      "Role priority",
+      "Peer-routing status"
+    ],
+    "correct_answers": [
+      "Delay-restore timer"
+    ]
+  },
+  {
+    "qid": "D-PDC-DY-23-Q124",
+    "type": "multiple_choice",
+    "category": "PowerSwitch Data Center Deploy",
+    "question": "How does NIC teaming provide load balancing and failover?",
+    "explanation": "",
+    "options": [
+      "Multiple NICs on one server act independently as multiple virtual network adapter ports.",
+      "Multiple NICs on multiple servers act as a single virtual network adapter port.",
+      "Multiple NICs on multiple servers act independently as multiple virtual network adapter ports.",
+      "Multiple NICs on one server act as a single virtual network adapter port."
+    ],
+    "correct_answers": [
+      "Multiple NICs on one server act as a single virtual network adapter port."
+    ]
+  },
+  {
+    "qid": "D-PDC-DY-23-Q125",
+    "type": "multiple_choice",
+    "category": "PowerSwitch Data Center Deploy",
+    "question": "What are the correct steps to configure a static LAG on a Dell Networking OS10 switch?",
+    "explanation": "",
+    "options": [
+      "interface port-channel 4 channel-group 4 mode passive interface range ethernet 1/1/14-1/1/15 channel-group 4 mode on",
+      "interface port-channel 4 channel-group 4 mode on interface range ethernet 1/1/14-1/1/15 channel- group 4 mode passive",
+      "interface port-channel 4 no shutdown interface range ethernet 1/1/14-1/1/15 channel-group 4 mode on",
+      "interface port-channel 4 no shutdown interface range ethernet 1/1/14-1/1/15 channel-group 4 mode active"
+    ],
+    "correct_answers": [
+      "interface port-channel 4 no shutdown interface range ethernet 1/1/14-1/1/15 channel-group 4 mode on"
+    ]
+  },
+  {
+    "qid": "D-PDC-DY-23-Q126",
+    "type": "multiple_choice",
+    "category": "PowerSwitch Data Center Deploy",
+    "question": "Which commands are required to properly configure an OS10 switch to run OSPF on eth1/1/3 and to add network 144.254.1.0/30 to OSPF area 0?",
+    "explanation": "",
+    "options": [
+      "OS10(config)# interface ethernet 1/1/3 OS10(conf-if-eth1/1/3)# no shutdown OS10(conf-if-eth1/1/3)# no switchport OS10(conf-if-eth1/1/3)# ip address 144.254.1.2/30 OS10(conf-if-eth1/1/3)# ip ospf 1 area 0.0.0.0 OS10(config)# router ospf1",
+      "OS10(config)# router ospf 1 OS10(config-router-ospf-1)# router-id 1.1.1.1 OS10(config)# interface ethernet 1/1/3 OS10(conf-if-eth1/1/3)# no shutdown OS10(conf-if-eth1/1/3)# no switchport OS10(conf-if-eth1/1/3)# ip ospf 1 area 0.0.0.0",
+      "OS10(config)# interface ethernet 1/1/3 OS10(conf-if-eth1/1/3)# no shutdown OS10(conf-if-eth1/1/3)# ip address 144.254.1.2/30 OS10(conf-if-eth1/1/3)# no switchport OS10(conf-if-eth1/1/3)# ip ospf 1 area 0.0.0.0 OS10(config)# router ospf 1",
+      "OS10(config)# interface ethernet 1/1/3 OS10(conf-if-eth1/1/3)# no shutdown OS10(conf-if-eth1/1/3)# ip address 144.254.1.2/30 OS10(conf-if-eth1/1/3)# no switchport OS10(conf-if-eth1/1/3)# ip ospf 1 area 0.0.0.0 OS10(conf-if-eth1/1/3)# router ospf 1"
+    ],
+    "correct_answers": [
+      "OS10(config)# interface ethernet 1/1/3 OS10(conf-if-eth1/1/3)# no shutdown OS10(conf-if-eth1/1/3)# ip address 144.254.1.2/30 OS10(conf-if-eth1/1/3)# no switchport OS10(conf-if-eth1/1/3)# ip ospf 1 area 0.0.0.0 OS10(config)# router ospf 1"
+    ]
+  },
+  {
+    "qid": "D-PDC-DY-23-Q127",
+    "type": "multiple_choice",
+    "category": "PowerSwitch Data Center Deploy",
+    "question": "What is the default lease time in hours for an address lease in DHCP?",
+    "explanation": "",
+    "options": [
+      "36",
+      "12",
+      "48",
+      "24"
+    ],
+    "correct_answers": [
+      "24"
+    ]
+  },
+  {
+    "qid": "D-PDC-DY-23-Q128",
+    "type": "multiple_choice",
+    "category": "PowerSwitch Data Center Deploy",
+    "question": "Which command is used to create a non-default VRF instance?",
+    "explanation": "",
+    "options": [
+      "ip vrf",
+      "ip vrf forwarding new-vrf",
+      "ip vrf forwarding vrf-test",
+      "interface ethernet 1/1/1"
+    ],
+    "correct_answers": [
+      "ip vrf"
+    ]
+  },
+  {
+    "qid": "D-PDC-DY-23-Q129",
+    "type": "multiple_choice",
+    "category": "PowerSwitch Data Center Deploy",
+    "question": "Which of the following owns the VRRP group address to be used as the gateway for the hosts on the LAN?",
+    "explanation": "",
+    "options": [
+      "Primary router",
+      "IP address owner",
+      "Backup router",
+      "VRRP router"
+    ],
+    "correct_answers": [
+      "Primary router"
+    ]
+  },
+  {
+    "qid": "D-PDC-DY-23-Q130",
+    "type": "multiple_choice",
+    "category": "PowerSwitch Data Center Deploy",
+    "question": "Which VLAN ID is reserved as an internal control VLAN for the VLT domain?",
+    "explanation": "",
+    "options": [
+      "VLAN ID 4094",
+      "VLAN ID 32768",
+      "VLAN ID 65535",
+      "VLAN ID 3094"
+    ],
+    "correct_answers": [
+      "VLAN ID 4094"
+    ]
+  },
+  {
+    "qid": "D-PDC-DY-23-Q131",
+    "type": "multiple_choice",
+    "category": "PowerSwitch Data Center Deploy",
+    "question": "What benefit does VRRP version 3 provide over VRRP version 2 in OS10?",
+    "explanation": "",
+    "options": [
+      "Provides preemption capability.",
+      "Provides MD5 authentication.",
+      "Allows subsecond timers.",
+      "Allows multiple masters in the topology."
+    ],
+    "correct_answers": [
+      "Allows subsecond timers."
+    ]
+  },
+  {
+    "qid": "D-PDC-DY-23-Q132",
+    "type": "multiple_choice",
+    "category": "PowerSwitch Data Center Deploy",
+    "question": "Refer to the exhibit. A network administrator is attempting to configure a static route on OS10-A to reach the loopback0 address on OS10-B. Why is the ping failing?",
+    "explanation": "",
+    "options": [
+      "The route has been added to the incorrect VRF on OS10-A",
+      "Interface Eth1/1/2 is a member of the wrong VRF on OS10-A",
+      "OS10-B must share a common VRF",
+      "The route is pointing to the wrong next-hop on OS10-A"
+    ],
+    "correct_answers": [
+      "The route has been added to the incorrect VRF on OS10-A"
+    ]
+  },
+  {
+    "qid": "D-PDC-DY-23-Q133",
+    "type": "multiple_choice",
+    "category": "PowerSwitch Data Center Deploy",
+    "question": "For QoS, which field in the IP header is used to differentiate traffic types?",
+    "explanation": "",
+    "options": [
+      "Type of Service",
+      "Fragmentation",
+      "Identification",
+      "Protocol"
+    ],
+    "correct_answers": [
+      "Type of Service"
+    ]
+  },
+  {
+    "qid": "D-PDC-DY-23-Q134",
+    "type": "multiple_choice",
+    "category": "PowerSwitch Data Center Deploy",
+    "question": "Two Dell Networking OS10 switches are connected with a port channel that spans multiple ports. What is a supported physical port configuration for this connection?",
+    "explanation": "",
+    "options": [
+      "Copper and optic ports can only be mixed with the same speed",
+      "Optic ports can only be mixed with copper ports when faster due to higher latencies",
+      "Optic and copper ports cannot be mixed in the same LAG",
+      "Copper ports can only be mixed with optic ports when faster due to higher latencies"
+    ],
+    "correct_answers": [
+      "Copper and optic ports can only be mixed with the same speed"
+    ]
+  },
+  {
+    "qid": "D-PDC-DY-23-Q135",
+    "type": "multiple_choice",
+    "category": "PowerSwitch Data Center Deploy",
+    "question": "In OS10 what is a downside of enabling strict priority queuing?",
+    "explanation": "",
+    "options": [
+      "The CAM table becomes saturated",
+      "Network congestion occurs, strict priority queuing increases the likelihood that egress traffic from the strict priority queue will be dropped",
+      "System scheduler causes high NPU utilization",
+      "Other queues are not serviced"
+    ],
+    "correct_answers": [
+      "Other queues are not serviced"
+    ]
+  },
+  {
+    "qid": "D-PDC-DY-23-Q136",
+    "type": "multiple_choice",
+    "category": "PowerSwitch Data Center Deploy",
+    "question": "Which field is used in Layer-2 marking on an Ethernet frame for QoS?",
+    "explanation": "",
+    "options": [
+      "CoS",
+      "DSCP",
+      "ToS",
+      "IP Precedence"
+    ],
+    "correct_answers": [
+      "CoS"
+    ]
+  },
+  {
+    "qid": "D-PDC-DY-23-Q137",
+    "type": "multiple_choice",
+    "category": "PowerSwitch Data Center Deploy",
+    "question": "The following command is issued on S1: S1(config-router-ospf-1)# redistribute static This makes the device what type of OSPF router?",
+    "explanation": "",
+    "options": [
+      "Backbone router",
+      "ASBR",
+      "ABR",
+      "Designated router"
+    ],
+    "correct_answers": [
+      "ASBR"
+    ]
+  },
+  {
+    "qid": "D-PDC-DY-23-Q138",
+    "type": "multiple_choice",
+    "category": "PowerSwitch Data Center Deploy",
+    "question": "A network administrator enters the BGP command neighbor 10.0.2.1. The BGP router does NOT have any route to the 10.0.2.0 network. What will happen?",
+    "explanation": "",
+    "options": [
+      "The router will form a successful adjacency with its 10.0.2.1 neighbor. The BGP state will be listed as connect.",
+      "The router will not form a successful adjacency with its 10.0.2.1 neighbor.",
+      "It will send gratuitous ARP messages to attempt to discover a route to its 10.0.2.1 neighbor.",
+      "It will send an ICMP packet to attempt to reach its 10.0.2.1 neighbor."
+    ],
+    "correct_answers": [
+      "The router will not form a successful adjacency with its 10.0.2.1 neighbor."
+    ]
+  },
+  {
+    "qid": "D-PDC-DY-23-Q139",
+    "type": "multiple_choice",
+    "category": "PowerSwitch Data Center Deploy",
+    "question": "At which layer does LLDP operate?",
+    "explanation": "",
+    "options": [
+      "1",
+      "3",
+      "2",
+      "4"
+    ],
+    "correct_answers": [
+      "2"
+    ]
+  },
+  {
+    "qid": "D-PDC-DY-23-Q140",
+    "type": "multiple_choice",
+    "category": "PowerSwitch Data Center Deploy",
+    "question": "In the OS10 CLI what does Ctrl+A do?",
+    "explanation": "",
+    "options": [
+      "Deletes all the text before the cursor.",
+      "Moves the cursor to the start of the command line.",
+      "Moves the cursor to the end of the command line.",
+      "Deletes the word before the cursor."
+    ],
+    "correct_answers": [
+      "Moves the cursor to the start of the command line."
+    ]
+  },
+  {
+    "qid": "D-PDC-DY-23-Q141",
+    "type": "multiple_choice",
+    "category": "PowerSwitch Data Center Deploy",
+    "question": "To which IEEE standard are dynamic LAGs compliant on Dell EMC Networking OS10 switches?",
+    "explanation": "",
+    "options": [
+      "802.3af",
+      "802.3ad",
+      "802.3ac",
+      "802.3ae"
+    ],
+    "correct_answers": [
+      "802.3ad"
+    ]
+  },
+  {
+    "qid": "D-PDC-DY-23-Q142",
+    "type": "multiple_choice",
+    "category": "PowerSwitch Data Center Deploy",
+    "question": "A network administrator is deploying a Leaf-Spine fabric using eBGP private AS. Why should the network administrator assign a unique AS number to each VLT peer in the VLT domain?",
+    "explanation": "",
+    "options": [
+      "To minimize the needed compute and memory resources",
+      "To assist with load balancing",
+      "To avoid the need to configure multi-exit discriminators",
+      "To reduce the number of hops"
+    ],
+    "correct_answers": [
+      "To avoid the need to configure multi-exit discriminators"
+    ]
+  },
+  {
+    "qid": "D-PDC-DY-23-Q143",
+    "type": "multiple_choice",
+    "category": "PowerSwitch Data Center Deploy",
+    "question": "Which user role in OS10 has full access to all commands and exclusive access to commands that manipulate the file system?",
+    "explanation": "",
+    "options": [
+      "netadmin",
+      "sysadmin",
+      "secadmin",
+      "netoperator"
+    ],
+    "correct_answers": [
+      "sysadmin"
+    ]
+  },
+  {
+    "qid": "D-PDC-DY-23-Q144",
+    "type": "multiple_choice",
+    "category": "PowerSwitch Data Center Deploy",
+    "question": "What is required to enable ECMP in BGP?",
+    "explanation": "",
+    "options": [
+      "OSPF must install equal cost paths in the routing table for BGP use ECMP.",
+      "Maximum-paths and multipath-relax commands.",
+      "Sub-interfaces must be configured on the physical interface running BGP.",
+      "ECMP is not possible in BGP."
+    ],
+    "correct_answers": [
+      "Maximum-paths and multipath-relax commands."
+    ]
+  },
+  {
+    "qid": "D-PDC-DY-23-Q145",
+    "type": "multiple_choice",
+    "category": "PowerSwitch Data Center Deploy",
+    "question": "What is a feature of TACACS+ that is NOT a feature of RADIUS?",
+    "explanation": "",
+    "options": [
+      "Encryption of only the password in the packet",
+      "Assignment of role-based permissions",
+      "Encryption of all data in the packet",
+      "Assignment of user-based permissions"
+    ],
+    "correct_answers": [
+      "Encryption of all data in the packet"
+    ]
+  },
+  {
+    "qid": "D-PDC-DY-23-Q146",
+    "type": "multiple_choice",
+    "category": "PowerSwitch Data Center Deploy",
+    "question": "The network administrator wants to configure RADIUS authentication for VTY access, and for console access to use the local configuration. Which two commands should be used to achieve this goal?",
+    "explanation": "",
+    "options": [
+      "aaa authentication login vty group radius aaa authentication login console local",
+      "aaa authentication login default group radius aaa authentication login console local",
+      "aaa authentication login vty radiusaaa authentication login console group local",
+      "aaa authentication login default group radius aaa authentication login console group local"
+    ],
+    "correct_answers": [
+      "aaa authentication login default group radius aaa authentication login console local"
+    ]
+  },
+  {
+    "qid": "D-PDC-DY-23-Q147",
+    "type": "multiple_choice",
+    "category": "PowerSwitch Data Center Deploy",
+    "question": "An administrator is implementing VLT in OS10. What type of port-channel must they configure for the VLTi?",
+    "explanation": "",
+    "options": [
+      "Administrator needs to configure a LACP Port-Channel.",
+      "Trunking and one (1) native VLAN need to be defined on the port-channel.",
+      "None, a port-channel is created automatically during VLT discovery.",
+      "Administrator needs to configure a static Port-Channel."
+    ],
+    "correct_answers": [
+      "Administrator needs to configure a static Port-Channel."
+    ]
+  },
+  {
+    "qid": "D-PDC-DY-23-Q148",
+    "type": "multiple_choice",
+    "category": "PowerSwitch Data Center Deploy",
+    "question": "Which configuration supports tagged frames on VLAN 20 and untagged frames on VLAN 5?",
+    "explanation": "",
+    "options": [
+      "interface ethernet 1/1/9 switchport trunk mode allowed vlan 20 switchport access mode vlan 5 no shutdown",
+      "interface ethernet 1/1/9 switchport trunk allowed vlan 20 switchport access vlan 5 switchport mode trunk",
+      "interface ethernet 1/1/9 switchport trunk mode allowed vlan 20 switchport access vlan 5 no shutdown",
+      "interface ethernet 1/1/9 switchport mode trunk switchport trunk allowed vlan 20 switchport access vlan 5"
+    ],
+    "correct_answers": [
+      "interface ethernet 1/1/9 switchport mode trunk switchport trunk allowed vlan 20 switchport access vlan 5"
+    ]
+  },
+  {
+    "qid": "D-PDC-DY-23-Q149",
+    "type": "multiple_choice",
+    "category": "PowerSwitch Data Center Deploy",
+    "question": "Which command shows whether a LAG protocol is static or dynamic on a Dell EMC Networking OS10 switch?",
+    "explanation": "",
+    "options": [
+      "show lacp neighbor",
+      "show running-configuration lacp",
+      "show interface port-channel summary",
+      "show port-channel summary"
+    ],
+    "correct_answers": [
+      "show port-channel summary"
+    ]
+  },
+  {
+    "qid": "D-PDC-DY-23-Q150",
+    "type": "multiple_choice",
+    "category": "PowerSwitch Data Center Deploy",
+    "question": "What is the function of the authentication service?",
+    "explanation": "",
+    "options": [
+      "Validates the user identity",
+      "Determines switch management commands",
+      "Validates switch order",
+      "Determines which services the user is enabled to access"
+    ],
+    "correct_answers": [
+      "Validates the user identity"
+    ]
+  },
+  {
+    "qid": "D-PDC-DY-23-Q151",
+    "type": "multiple_choice",
+    "category": "PowerSwitch Data Center Deploy",
+    "question": "The destination O E2 144.254.32.0/24 appears in the routing table of a switch. What is true for this route?",
+    "explanation": "",
+    "options": [
+      "The network represents an OSPF inter-area route",
+      "There are two (2) egress paths with equal costs to the destination",
+      "It is a non-native OSPF route",
+      "The route has been redirected from eBGP"
+    ],
+    "correct_answers": [
+      "It is a non-native OSPF route"
+    ]
+  },
+  {
+    "qid": "D-PDC-DY-23-Q152",
+    "type": "multiple_choice",
+    "category": "PowerSwitch Data Center Deploy",
+    "question": "Match the OSPF router types. There are more descriptions than router types. Answer:",
+    "explanation": "",
+    "options": [],
+    "correct_answers": []
+  },
+  {
+    "qid": "D-PDC-DY-23-Q153",
+    "type": "multiple_choice",
+    "category": "PowerSwitch Data Center Deploy",
+    "question": "Considering OSPF router types, which statement is true about an ASBR?",
+    "explanation": "",
+    "options": [
+      "Gateways to other network domains using the same routing protocol.",
+      "Gateways to other network areas using the same routing protocol.",
+      "Gateways to other network domains using other routing protocols.",
+      "Gateways to other network areas using other routing protocols."
+    ],
+    "correct_answers": [
+      "Gateways to other network domains using other routing protocols."
+    ]
+  },
+  {
+    "qid": "D-PDC-DY-23-Q154",
+    "type": "multiple_choice",
+    "category": "PowerSwitch Data Center Deploy",
+    "question": "When configuring UFD, which command is op tonal?",
+    "explanation": "",
+    "options": [
+      "upstream",
+      "uplink-state-group",
+      "name",
+      "enable"
+    ],
+    "correct_answers": [
+      "name"
+    ]
+  },
+  {
+    "qid": "D-PDC-DY-23-Q155",
+    "type": "multiple_choice",
+    "category": "PowerSwitch Data Center Deploy",
+    "question": "Refer to the exhibit: A default route exists on OS10-C that points all Internet traffic towards 10.0.13.3 on OS10-B. A network administrator must re-route Internet traffic that is only sourced from Host-1 to 10.0.12.2 on OS10-A instead. What feature can the administrator implement to accomplish this goal?",
+    "explanation": "",
+    "options": [
+      "Source-Based Routing",
+      "OSPF Cost Manipulation",
+      "Policy-Based Routing"
+    ],
+    "correct_answers": [
+      "OSPF Cost Manipulation"
+    ]
+  },
+  {
+    "qid": "D-PDC-DY-23-Q156",
+    "type": "multiple_choice",
+    "category": "PowerSwitch Data Center Deploy",
+    "question": "What two types of networking information are synchronized between VLT peer nodes? (Select 2)",
+    "explanation": "",
+    "options": [
+      "IPv6 routes",
+      "MAC address tables",
+      "IPv4 routes",
+      "ARP entries",
+      "VRF instances"
+    ],
+    "correct_answers": [
+      "IPv6 routes",
+      "VRF instances"
+    ]
+  },
+  {
+    "qid": "D-PDC-DY-23-Q157",
+    "type": "multiple_choice",
+    "category": "PowerSwitch Data Center Deploy",
+    "question": "What is the purpose of the VLT backup link?",
+    "explanation": "",
+    "options": [
+      "To monitor the availability of the VLT peer if there is a VLTi failure.",
+      "To synchronize MAC address tables bel ween VLT peers if there is a VLTi failure.",
+      "To monitor the VLT internal control VLAN on the VLT peer if there is a VLTi failure.",
+      "To synchronize ARP entries between VLT peers if there is a VLTi failure."
+    ],
+    "correct_answers": [
+      "To monitor the availability of the VLT peer if there is a VLTi failure."
+    ]
+  },
+  {
+    "qid": "D-PDC-DY-23-Q158",
+    "type": "multiple_choice",
+    "category": "PowerSwitch Data Center Deploy",
+    "question": "Which statement is true about BGP?",
+    "explanation": "",
+    "options": [
+      "Uses TCP as the transport protocol",
+      "Utilizes a link-stale routing protocol",
+      "Uses UDP as the transport protocol",
+      "Uses QUIC as the routing protocol"
+    ],
+    "correct_answers": [
+      "Uses TCP as the transport protocol"
+    ]
+  },
+  {
+    "qid": "D-PDC-DY-23-Q159",
+    "type": "multiple_choice",
+    "category": "PowerSwitch Data Center Deploy",
+    "question": "What OS10 command is used to remove VLAN 40 from a trunk port?",
+    "explanation": "",
+    "options": [
+      "no switchport mode trunk",
+      "switch pert mode trunk no allow vlan 40",
+      "switchport trunk delete vlan 40",
+      "no switchport trunk allowed vlan 40"
+    ],
+    "correct_answers": [
+      "no switchport trunk allowed vlan 40"
+    ]
+  },
+  {
+    "qid": "D-PDC-DY-23-Q160",
+    "type": "multiple_choice",
+    "category": "PowerSwitch Data Center Deploy",
+    "question": "Which two commands can be used to setup as which for remote management over an on-default VRF? (Select 2)",
+    "explanation": "",
+    "options": [
+      "modo management",
+      "mode L3",
+      "ip vrf forwarding vrf-management",
+      "management route 2::/ 64 managementethernet.",
+      "ip vrf management"
+    ],
+    "correct_answers": [
+      "ip vrf forwarding vrf-management",
+      "ip vrf management"
+    ]
+  },
+  {
+    "qid": "D-PDC-DY-23-Q161",
+    "type": "multiple_choice",
+    "category": "PowerSwitch Data Center Deploy",
+    "question": "A network administrator is required to group the three upper COS values. The administrator creates a trust map named dot1p-trust-map. Which command groups the required packets in this trust map?",
+    "explanation": "",
+    "options": [
+      "OS10 (config-tmap-dscp-map) # qos-group 5 dot1p 16-30",
+      "OS10 (config-tmap-dscp-map) # qos-group 5 dot1p 5-7",
+      "OS10 (config-tmag-dot1p-map) # qos-group 5 dot1p 5-7",
+      "OS10 (config-tmap-dot1p-map) # qos-group 3 dot1p 0-4"
+    ],
+    "correct_answers": [
+      "OS10 (config-tmag-dot1p-map) # qos-group 5 dot1p 5-7"
+    ]
+  },
+  {
+    "qid": "D-PDC-DY-23-Q162",
+    "type": "multiple_choice",
+    "category": "PowerSwitch Data Center Deploy",
+    "question": "An administrator wants certain traffic in a queue to always get bandwidth. Which scheduler type should be used?",
+    "explanation": "",
+    "options": [
+      "Strict",
+      "WDRR",
+      "Priority",
+      "WRED"
+    ],
+    "correct_answers": [
+      "Strict"
+    ]
+  },
+  {
+    "qid": "D-PDC-DY-23-Q163",
+    "type": "multiple_choice",
+    "category": "PowerSwitch Data Center Deploy",
+    "question": "Which two spanning-tree methods are supported by VLT on a Dell Z9284F-ON? (Select 2)",
+    "explanation": "",
+    "options": [
+      "MSTP",
+      "RSTP",
+      "RSTP-PV",
+      "STP"
+    ],
+    "correct_answers": [
+      "MSTP",
+      "RSTP"
+    ]
+  },
+  {
+    "qid": "D-PDC-DY-23-Q164",
+    "type": "multiple_choice",
+    "category": "PowerSwitch Data Center Deploy",
+    "question": "Which two of statements about OS10 Enterprise Edition are true? (Select 2)",
+    "explanation": "",
+    "options": [
+      "Designed lor customers who need a high level of customization.",
+      "Suited for web technology research.",
+      "Designed on Linux with hardware abstraction.",
+      "Consisted of full featured datacenter networking operating system."
+    ],
+    "correct_answers": [
+      "Designed on Linux with hardware abstraction.",
+      "Consisted of full featured datacenter networking operating system."
+    ]
+  },
+  {
+    "qid": "D-PDC-DY-23-Q165",
+    "type": "multiple_choice",
+    "category": "PowerSwitch Data Center Deploy",
+    "question": "Refer to the exhibit: Which command is used to recover the UFD group when the upstream interface normalizes?",
+    "explanation": "",
+    "options": [
+      "clear ufd-disable interface ethernet 1/1/ 1",
+      "clear ufd-disable uplink-state-group UFD_Group 01",
+      "clear ufd disable UED Croup 01",
+      "clear ufd disable interface ethernet 1/1/3 1/1/ 4"
+    ],
+    "correct_answers": [
+      "clear ufd-disable uplink-state-group UFD_Group 01"
+    ]
+  },
+  {
+    "qid": "D-PDC-DY-23-Q166",
+    "type": "multiple_choice",
+    "category": "PowerSwitch Data Center Deploy",
+    "question": "A network administrator is implementing VRRP on their VLT switches and has configured VLAN10 to use a matching VRRP group ID 10. Which two commands indicate default VRRP settings? (Select 2)",
+    "explanation": "",
+    "options": [
+      "OS10 (conf vlan10 vrid 10) # no authentication",
+      "OS10 (conf-vlan10-vrid-10) # advertise-interval 3",
+      "OS10 (config) # vrrp version 3",
+      "OS10 (conf-if-v1-10) # vrrp mode active-active",
+      "OS10 (conf-vlan10-vrid-10) # no preempt"
+    ],
+    "correct_answers": [
+      "OS10 (conf vlan10 vrid 10) # no authentication",
+      "OS10 (conf-vlan10-vrid-10) # advertise-interval 3"
+    ]
+  },
+  {
+    "qid": "D-PDC-DY-23-Q167",
+    "type": "multiple_choice",
+    "category": "PowerSwitch Data Center Deploy",
+    "question": "Which statement about the VRRP secondary role is true?",
+    "explanation": "",
+    "options": [
+      "Load balances traffic with the VRRP primary.",
+      "Responds lo ARP requests for the virtual router.",
+      "Receives packets with the virtual MAC address as the destination.",
+      "Forwards packets to the primary destined for the virtual IP address."
+    ],
+    "correct_answers": [
+      "Forwards packets to the primary destined for the virtual IP address."
+    ]
+  },
+  {
+    "qid": "D-PDC-DY-23-Q168",
+    "type": "multiple_choice",
+    "category": "PowerSwitch Data Center Deploy",
+    "question": "Which is a default behavior for VLT VRRP?",
+    "explanation": "",
+    "options": [
+      "no preempt",
+      "vrrp version 3",
+      "active-active",
+      "authentication"
+    ],
+    "correct_answers": [
+      "active-active"
+    ]
+  },
+  {
+    "qid": "D-PDC-DY-23-Q169",
+    "type": "multiple_choice",
+    "category": "PowerSwitch Data Center Deploy",
+    "question": "What is a feature of virtual routing and forwarding?",
+    "explanation": "",
+    "options": [
+      "Allows multiple user groups to co-exist within the same router.",
+      "Allows for routing redundancy of virtual machine traffic.",
+      "Allows different switches to operate in a single VRF group.",
+      "Allows multiple instances of routing tables to co-exist with in the same router."
+    ],
+    "correct_answers": [
+      "Allows multiple instances of routing tables to co-exist with in the same router."
+    ]
+  },
+  {
+    "qid": "D-PDC-DY-23-Q170",
+    "type": "multiple_choice",
+    "category": "PowerSwitch Data Center Deploy",
+    "question": "Which field in an IP header is used for QoS marking?",
+    "explanation": "",
+    "options": [
+      "Options Header",
+      "ToS",
+      "CoS"
+    ],
+    "correct_answers": [
+      "ToS"
+    ]
+  },
+  {
+    "qid": "D-PDC-DY-23-Q171",
+    "type": "multiple_choice",
+    "category": "PowerSwitch Data Center Deploy",
+    "question": "What is the security impact of enabling LLDP?",
+    "explanation": "",
+    "options": [
+      "Switch information is advertised.",
+      "Broadcasts toms are possible.",
+      "Login over telnet is permitted.",
+      "SNMP data is broadcasted on all ports"
+    ],
+    "correct_answers": [
+      "Switch information is advertised."
+    ]
+  },
+  {
+    "qid": "D-PDC-DY-23-Q172",
+    "type": "multiple_choice",
+    "category": "PowerSwitch Data Center Deploy",
+    "question": "Refer to the exhibit. An administrator is unable to add the newly created non-default VRF BLUE to the existing OSPF routing protocol. What could be the cause?",
+    "explanation": "",
+    "options": [
+      "There must first be an IP address that is assigned to the interface eth 1/1/1.",
+      "The interface must be configured to operate as a switchport.",
+      "VRF only work with static routes and does not work with OSPF.",
+      "There must be a VRF static route leak that is configured before adding to OSPF."
+    ],
+    "correct_answers": [
+      "VRF only work with static routes and does not work with OSPF."
+    ]
+  },
+  {
+    "qid": "D-PDC-DY-23-Q173",
+    "type": "multiple_choice",
+    "category": "PowerSwitch Data Center Deploy",
+    "question": "Which consideration is true when defining Uplink Failure Detection?",
+    "explanation": "",
+    "options": [
+      "An interface can be assigned to more than one uplink-state group at a time.",
+      "Only physical ports can be assigned loan uplink-stale group.",
+      "Multiple uplink-state groups cannot operate concurrently in VLT mode.",
+      "An interface can be assigned to only one uplink-state group at a time."
+    ],
+    "correct_answers": [
+      "An interface can be assigned to only one uplink-state group at a time."
+    ]
+  },
+  {
+    "qid": "D-PDC-DY-23-Q174",
+    "type": "multiple_choice",
+    "category": "PowerSwitch Data Center Deploy",
+    "question": "To ensure that PIM traffic is not dropped by a router what command must be run?",
+    "explanation": "",
+    "options": [
+      "OS10 (config) # ip pim rp-address <IP address> group-address <group address>",
+      "OS10 (config) # ip multicast permit",
+      "OS10 (config) # ip multicast cast-routing",
+      "OS10 (config) # ip pim sparse-made"
+    ],
+    "correct_answers": [
+      "OS10 (config) # ip multicast cast-routing"
+    ]
+  },
+  {
+    "qid": "D-PDC-DY-23-Q175",
+    "type": "multiple_choice",
+    "category": "PowerSwitch Data Center Deploy",
+    "question": "What are two advantages of network automation? (Select 2)",
+    "explanation": "",
+    "options": [
+      "Allows devices to be managed individually",
+      "Utilizes traditional CLI approach for deployment",
+      "Simplifies network deployment",
+      "Manages the network as a single entity"
+    ],
+    "correct_answers": [
+      "Simplifies network deployment",
+      "Manages the network as a single entity"
+    ]
+  },
+  {
+    "qid": "D-PDC-DY-23-Q176",
+    "type": "multiple_choice",
+    "category": "PowerSwitch Data Center Deploy",
+    "question": "Which IPv6prefixidentiies multicast?",
+    "explanation": "",
+    "options": [
+      "FF00::/8",
+      "FA00::/8",
+      "FE00::/8",
+      "FC00::/8"
+    ],
+    "correct_answers": [
+      "FF00::/8"
+    ]
+  },
+  {
+    "qid": "D-PDC-DY-23-Q177",
+    "type": "multiple_choice",
+    "category": "PowerSwitch Data Center Deploy",
+    "question": "List the path attributes in order of BGP preference. Answer:",
+    "explanation": "",
+    "options": [],
+    "correct_answers": []
+  },
+  {
+    "qid": "D-PDC-DY-23-Q178",
+    "type": "multiple_choice",
+    "category": "PowerSwitch Data Center Deploy",
+    "question": "Which option describes VLT?",
+    "explanation": "",
+    "options": [
+      "VLT peers share a common control plane for routing protocols.",
+      "Supports up to four nodes within a VLT domain.",
+      "Supports LAG arid MSTP for high availability.",
+      "Allows a single device to use LACP across two upstream devices."
+    ],
+    "correct_answers": [
+      "Allows a single device to use LACP across two upstream devices."
+    ]
+  },
+  {
+    "qid": "D-PDC-DY-23-Q179",
+    "type": "multiple_choice",
+    "category": "PowerSwitch Data Center Deploy",
+    "question": "When implementing the VRRP tracking feature, what is the default priority exist of a tracked interface?",
+    "explanation": "",
+    "options": [
+      "10",
+      "1",
+      "254",
+      "100"
+    ],
+    "correct_answers": [
+      "10"
+    ]
+  },
+  {
+    "qid": "D-PDC-DY-23-Q180",
+    "type": "multiple_choice",
+    "category": "PowerSwitch Data Center Deploy",
+    "question": "What does the “%” character do within the banner login % command?",
+    "explanation": "",
+    "options": [
+      "This character indicates the start and end of text entry mode for Ihe banner command.",
+      "It is a wild-card character for the required login password when the banner appears.",
+      "When entering the text for a warning banner, it causes the banner to print in bold text.",
+      "It is a special character that forms a border around the warning banner text."
+    ],
+    "correct_answers": [
+      "This character indicates the start and end of text entry mode for Ihe banner command."
+    ]
+  },
+  {
+    "qid": "D-PDC-DY-23-Q181",
+    "type": "multiple_choice",
+    "category": "PowerSwitch Data Center Deploy",
+    "question": "According to Dell best practices, what is the recommended role for Z-Series switches?",
+    "explanation": "",
+    "options": [
+      "Leaf switches",
+      "Top-of-Rack switches",
+      "Spins switches",
+      "Access switches"
+    ],
+    "correct_answers": [
+      "Spins switches"
+    ]
+  },
+  {
+    "qid": "D-PDC-DY-23-Q182",
+    "type": "multiple_choice",
+    "category": "PowerSwitch Data Center Deploy",
+    "question": "Which statement is true regarding PTP7",
+    "explanation": "",
+    "options": [
+      "PTP uses clock time zone command to synchronize servers and clients.",
+      "PTP leverages the BMCA (Best Master Clock Algorithm) to define the timing hierarchy.",
+      "PTP synchronizes timekeeping among a set of distributed time servers and clients.",
+      "Clients pull time from a server."
+    ],
+    "correct_answers": [
+      "PTP leverages the BMCA (Best Master Clock Algorithm) to define the timing hierarchy."
+    ]
+  },
+  {
+    "qid": "D-PDC-DY-23-Q183",
+    "type": "multiple_choice",
+    "category": "PowerSwitch Data Center Deploy",
+    "question": "Which QoS model can provide quality of service in a routed network environment?",
+    "explanation": "",
+    "options": [
+      "DSCP",
+      "FIFO",
+      "CoS",
+      "LIFO"
+    ],
+    "correct_answers": [
+      "DSCP"
+    ]
+  },
+  {
+    "qid": "D-PDC-DY-23-Q184",
+    "type": "multiple_choice",
+    "category": "PowerSwitch Data Center Deploy",
+    "question": "How does multicast traffic operate?",
+    "explanation": "",
+    "options": [
+      "Transmits UDP traffic to multiple receiving devices in multiple data flows.",
+      "Transmits UDP traffic to multiple receiving devices in a single data flow.",
+      "Receives UDP traffic from multiple sending devices in a single data flow.",
+      "Transmits TCP traffic to multiple receiving devices in a single data flow."
+    ],
+    "correct_answers": [
+      "Transmits UDP traffic to multiple receiving devices in a single data flow."
+    ]
+  },
+  {
+    "qid": "D-PDC-DY-23-Q185",
+    "type": "multiple_choice",
+    "category": "PowerSwitch Data Center Deploy",
+    "question": "Which two statements describe the operation of VRRP? (Select 2)",
+    "explanation": "",
+    "options": [
+      "VRKP participants share the same virtual MAC and virtual IP.",
+      "VRRP cannot be implemented in load balancing unless using VLT.",
+      "VRRP is a first hop redundancy protocol associating a virtual IP with a '//ell-known virtual MAC.",
+      "VRRP is interoperable with other non-proprietary load-balancing protocols like CARP.",
+      "VRRP can provide redundancy with up to four switches participating in a group."
+    ],
+    "correct_answers": [
+      "VRKP participants share the same virtual MAC and virtual IP.",
+      "VRRP is a first hop redundancy protocol associating a virtual IP with a '//ell-known virtual MAC."
+    ]
+  },
+  {
+    "qid": "D-PDC-DY-23-Q186",
+    "type": "multiple_choice",
+    "category": "PowerSwitch Data Center Deploy",
+    "question": "What are the default STP settings in OS10?",
+    "explanation": "",
+    "options": [
+      "Root-Guard: Disabled: BPDU-Guard: Disabled",
+      "Root-Guard: Enabled: BPDU-Guard: Disabled",
+      "Roat-Guard: Enabled: BPDU-Guard: Enabled",
+      "Root-Guard: Disabled: BPDU-Guard: Enabled"
+    ],
+    "correct_answers": [
+      "Root-Guard: Disabled: BPDU-Guard: Disabled"
+    ]
+  },
+  {
+    "qid": "D-PDC-DY-23-Q187",
+    "type": "multiple_choice",
+    "category": "PowerSwitch Data Center Deploy",
+    "question": "An administrator is implementing VLT in OS10. How should the administrator configure the VLTi port channel?",
+    "explanation": "",
+    "options": [
+      "A port channel is created automatically during LLDP discovery.",
+      "Create a LACP trunk with spanning tree disabled.",
+      "A port channel is created automatically during VLT discovery.",
+      "Create port channel 1000 and assign as peer-link."
+    ],
+    "correct_answers": [
+      "Create port channel 1000 and assign as peer-link."
+    ]
+  },
+  {
+    "qid": "D-PDC-DY-23-Q188",
+    "type": "multiple_choice",
+    "category": "PowerSwitch Data Center Deploy",
+    "question": "What are Ihe three types of VHF instances? (Select 3)",
+    "explanation": "",
+    "options": [
+      "Management",
+      "Standard",
+      "Default",
+      "Native",
+      "Non-Default"
+    ],
+    "correct_answers": [
+      "Management",
+      "Default",
+      "Non-Default"
+    ]
+  },
+  {
+    "qid": "D-PDC-DY-23-Q189",
+    "type": "multiple_choice",
+    "category": "PowerSwitch Data Center Deploy",
+    "question": "Which type of protocol is OSPF and what metric does it use to determine best path?",
+    "explanation": "",
+    "options": [
+      "Link-state protocol that uses bandwidth cost as its metric.",
+      "Link-stale protocol that uses hap count as its metric.",
+      "Distance vector protocol that uses bandwidth cost as its metric.",
+      "Path vector protocol that uses the Dijkstra algorithm as its metric."
+    ],
+    "correct_answers": [
+      "Link-state protocol that uses bandwidth cost as its metric."
+    ]
+  },
+  {
+    "qid": "D-PDC-DY-23-Q190",
+    "type": "multiple_choice",
+    "category": "PowerSwitch Data Center Deploy",
+    "question": "Which describes the traffic flow in an internal DataCenter networking environment?",
+    "explanation": "",
+    "options": [
+      "North-South",
+      "East-West",
+      "From pear to peer",
+      "From AP to WLC"
+    ],
+    "correct_answers": [
+      "East-West"
+    ]
+  },
+  {
+    "qid": "D-PDC-DY-23-Q191",
+    "type": "multiple_choice",
+    "category": "PowerSwitch Data Center Deploy",
+    "question": "Match the NTP command with its function. There are more functions than commands. Answer:",
+    "explanation": "",
+    "options": [],
+    "correct_answers": []
+  },
+  {
+    "qid": "D-PDC-DY-23-Q192",
+    "type": "multiple_choice",
+    "category": "PowerSwitch Data Center Deploy",
+    "question": "Which command is used to determine the VLT peer unit address?",
+    "explanation": "",
+    "options": [
+      "show vlt <Domain ID> role",
+      "show running configuration vlt",
+      "show vlt <Domain ID>",
+      "show vlt <Domain ID> detail"
+    ],
+    "correct_answers": [
+      "show vlt <Domain ID> detail"
+    ]
+  },
+  {
+    "qid": "D-PDC-DY-23-Q193",
+    "type": "multiple_choice",
+    "category": "PowerSwitch Data Center Deploy",
+    "question": "When the show ip bgp neighbors command is issued, which BGP slate reflects a successfully created adjacency with another BGP peer?",
+    "explanation": "",
+    "options": [
+      "Established",
+      "Peering",
+      "Active",
+      "Full"
+    ],
+    "correct_answers": [
+      "Established"
+    ]
+  },
+  {
+    "qid": "D-PDC-DY-23-Q194",
+    "type": "multiple_choice",
+    "category": "PowerSwitch Data Center Deploy",
+    "question": "Which interface b/pes can be used with Uplink Failure Detection?",
+    "explanation": "",
+    "options": [
+      "Logical port or port channel",
+      "VLAN or physical port",
+      "Physical port or port channel",
+      "Physical port or logical port"
+    ],
+    "correct_answers": [
+      "Physical port or port channel"
+    ]
+  },
+  {
+    "qid": "D-PDC-DY-23-Q195",
+    "type": "multiple_choice",
+    "category": "PowerSwitch Data Center Deploy",
+    "question": "What is Ihe purpose of Ihe SFS Fabric Agent?",
+    "explanation": "",
+    "options": [
+      "Applies distributed database changes to local configuration.",
+      "Broadcasts and replies to peer keepalive messages to monitor overall fabric health.",
+      "Relays management plane changes received from the network to the local control plane.",
+      "Synchronizes received changes with the local SFS Controller on all fabric nodes."
+    ],
+    "correct_answers": [
+      "Applies distributed database changes to local configuration."
+    ]
+  },
+  {
+    "qid": "D-PDC-DY-23-Q196",
+    "type": "multiple_choice",
+    "category": "PowerSwitch Data Center Deploy",
+    "question": "Which two statements are true about 802.1p (CoS)? (Select 2)",
+    "explanation": "",
+    "options": [
+      "Requires IPv4 or IPv6 packet header to specify marking of values.",
+      "Utilizes value ranges from 0 to 7.",
+      "Requires CoS marking to be included in the 802.1q VLAN tag.",
+      "Expands beyond the local broadcast domain."
+    ],
+    "correct_answers": [
+      "Utilizes value ranges from 0 to 7.",
+      "Requires CoS marking to be included in the 802.1q VLAN tag."
+    ]
+  },
+  {
+    "qid": "D-PDC-DY-23-Q197",
+    "type": "multiple_choice",
+    "category": "PowerSwitch Data Center Deploy",
+    "question": "Which two options describe differences between Layer 2 and Layer 3 QoS? (Select 2)",
+    "explanation": "",
+    "options": [
+      "DSCP uses the same Type of Service Field that IP Precedence uses.",
+      "IP Precedence implements 64 unique traffic classes for packet queueing.",
+      "Class of Service priorities are encoded in the 802.1Q header.",
+      "802.1P trust-maps only function on untagged VLANs."
+    ],
+    "correct_answers": [
+      "DSCP uses the same Type of Service Field that IP Precedence uses.",
+      "Class of Service priorities are encoded in the 802.1Q header."
+    ]
+  },
+  {
+    "qid": "D-PDC-DY-23-Q198",
+    "type": "multiple_choice",
+    "category": "PowerSwitch Data Center Deploy",
+    "question": "Which command can be used to enable SSH access to an OS10 switch?",
+    "explanation": "",
+    "options": [
+      "ip ssh server enable",
+      "no ip telnet disable",
+      "ip mgmt ssh enable",
+      "no ip ssh server disable"
+    ],
+    "correct_answers": [
+      "ip ssh server enable"
+    ]
+  },
+  {
+    "qid": "D-PDC-DY-23-Q199",
+    "type": "multiple_choice",
+    "category": "PowerSwitch Data Center Deploy",
+    "question": "Which command is used to create a non-default VRF instance?",
+    "explanation": "",
+    "options": [
+      "ip vrf red",
+      "ip vrf forwarding vrf-blue",
+      "ip vrf forwarding new-vrf",
+      "feature vrf green"
+    ],
+    "correct_answers": [
+      "ip vrf red"
+    ]
+  },
+  {
+    "qid": "D-PDC-DY-23-Q200",
+    "type": "multiple_choice",
+    "category": "PowerSwitch Data Center Deploy",
+    "question": "Which value is used to determine the primary node role in a default VLT primary election? A Highest management IP address",
+    "explanation": "",
+    "options": [
+      "Lowest management IP address",
+      "Lowest system MAC address",
+      "Highest system MAC address"
+    ],
+    "correct_answers": [
+      "Lowest system MAC address"
+    ]
+  },
+  {
+    "qid": "D-PDC-DY-23-Q201",
+    "type": "multiple_choice",
+    "category": "PowerSwitch Data Center Deploy",
+    "question": "What should be disabled on an interface before disabling LLDP transmit capability?",
+    "explanation": "",
+    "options": [
+      "LLDP-MED",
+      "Loop Guard",
+      "VLAN 1",
+      "STP"
+    ],
+    "correct_answers": [
+      "LLDP-MED"
+    ]
+  },
+  {
+    "qid": "D-PDC-DY-23-Q202",
+    "type": "multiple_choice",
+    "category": "PowerSwitch Data Center Deploy",
+    "question": "A router has been deployed in an OSPF environment with only the backbone area. Which LSA typos arc used?",
+    "explanation": "",
+    "options": [
+      "1, 3 and 5",
+      "1, 2 and 5",
+      "1, 2 and 6",
+      "2, 3 and 5"
+    ],
+    "correct_answers": [
+      "1, 2 and 5"
+    ]
+  }
+]

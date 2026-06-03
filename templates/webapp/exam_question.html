@@ -1,0 +1,49 @@
+{% extends "webapp/base.html" %}
+{% load webapp_extras %}
+{% block title %}Questão {{ index|add:1 }} - Testador QS{% endblock %}
+{% block content %}
+<section class="page-head split">
+  <div>
+    <h1>Questão {{ index|add:1 }} de {{ total }}</h1>
+    <p>{{ question.category }}</p>
+  </div>
+  <a class="button" href="{% url 'webapp:exam_finish' %}">Finalizar</a>
+</section>
+<form class="exam-card" method="post">
+  {% csrf_token %}
+  <p class="question-text">{{ question.question }}</p>
+  {% if question.type == "multiple_choice" %}
+    <div class="answers">
+      {% for option in options %}
+        <label class="choice">
+          <input type="checkbox" name="answer" value="{{ option }}" {% if answer and option in answer %}checked{% endif %}>
+          <span>{{ option }}</span>
+        </label>
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="mapping-list">
+      {% for item in question.items %}
+        <label class="mapping-row">
+          <span>{{ item }}</span>
+          <select name="mapping_{{ forloop.counter0 }}">
+            <option value="">Selecione</option>
+            {% for target in question.targets %}
+              <option value="{{ target }}" {% if answer and answer|get_item:item == target %}selected{% endif %}>{{ target }}</option>
+            {% endfor %}
+          </select>
+        </label>
+      {% endfor %}
+    </div>
+  {% endif %}
+  <label class="flag">
+    <input type="checkbox" name="flagged" value="1" {% if flagged %}checked{% endif %}>
+    Marcar para revisão
+  </label>
+  <div class="actions-row">
+    <button name="action" value="previous" type="submit">Anterior</button>
+    <button class="primary" name="action" value="next" type="submit">Salvar e próxima</button>
+    <button name="action" value="finish" type="submit">Salvar e finalizar</button>
+  </div>
+</form>
+{% endblock %}

@@ -1,0 +1,20 @@
+{% extends "webapp/base.html" %}
+{% block title %}Simulado - Testador QS{% endblock %}
+{% block content %}
+<section class="page-head">
+  <h1>Simulado</h1>
+  <p>{{ question_count }} questões disponíveis</p>
+</section>
+<form class="form-panel compact" action="{% url 'webapp:exam_start' %}" method="post">
+  {% csrf_token %}
+  <label>Nota de aprovação (%)
+    <input type="number" name="passing_score" min="0" max="100" step="0.1" value="{{ passing_score }}">
+  </label>
+  <button class="primary" type="submit">Iniciar</button>
+</form>
+{% if active_exam %}
+  <div class="notice">
+    Existe um simulado em andamento. Iniciar outro substituirá a sessão atual.
+  </div>
+{% endif %}
+{% endblock %}

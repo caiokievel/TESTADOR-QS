@@ -1,0 +1,32 @@
+{% extends "webapp/base.html" %}
+{% block title %}Questão - Testador QS{% endblock %}
+{% block content %}
+<section class="page-head">
+  <h1>{% if existing %}Editar Questão{% else %}Nova Questão{% endif %}</h1>
+</section>
+<form class="form-panel" method="post">
+  {% csrf_token %}
+  <label>ID
+    <input name="qid" value="{{ qid }}" required>
+  </label>
+  <label>Tipo
+    <select name="type">
+      <option value="multiple_choice" {% if type == "multiple_choice" %}selected{% endif %}>multiple_choice</option>
+      <option value="drag_and_drop" {% if type == "drag_and_drop" %}selected{% endif %}>drag_and_drop</option>
+    </select>
+  </label>
+  <label>Categoria
+    <input name="category" value="{{ category }}">
+  </label>
+  <label>Enunciado
+    <textarea name="question" rows="3" required>{{ question }}</textarea>
+  </label>
+  <label>Estrutura JSON
+    <textarea name="payload" rows="12" spellcheck="false">{{ payload }}</textarea>
+  </label>
+  <div class="actions-row">
+    <button class="primary" type="submit">Salvar</button>
+    <a class="button" href="{% url 'webapp:bank' %}">Cancelar</a>
+  </div>
+</form>
+{% endblock %}

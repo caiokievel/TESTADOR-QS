@@ -1,0 +1,2042 @@
+[
+  {
+    "total": 202,
+    "answered": 0,
+    "correct": 0,
+    "wrong": 0,
+    "percent": 0.0,
+    "approved": false,
+    "question_results": [
+      {
+        "qid": "D-PDC-DY-23-Q174",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q095",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q010",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q085",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q184",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q186",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q076",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q001",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q173",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q056",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q038",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q007",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q136",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q070",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q169",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q092",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q160",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q132",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q130",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q172",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q008",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q059",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q177",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q122",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q026",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q044",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q137",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q193",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q138",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q192",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q093",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q185",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q064",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q143",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q153",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q135",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q176",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q145",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q112",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q068",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q018",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q129",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q118",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q191",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q048",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q082",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q052",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q069",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q088",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q099",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q198",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q042",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q033",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q057",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q072",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q005",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q199",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q049",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q016",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q139",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q141",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q013",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q158",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q110",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q079",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q165",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q098",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q030",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q009",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q065",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q146",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q090",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q121",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q104",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q077",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q004",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q187",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q194",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q025",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q055",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q107",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q029",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q028",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q105",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q014",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q179",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q067",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q045",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q103",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q039",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q131",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q019",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q081",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q020",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q149",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q151",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q102",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q046",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q190",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q002",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q155",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q106",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q189",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q161",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q144",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q197",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q128",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q015",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q154",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q109",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q066",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q097",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q041",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q022",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q063",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q111",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q032",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q035",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q101",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q134",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q201",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q117",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q047",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q188",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q021",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q125",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q094",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q140",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q075",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q152",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q114",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q061",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q040",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q073",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q119",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q062",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q036",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q170",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q023",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q196",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q091",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q175",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q071",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q150",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q147",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q133",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q171",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q182",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q178",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q089",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q126",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q167",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q163",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q083",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q180",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q148",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q003",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q113",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q050",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q017",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q087",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q080",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q043",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q181",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q200",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q054",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q142",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q166",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q120",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q159",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q157",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q164",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q124",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q024",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q012",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q027",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q100",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q006",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q156",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q078",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q074",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q086",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q084",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q183",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q031",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q168",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q053",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q123",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q051",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q195",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q202",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q037",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q116",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q011",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q060",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q162",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q034",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q108",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q096",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q058",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q127",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q115",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      }
+    ]
+  },
+  {
+    "total": 202,
+    "answered": 0,
+    "correct": 0,
+    "wrong": 0,
+    "percent": 0.0,
+    "approved": false,
+    "question_results": [
+      {
+        "qid": "D-PDC-DY-23-Q061",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q141",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q171",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q184",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q135",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q047",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q169",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q085",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q160",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q068",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q188",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q162",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q082",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q109",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q102",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q112",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q062",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q003",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q038",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q042",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q071",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q072",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q025",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q197",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q127",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q191",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q064",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q051",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q156",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q067",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q074",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q119",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q174",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q122",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q106",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q143",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q033",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q178",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q161",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q022",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q048",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q115",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q094",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q066",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q189",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q058",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q080",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q198",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q142",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q187",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q195",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q150",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q031",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q011",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q012",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q016",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q152",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q103",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q069",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q035",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q006",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q101",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q182",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q053",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q164",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q110",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q079",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q181",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q138",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q083",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q044",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q176",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q140",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q129",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q049",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q120",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q089",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q194",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q054",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q055",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q153",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q088",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q133",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q021",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q105",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q202",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q165",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q010",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q096",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q147",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q030",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q084",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q040",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q091",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q159",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q126",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q014",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q043",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q144",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q177",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q046",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q029",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q107",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q092",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q163",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q192",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q199",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q151",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q063",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q045",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q113",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q157",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q121",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q149",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q032",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q172",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q145",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q134",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q013",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q166",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q173",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q183",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q136",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q070",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q059",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q114",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q028",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q037",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q168",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q200",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q128",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q131",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q193",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q023",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q002",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q018",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q036",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q116",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q019",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q130",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q075",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q005",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q086",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q139",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q052",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q148",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q100",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q124",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q078",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q015",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q095",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q065",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q073",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q146",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q076",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q001",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q087",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q154",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q081",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q108",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q050",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q179",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q170",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q117",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q024",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q125",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q196",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q093",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q118",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q137",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q167",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q132",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q175",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q180",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q026",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q020",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q039",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q186",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q201",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q057",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q155",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q009",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q111",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q041",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q185",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q190",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q008",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q004",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q056",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q034",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q027",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q099",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q077",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q104",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q090",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q098",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q123",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q060",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q017",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q097",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q007",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      },
+      {
+        "qid": "D-PDC-DY-23-Q158",
+        "category": "PowerSwitch Data Center Deploy",
+        "is_correct": false
+      }
+    ]
+  }
+]

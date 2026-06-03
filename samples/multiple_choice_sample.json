@@ -1,0 +1,20 @@
+[
+  {
+    "qid": "Q001",
+    "type": "multiple_choice",
+    "category": "Networking",
+    "question": "What protocol is used to prevent Layer 2 loops?",
+    "options": ["OSPF", "STP", "BGP", "VRRP"],
+    "correct_answers": ["STP"],
+    "explanation": "STP is used to prevent Layer 2 loops in switched networks."
+  },
+  {
+    "qid": "Q003",
+    "type": "multiple_choice",
+    "category": "Security",
+    "question": "Which protocol secures web traffic?",
+    "options": ["HTTP", "TLS", "Telnet", "SNMPv1"],
+    "correct_answers": ["TLS"],
+    "explanation": "TLS provides encryption and integrity for web traffic."
+  }
+]
