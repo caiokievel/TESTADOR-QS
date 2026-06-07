@@ -21,6 +21,7 @@ from django.urls import reverse
 from django.views.decorators.http import require_POST
 
 from exam_simulator.models import DragAndDropQuestion, MultipleChoiceQuestion
+from exam_simulator.question_bank import QuestionBank
 from exam_simulator.simulator import Simulator
 
 from .services import (
@@ -31,11 +32,13 @@ from .services import (
     get_visible_reports,
     load_categories,
     load_exams,
+    load_marketplace,
     load_settings,
     load_subcategories,
     load_tags,
     save_categories,
     save_exams,
+    save_marketplace,
     save_settings,
     save_subcategories,
     save_tags,
@@ -62,11 +65,14 @@ def dashboard(request: HttpRequest) -> HttpResponse:
     spaced_repetition_chart = _spaced_repetition_chart(bank.questions, metrics.get("history", []) if metrics else [])
     study_calendar = _study_calendar(metrics.get("history", []) if metrics else [])
     weak_exams = []
+    untagged_questions = len(bank.questions) - tagged_questions
+    insight = _dashboard_insight(untagged_questions, metrics)
     if metrics:
         history = metrics.get("history", [])
         recent_attempts = [
             {
                 "finished_at": attempt.get("finished_at", "-"),
+                "finished_label": _format_datetime_label(attempt.get("finished_at")),
                 "percent": attempt.get("percent", 0),
                 "approved": attempt.get("approved", False),
                 "answered": attempt.get("answered", 0),
@@ -85,11 +91,12 @@ def dashboard(request: HttpRequest) -> HttpResponse:
             "category_count": len({exam["category"] for exam in exam_configs if exam["category"]}),
             "tag_count": len(load_tags()),
             "tagged_questions": tagged_questions,
-            "untagged_questions": len(bank.questions) - tagged_questions,
+            "untagged_questions": untagged_questions,
             "exhibit_questions": exhibit_questions,
             "history_count": len(metrics.get("history", [])) if metrics else 0,
             "global_accuracy": metrics.get("global_accuracy") if metrics else None,
             "has_metrics": bool(metrics),
+            "insight": insight,
             "recent_attempts": recent_attempts,
             "attempt_chart": attempt_chart,
             "bank_chart": bank_chart,
@@ -387,6 +394,94 @@ def classifications(request: HttpRequest) -> HttpResponse:
     )
 
 
+def marketplace(request: HttpRequest) -> HttpResponse:
+    bank = get_bank()
+    packages = load_marketplace()
+    owned_qids = {question.qid for question in bank.questions}
+    marketplace_packages = []
+    for package in packages:
+        questions = package.get("questions", [])
+        importable_count = sum(1 for question in questions if question.get("qid") not in owned_qids)
+        marketplace_packages.append({**package, "importable_count": importable_count})
+    return render(
+        request,
+        "webapp/marketplace.html",
+        {
+            "packages": marketplace_packages,
+            "available_exams": _available_exams(bank),
+        },
+    )
+
+
+@require_POST
+def marketplace_publish(request: HttpRequest) -> HttpResponse:
+    if not request.user.is_superuser:
+        messages.error(request, "Apenas administradores podem publicar exames.")
+        return redirect("webapp:marketplace")
+    bank = get_bank()
+    exam_name = _normalize_tag(request.POST.get("exam", ""))
+    description = request.POST.get("description", "").strip()
+    if not exam_name:
+        messages.error(request, "Selecione um exame para publicar.")
+        return redirect("webapp:marketplace")
+    questions = [question for question in bank.questions if _question_exam(question) == exam_name]
+    if not questions:
+        messages.error(request, "O exame selecionado não possui questões no banco do admin.")
+        return redirect("webapp:marketplace")
+    exam_config = _exam_config(exam_name, bank)
+    package = {
+        "id": uuid.uuid4().hex,
+        "name": exam_config["name"],
+        "category": exam_config["category"],
+        "subcategory": exam_config["subcategory"],
+        "description": description,
+        "created_at": datetime.now().isoformat(timespec="seconds"),
+        "questions": [_question_to_dict(question) for question in questions],
+    }
+    current = [item for item in load_marketplace() if item["name"].lower() != exam_name.lower()]
+    save_marketplace([*current, package])
+    messages.success(request, "Exame publicado no marketplace.")
+    return redirect("webapp:marketplace")
+
+
+@require_POST
+def marketplace_import(request: HttpRequest) -> HttpResponse:
+    package_id = _normalize_tag(request.POST.get("package_id", ""))
+    package = next((item for item in load_marketplace() if item["id"] == package_id), None)
+    if not package:
+        messages.error(request, "Pacote nao encontrado.")
+        return redirect("webapp:marketplace")
+
+    imported = 0
+    skipped = 0
+    bank = get_bank()
+    for question in _questions_from_payload(package.get("questions", [])):
+        if bank.find_by_id(question.qid):
+            skipped += 1
+            continue
+        bank.questions.append(question)
+        imported += 1
+    if imported:
+        bank.save()
+        save_tags([*load_tags(), *[tag for question in bank.questions for tag in question.tags]])
+        save_categories([*load_categories(), package.get("category", "")])
+        save_subcategories([*load_subcategories(), package.get("subcategory", "")])
+        save_exams([*load_exams(), {"name": package["name"], "category": package.get("category", ""), "subcategory": package.get("subcategory", "")}])
+    messages.success(request, f"{imported} questões importadas. {skipped} já existiam no seu banco.")
+    return redirect("webapp:marketplace")
+
+
+@require_POST
+def marketplace_delete(request: HttpRequest) -> HttpResponse:
+    if not request.user.is_superuser:
+        messages.error(request, "Apenas administradores podem remover pacotes.")
+        return redirect("webapp:marketplace")
+    package_id = _normalize_tag(request.POST.get("package_id", ""))
+    save_marketplace([item for item in load_marketplace() if item["id"] != package_id])
+    messages.success(request, "Pacote removido do marketplace.")
+    return redirect("webapp:marketplace")
+
+
 @require_POST
 def category_add(request: HttpRequest) -> HttpResponse:
     name = _normalize_tag(request.POST.get("name", ""))
@@ -671,7 +766,15 @@ def exam_finish(request: HttpRequest) -> HttpResponse:
 
 
 def reports(request: HttpRequest) -> HttpResponse:
-    return render(request, "webapp/reports.html", {"metrics": _template_metrics(get_visible_reports().metrics())})
+    question_count = len(get_visible_bank().questions)
+    return render(
+        request,
+        "webapp/reports.html",
+        {
+            "metrics": _template_metrics(get_visible_reports().metrics(), question_count),
+            "question_count": question_count,
+        },
+    )
 
 
 def export_reports_csv(request: HttpRequest) -> HttpResponse:
@@ -753,6 +856,19 @@ def _question_to_dict(question) -> dict:
         payload["targets"] = question.targets
         payload["correct_mapping"] = question.correct_mapping
     return payload
+
+
+def _questions_from_payload(payload: list[dict]) -> list:
+    if not isinstance(payload, list):
+        return []
+    with tempfile.NamedTemporaryFile("w", suffix=".json", delete=False, encoding="utf-8") as tmp:
+        json.dump(payload, tmp, ensure_ascii=False)
+        tmp_path = tmp.name
+    try:
+        bank = QuestionBank(tmp_path)
+        return bank.questions
+    finally:
+        Path(tmp_path).unlink(missing_ok=True)
 
 
 def _plain_data(value):
@@ -883,7 +999,7 @@ def _exam_config(name: str, bank) -> dict:
     return {"name": normalized or "General", "category": "General", "subcategory": ""}
 
 
-def _template_metrics(metrics: dict) -> dict:
+def _template_metrics(metrics: dict, question_count: int = 0) -> dict:
     if not metrics:
         return {}
     prepared = dict(metrics)
@@ -900,10 +1016,13 @@ def _template_metrics(metrics: dict) -> dict:
         "correct": total_correct,
         "wrong": total_wrong,
         "approved": sum(1 for attempt in history if attempt.get("approved")),
+        "question_count": question_count,
     }
+    prepared["low_data"] = total_answered < 20
     prepared["recent_attempts"] = [
         {
             "finished_at": attempt.get("finished_at", "-"),
+            "finished_label": _format_datetime_label(attempt.get("finished_at")),
             "percent": attempt.get("percent", 0),
             "answered": attempt.get("answered", 0),
             "total": attempt.get("total", 0),
@@ -924,6 +1043,8 @@ def _template_metrics(metrics: dict) -> dict:
             "category": stats.get("category", "General"),
             "subcategory": stats.get("subcategory", ""),
             "exam": stats.get("exam", ""),
+            "accuracy_label": f"{_accuracy(stats['correct'], stats['answers']):.1f}% de acerto",
+            "error_label": f"{stats['wrong']} erro{'s' if stats['wrong'] != 1 else ''} em {stats['answers']} resposta{'s' if stats['answers'] != 1 else ''}",
         }
         for qid, stats in metrics.get("error_ranking", [])
     ]
@@ -931,7 +1052,25 @@ def _template_metrics(metrics: dict) -> dict:
     prepared["subcategory_performance_rows"] = _performance_rows(metrics.get("subcategory_performance", {}), "subcategory", "Sem subcategoria")
     prepared["exam_performance_rows"] = _performance_rows(metrics.get("exam_performance", {}), "exam")
     prepared["tag_performance_rows"] = _performance_rows(metrics.get("tag_performance", {}), "tag")
+    prepared["insight"] = _report_insight(prepared)
     return prepared
+
+
+def _report_insight(metrics: dict) -> dict:
+    accuracy = metrics.get("global_accuracy", 0)
+    error_rows = metrics.get("error_ranking_rows", [])
+    if error_rows:
+        exam = error_rows[0].get("exam") or "sem exame definido"
+        return {
+            "title": "Prioridade de revisão encontrada",
+            "message": f"Sua acurácia geral está em {accuracy:.1f}%. As questões com mais erro estão concentradas no exame {exam}.",
+            "action_label": "Revisar questões com mais erro",
+        }
+    return {
+        "title": "Continue gerando dados",
+        "message": f"Sua acurácia geral está em {accuracy:.1f}%. Faça mais simulados para identificar padrões de erro com maior confiança.",
+        "action_label": "Revisar relatório",
+    }
 
 
 def _performance_rows(items: dict, label_key: str, empty_label: str = "-") -> list[dict]:
@@ -944,6 +1083,8 @@ def _performance_rows(items: dict, label_key: str, empty_label: str = "-") -> li
             "wrong": max(stats["answered"] - stats["correct"], 0),
             "accuracy": _accuracy(stats["correct"], stats["answered"]),
             "accuracy_width": round(_accuracy(stats["correct"], stats["answered"])),
+            "accuracy_label": f"{_accuracy(stats['correct'], stats['answered']):.1f}% de acurácia",
+            "correct_label": f"{stats['correct']} acerto{'s' if stats['correct'] != 1 else ''}",
         }
         for label, stats in items.items()
     ]
@@ -968,9 +1109,36 @@ def _attempt_chart(history: list[dict]) -> dict:
                 "point_y": round(y, 2),
                 "approved": attempt.get("approved", False),
                 "finished_at": attempt.get("finished_at", "-"),
+                "finished_label": _format_datetime_label(attempt.get("finished_at")),
             }
         )
-    return {"rows": rows, "points": " ".join(points)}
+    return {"rows": rows, "points": " ".join(points), "count": total}
+
+
+def _dashboard_insight(untagged_questions: int, metrics: dict) -> dict:
+    if untagged_questions:
+        return {
+            "title": "Banco pendente de classificação",
+            "message": f"Você tem {untagged_questions} questões sem tag. Classifique seu banco para melhorar simulados e relatórios.",
+            "action_label": "Classificar questões",
+            "action_url": "webapp:tags",
+            "tone": "warning",
+        }
+    if not metrics:
+        return {
+            "title": "Comece pelo primeiro simulado",
+            "message": "Finalize um simulado para acompanhar sua evolução, pontos de atenção e histórico de estudos.",
+            "action_label": "Iniciar simulado",
+            "action_url": "webapp:exam_home",
+            "tone": "primary",
+        }
+    return {
+        "title": "Painel em dia",
+        "message": "Seu banco está classificado. Continue praticando para manter a evolução visível nos relatórios.",
+        "action_label": "Praticar agora",
+        "action_url": "webapp:exam_home",
+        "tone": "success",
+    }
 
 
 def _bank_chart(total: int, tagged: int, exhibits: int) -> dict:
@@ -1037,7 +1205,7 @@ def _spaced_repetition_chart(questions: list, history: list[dict]) -> dict:
             counts["learning"] += 1
 
     labels = [
-        ("new", "Novas", "Ainda nao praticadas.", "#56cfe1"),
+        ("new", "Novas", "Ainda não praticadas.", "#56cfe1"),
         ("learning", "Aprendizagem", "Em primeiros ciclos.", "#8b5cf6"),
         ("relearning", "Reaprendizagem", "Erradas apos acertos anteriores.", "#f59f2f"),
         ("young", "Jovens", "Acertos recentes.", "#35c98b"),
@@ -1067,7 +1235,17 @@ def _spaced_repetition_chart(questions: list, history: list[dict]) -> dict:
         segments.append(f'{row["color"]} {cursor:.2f}deg {end:.2f}deg')
         cursor = end
     pie_gradient = ", ".join(segments) if segments else "rgba(var(--bs-secondary-rgb), .12) 0deg 360deg"
-    return {"total": total_count, "rows": rows, "pie_style": f"--segments: conic-gradient({pie_gradient});"}
+    visible_rows = [row for row in rows if row["count"]]
+    if not visible_rows:
+        visible_rows = rows
+    return {
+        "total": total_count,
+        "rows": rows,
+        "visible_rows": visible_rows,
+        "pie_style": f"--segments: conic-gradient({pie_gradient});",
+        "learning_count": counts["learning"],
+        "review_today_count": counts["relearning"],
+    }
 
 
 def _study_calendar(history: list[dict]) -> dict:
@@ -1129,7 +1307,7 @@ def _study_calendar(history: list[dict]) -> dict:
                 "active": active,
                 "today": current == today,
                 "intensity": intensity,
-                "title": f"{current.strftime('%d/%m/%Y')} - {questions} questoes - {minutes} min",
+                "title": f"{current.strftime('%d/%m/%Y')} - {questions} questões - {minutes} min",
             }
         )
     while len(day_cells) % 7:
@@ -1152,6 +1330,13 @@ def _parse_datetime(value: object) -> datetime | None:
         return datetime.fromisoformat(str(value))
     except ValueError:
         return None
+
+
+def _format_datetime_label(value: object) -> str:
+    parsed = _parse_datetime(value)
+    if not parsed:
+        return "-"
+    return parsed.strftime("%d/%m/%Y %H:%M")
 
 
 def _accuracy(correct: int | float, answered: int | float) -> float:

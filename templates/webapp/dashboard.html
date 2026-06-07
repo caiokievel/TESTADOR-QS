@@ -1,39 +1,70 @@
 {% extends "webapp/base.html" %}
 {% block title %}Painel - Testador QS{% endblock %}
 {% block content %}
-<section class="page-head split">
+<section class="page-head dashboard-head split">
   <div>
     <h1>Painel</h1>
-    <p>Visao geral do banco, simulados e pontos de atencao.</p>
+    <p>Visão geral do banco, desempenho e próximas ações.</p>
   </div>
-  <div class="actions-row">
-    <a class="button primary" href="{% url 'webapp:exam_home' %}"><i class="icon-base ri ri-play-circle-line me-1"></i>Iniciar simulado</a>
-    <a class="button" href="{% url 'webapp:question_new' %}"><i class="icon-base ri ri-add-line me-1"></i>Nova questao</a>
+  <div class="actions-row dashboard-actions">
+    <a class="button primary" href="{% url 'webapp:exam_home' %}">
+      <i class="icon-base ri ri-play-circle-line me-1"></i>
+      Iniciar simulado
+    </a>
+    <a class="button" href="{% url 'webapp:question_new' %}">
+      <i class="icon-base ri ri-add-line me-1"></i>
+      Nova questão
+    </a>
   </div>
 </section>
 
-<section class="stats-grid">
-  <article class="stat"><span>Questoes</span><strong>{{ question_count }}</strong></article>
-  <article class="stat"><span>Exames</span><strong>{{ exam_count }}</strong></article>
-  <article class="stat"><span>Simulados</span><strong>{{ history_count }}</strong></article>
-  <article class="stat"><span>Acuracia</span><strong>{% if has_metrics %}{{ global_accuracy|floatformat:1 }}%{% else %}-{% endif %}</strong></article>
+<section class="dashboard-insight {{ insight.tone }}">
+  <div>
+    <span class="insight-kicker">Próxima ação</span>
+    <h2>{{ insight.title }}</h2>
+    <p>{{ insight.message }}</p>
+  </div>
+  <a class="button primary" href="{% url insight.action_url %}">{{ insight.action_label }}</a>
+</section>
+
+<section class="stats-grid dashboard-stats">
+  <a class="stat stat-link" href="{% url 'webapp:bank' %}">
+    <span>Questões</span>
+    <strong>{{ question_count }}</strong>
+    <small>{{ tagged_questions }} classificada{% if tagged_questions != 1 %}s{% endif %} · {{ untagged_questions }} sem tag</small>
+  </a>
+  <a class="stat stat-link" href="{% url 'webapp:classifications' %}">
+    <span>Exames</span>
+    <strong>{{ exam_count }}</strong>
+    <small>{{ exam_count }} exame{% if exam_count != 1 %}s{% endif %} cadastrado{% if exam_count != 1 %}s{% endif %}</small>
+  </a>
+  <a class="stat stat-link" href="{% url 'webapp:reports' %}">
+    <span>Simulados</span>
+    <strong>{{ history_count }}</strong>
+    <small>Últimos resultados disponíveis</small>
+  </a>
+  <a class="stat stat-link" href="{% url 'webapp:reports' %}">
+    <span>Acurácia</span>
+    <strong>{% if has_metrics %}{{ global_accuracy|floatformat:1 }}%{% else %}-{% endif %}</strong>
+    <small>Acurácia geral</small>
+  </a>
 </section>
 
 <section class="dashboard-grid">
-  <article class="dashboard-panel dashboard-visual calendar-panel">
+  <article class="dashboard-panel calendar-panel">
     <div class="report-panel-head">
       <div>
-        <h2>📅 Calendario</h2>
+        <h2>Calendário</h2>
         <span>{{ study_calendar.month_label }}</span>
       </div>
       <div class="calendar-badges">
         <span class="status-pill ok">{{ study_calendar.month_offensive_days }} dias</span>
-        <span class="status-pill streak">🔥 {{ study_calendar.current_streak }}d</span>
+        <span class="status-pill streak">Ofensiva {{ study_calendar.current_streak }}d</span>
       </div>
     </div>
     <div class="study-calendar-summary">
-      <div><span>Minimo</span><strong>10 min</strong></div>
-      <div><span>Questoes</span><strong>{{ study_calendar.month_questions }}</strong></div>
+      <div><span>Mínimo</span><strong>10 min</strong></div>
+      <div><span>Questões</span><strong>{{ study_calendar.month_questions }}</strong></div>
     </div>
     <div class="study-calendar">
       <div class="calendar-weekdays">
@@ -42,7 +73,7 @@
         <span>Qua</span>
         <span>Qui</span>
         <span>Sex</span>
-        <span>Sab</span>
+        <span>Sáb</span>
         <span>Dom</span>
       </div>
       {% for week in study_calendar.weeks %}
@@ -64,24 +95,27 @@
     </div>
   </article>
 
-  <article class="dashboard-panel dashboard-visual">
+  <article class="dashboard-panel">
     <div class="report-panel-head">
-      <h2>📊 Acuracia</h2>
+      <div>
+        <h2>Evolução da acurácia</h2>
+        <span>Últimos simulados finalizados</span>
+      </div>
       {% if has_metrics %}
-        <span class="status-pill {% if global_accuracy >= 90 %}ok{% else %}miss{% endif %}">{{ global_accuracy|floatformat:1 }}%</span>
+        <span class="status-pill {% if global_accuracy >= 90 %}ok{% else %}neutral{% endif %}">{{ global_accuracy|floatformat:1 }}%</span>
       {% endif %}
     </div>
-    {% if attempt_chart %}
-      <div class="accuracy-line-chart" aria-label="Acuracia dos ultimos simulados">
+    {% if attempt_chart and attempt_chart.count > 1 %}
+      <div class="accuracy-line-chart" aria-label="Acurácia dos últimos simulados">
         <div class="line-chart-canvas">
-          <svg viewBox="0 0 100 100" preserveAspectRatio="none" role="img">
+          <svg viewBox="0 0 100 100" preserveAspectRatio="none" role="img" aria-label="Linha de evolução da acurácia">
             <polyline points="{{ attempt_chart.points }}"></polyline>
           </svg>
           {% for attempt in attempt_chart.rows %}
             <span
-              class="line-point {% if attempt.approved %}ok{% else %}miss{% endif %}"
+              class="line-point {% if attempt.approved %}ok{% else %}neutral{% endif %}"
               style="left: {{ attempt.point_x }}%; top: {{ attempt.point_y }}%"
-              title="{{ attempt.finished_at }} - {{ attempt.percent|floatformat:1 }}%"
+              title="{{ attempt.finished_label }} - {{ attempt.percent|floatformat:1 }}%"
             ></span>
           {% endfor %}
         </div>
@@ -92,94 +126,106 @@
         </div>
       </div>
     {% else %}
-      <div class="panel-empty">Finalize simulados para visualizar a evolucao.</div>
+      <div class="panel-empty action-empty">
+        <strong>Faça mais simulados para acompanhar sua evolução.</strong>
+        <span>Com pelo menos dois resultados, o gráfico passa a mostrar a tendência de acurácia.</span>
+      </div>
     {% endif %}
   </article>
 
-  <article class="dashboard-panel dashboard-visual">
+  <article class="dashboard-panel coverage-panel">
     <div class="report-panel-head">
-      <h2>Cobertura do banco</h2>
-    </div>
-    <div class="coverage-grid">
-      <div class="coverage-item">
-        <div class="chart-ring" style="--value: {{ bank_chart.tagged_percent }}">
-          <strong>{{ bank_chart.tagged_percent }}%</strong>
-        </div>
-        <div>
-          <strong>Questoes com tag</strong>
-          <span>{{ tagged_questions }} marcadas / {{ bank_chart.untagged }} sem tag</span>
-        </div>
+      <div>
+        <h2>Cobertura do banco</h2>
+        <span>Qualidade da organização das questões</span>
       </div>
-      <div class="coverage-item">
-        <div class="chart-ring accent" style="--value: {{ bank_chart.exhibit_percent }}">
-          <strong>{{ bank_chart.exhibit_percent }}%</strong>
-        </div>
+    </div>
+    <div class="coverage-list">
+      <div class="coverage-row">
         <div>
-          <strong>Questoes com imagem</strong>
-          <span>{{ exhibit_questions }} com exhibit / {{ bank_chart.without_exhibit }} sem imagem</span>
+          <strong>Questões com tag</strong>
+          <span>{{ tagged_questions }} de {{ question_count }}</span>
         </div>
+        <div class="coverage-track"><span style="width: {{ bank_chart.tagged_percent }}%"></span></div>
+      </div>
+      <div class="coverage-row">
+        <div>
+          <strong>Questões com imagem</strong>
+          <span>{{ exhibit_questions }} de {{ question_count }}</span>
+        </div>
+        <div class="coverage-track accent"><span style="width: {{ bank_chart.exhibit_percent }}%"></span></div>
       </div>
     </div>
     {% if untagged_questions %}
       <div class="attention-row">
         <i class="icon-base ri ri-price-tag-3-line"></i>
-        <span>{{ untagged_questions }} questoes ainda estao sem tag.</span>
+        <span>{{ untagged_questions }} questões ainda estão sem tag.</span>
       </div>
     {% endif %}
+    <a class="button primary" href="{% url 'webapp:tags' %}">Classificar agora</a>
   </article>
 
   <article class="dashboard-panel">
     <div class="report-panel-head">
-      <h2>Organizacao</h2>
+      <h2>Organização</h2>
     </div>
     <div class="dashboard-metrics">
       <div><span>Categorias</span><strong>{{ category_count }}</strong></div>
       <div><span>Exames</span><strong>{{ exam_count }}</strong></div>
       <div><span>Tags cadastradas</span><strong>{{ tag_count }}</strong></div>
-      <div><span>Questoes</span><strong>{{ question_count }}</strong></div>
+      <div><span>Questões</span><strong>{{ question_count }}</strong></div>
     </div>
     <div class="actions-row">
       <a class="button" href="{% url 'webapp:bank' %}">Banco</a>
-      <a class="button" href="{% url 'webapp:classifications' %}">Classificacoes</a>
+      <a class="button" href="{% url 'webapp:classifications' %}">Classificações</a>
       <a class="button" href="{% url 'webapp:tags' %}">Tags</a>
     </div>
   </article>
 
   <article class="dashboard-panel">
     <div class="report-panel-head">
-      <h2>Ultimos simulados</h2>
+      <div>
+        <h2>Últimos simulados</h2>
+        <span>Resultados recentes e revisão</span>
+      </div>
     </div>
     {% if recent_attempts %}
-      <div class="dashboard-list">
+      <div class="dashboard-list attempt-list">
         {% for attempt in recent_attempts %}
-          <div class="dashboard-list-row">
+          <div class="dashboard-list-row attempt-row">
             <div>
               <strong>{{ attempt.percent|floatformat:1 }}%</strong>
-              <span>{{ attempt.finished_at }} - {{ attempt.answered }}/{{ attempt.total }} respondidas</span>
+              <span>{{ attempt.finished_label }} · {{ attempt.answered }}/{{ attempt.total }} respondidas</span>
             </div>
-            <span class="status-pill {% if attempt.approved %}ok{% else %}miss{% endif %}">{% if attempt.approved %}Aprovado{% else %}Reprovado{% endif %}</span>
+            <div class="attempt-actions">
+              <span class="status-pill {% if attempt.approved %}ok{% else %}miss-soft{% endif %}">{% if attempt.approved %}Aprovado{% else %}Revisar{% endif %}</span>
+              <a class="button link-button" href="{% url 'webapp:reports' %}">Ver relatório</a>
+            </div>
           </div>
         {% endfor %}
       </div>
     {% else %}
       <div class="panel-empty">Nenhum simulado finalizado ainda.</div>
     {% endif %}
-    <a class="button" href="{% url 'webapp:reports' %}">Ver relatorios</a>
+    <a class="button" href="{% url 'webapp:reports' %}">Abrir relatórios</a>
   </article>
 
-  <article class="dashboard-panel wide">
+  <article class="dashboard-panel wide spaced-panel">
     <div class="report-panel-head">
-      <h2>🧠 Repeticao espacada</h2>
-      <span class="status-pill">{{ spaced_repetition_chart.total }} questoes</span>
+      <div>
+        <h2>Repetição espaçada</h2>
+        <span>{{ spaced_repetition_chart.learning_count }} questões em aprendizagem · {{ spaced_repetition_chart.review_today_count }} para revisar hoje</span>
+      </div>
+      <a class="button primary" href="{% url 'webapp:exam_home' %}">Praticar agora</a>
     </div>
     {% if spaced_repetition_chart.total %}
       <div class="spaced-pie-layout">
         <div class="spaced-donut" style="{{ spaced_repetition_chart.pie_style }}">
           <strong>{{ spaced_repetition_chart.total }}</strong>
-          <span>questoes</span>
+          <span>questões</span>
         </div>
         <div class="spaced-legend">
-          {% for row in spaced_repetition_chart.rows %}
+          {% for row in spaced_repetition_chart.visible_rows %}
             <div class="spaced-legend-row">
               <span class="spaced-dot" style="background: {{ row.color }}"></span>
               <div>
@@ -192,13 +238,16 @@
         </div>
       </div>
     {% else %}
-      <div class="panel-empty">Cadastre questoes para visualizar os estagios de repeticao espacada.</div>
+      <div class="panel-empty">Cadastre questões para visualizar os estágios de repetição espaçada.</div>
     {% endif %}
   </article>
 
   <article class="dashboard-panel wide">
     <div class="report-panel-head">
-      <h2>🎯 Exames em atencao</h2>
+      <div>
+        <h2>Exames em atenção</h2>
+        <span>Menores acurácias por exame</span>
+      </div>
     </div>
     {% if weak_exams %}
       <div class="exam-bars">
@@ -206,12 +255,15 @@
           <div class="exam-bar-row">
             <div>
               <strong>{{ row.label }}</strong>
-              <span>{{ row.correct }} acertos / {{ row.wrong }} erros em {{ row.answered }} respostas</span>
+              <span>{{ row.correct }} acertos · {{ row.wrong }} erros · {{ row.answered }} respostas</span>
             </div>
             <div class="exam-bar-track">
               <span style="width: {{ row.accuracy_width }}%"></span>
             </div>
-            <em>{{ row.accuracy|floatformat:1 }}%</em>
+            <div class="exam-row-end">
+              <em>{{ row.accuracy|floatformat:1 }}%</em>
+              <a href="{% url 'webapp:reports' %}">Detalhes</a>
+            </div>
           </div>
         {% endfor %}
       </div>

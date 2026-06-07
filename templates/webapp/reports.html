@@ -1,46 +1,88 @@
 {% extends "webapp/base.html" %}
-{% block title %}Relatorios - Testador QS{% endblock %}
+{% block title %}Relatórios - Testador QS{% endblock %}
 {% block content %}
 <section class="page-head split">
   <div>
-    <h1>Relatorios</h1>
+    <h1>Relatórios</h1>
     {% if metrics %}
       <p>Consolidado de {{ metrics.summary.attempts }} simulados finalizados.</p>
     {% else %}
-      <p>Sem historico ainda.</p>
+      <p>Sem histórico ainda.</p>
     {% endif %}
   </div>
-  <div class="actions-row">
-    <a class="button" href="{% url 'webapp:export_reports_csv' %}">CSV</a>
-    <a class="button" href="{% url 'webapp:export_reports_json' %}">JSON</a>
+  <div class="export-actions" aria-label="Exportar relatório">
+    <span>Exportar</span>
+    <div class="actions-row">
+      <a class="button" href="{% url 'webapp:export_reports_csv' %}">CSV</a>
+      <a class="button" href="{% url 'webapp:export_reports_json' %}">JSON</a>
+    </div>
   </div>
 </section>
 
 {% if metrics %}
-  <section class="stats-grid">
-    <article class="stat"><span>Acuracia geral</span><strong>{{ metrics.global_accuracy|floatformat:1 }}%</strong></article>
-    <article class="stat"><span>Simulados</span><strong>{{ metrics.summary.attempts }}</strong></article>
-    <article class="stat"><span>Respondidas</span><strong>{{ metrics.summary.answered }}</strong></article>
-    <article class="stat"><span>Acertos / erros</span><strong>{{ metrics.summary.correct }}/{{ metrics.summary.wrong }}</strong></article>
+  <section class="dashboard-insight primary report-insight">
+    <div>
+      <span class="insight-kicker">Análise</span>
+      <h2>{{ metrics.insight.title }}</h2>
+      <p>{{ metrics.insight.message }}</p>
+    </div>
+    {# TODO: conectar a uma revisão filtrada por questões erradas quando essa rota existir. #}
+    <a class="button primary" href="#questoes-com-erro">{{ metrics.insight.action_label }}</a>
   </section>
 
-  <section class="report-grid">
+  {% if metrics.low_data %}
+    <section class="notice report-note">
+      Você ainda tem poucos dados para uma análise completa. Responda mais questões para gerar relatórios mais precisos.
+    </section>
+  {% endif %}
+
+  <section class="stats-grid dashboard-stats report-stats">
+    <article class="stat">
+      <span>Acurácia geral</span>
+      <strong>{{ metrics.global_accuracy|floatformat:1 }}%</strong>
+      <small>{{ metrics.summary.correct }} acerto{% if metrics.summary.correct != 1 %}s{% endif %} em {{ metrics.summary.answered }} resposta{% if metrics.summary.answered != 1 %}s{% endif %}</small>
+    </article>
+    <article class="stat">
+      <span>Simulados finalizados</span>
+      <strong>{{ metrics.summary.attempts }}</strong>
+      <small>Últimos resultados registrados</small>
+    </article>
+    <article class="stat">
+      <span>Questões respondidas</span>
+      <strong>{{ metrics.summary.answered }}</strong>
+      <small>De {{ question_count }} questões disponíveis</small>
+    </article>
+    <article class="stat">
+      <span>Acertos / erros</span>
+      <strong>{{ metrics.summary.correct }} / {{ metrics.summary.wrong }}</strong>
+      <small>Baseado nas respostas registradas</small>
+    </article>
+  </section>
+
+  <section class="report-grid enhanced-report-grid">
     <article class="report-panel wide">
       <div class="report-panel-head">
-        <h2>Ultimos simulados</h2>
+        <div>
+          <h2>Últimos simulados</h2>
+          <span>Histórico recente de desempenho.</span>
+        </div>
       </div>
       <div class="table-wrap flat">
-        <table>
-          <thead><tr><th>Data</th><th>Status</th><th>Percentual</th><th>Respondidas</th><th>Acertos</th><th>Erros</th></tr></thead>
+        <table class="report-table">
+          <thead><tr><th>Data</th><th>Status</th><th>Percentual</th><th>Respondidas</th><th>Acertos</th><th>Erros</th><th>Ação</th></tr></thead>
           <tbody>
             {% for row in metrics.recent_attempts %}
               <tr>
-                <td>{{ row.finished_at }}</td>
-                <td><span class="status-pill {% if row.approved %}ok{% else %}miss{% endif %}">{% if row.approved %}Aprovado{% else %}Reprovado{% endif %}</span></td>
-                <td>{{ row.percent|floatformat:1 }}%</td>
+                <td>{{ row.finished_label }}</td>
+                <td><span class="status-pill {% if row.approved %}ok{% else %}miss-soft{% endif %}">{% if row.approved %}Aprovado{% else %}Revisar{% endif %}</span></td>
+                <td><strong>{{ row.percent|floatformat:1 }}%</strong></td>
                 <td>{{ row.answered }}/{{ row.total }}</td>
                 <td>{{ row.correct }}</td>
                 <td>{{ row.wrong }}</td>
+                <td>
+                  {# TODO: conectar ao detalhe do simulado quando a rota de tentativa individual existir. #}
+                  <a class="button link-button" href="#questoes-com-erro">Revisar erros</a>
+                </td>
               </tr>
             {% endfor %}
           </tbody>
@@ -48,39 +90,46 @@
       </div>
     </article>
 
-    <article class="report-panel wide">
+    <article class="report-panel wide priority-panel" id="questoes-com-erro">
       <div class="report-panel-head">
-        <h2>Questoes com mais erro</h2>
+        <div>
+          <h2>Questões com mais erro</h2>
+          <span>Priorize essas questões na sua próxima revisão.</span>
+        </div>
       </div>
       <div class="table-wrap flat">
-        <table>
-          <thead><tr><th>Questao</th><th>Exame</th><th>Erros</th><th>Respostas</th><th>Acuracia</th></tr></thead>
+        <table class="report-table">
+          <thead><tr><th>Questão</th><th>Exame</th><th>Erros</th><th>Respostas</th><th>Acurácia</th><th>Ação</th></tr></thead>
           <tbody>
             {% for row in metrics.error_ranking_rows|slice:":10" %}
               <tr>
-                <td>{{ row.qid }}</td>
+                <td><strong>{{ row.qid }}</strong></td>
                 <td>{{ row.exam|default:"-" }}</td>
                 <td>{{ row.wrong }}</td>
                 <td>{{ row.answers }}</td>
                 <td>
-                  <div class="metric-cell">
-                    <span>{{ row.accuracy|floatformat:1 }}%</span>
-                    <div class="metric-bar"><span style="width: {{ row.accuracy_width }}%"></span></div>
+                  <div class="accuracy-summary">
+                    <strong>{{ row.accuracy_label }}</strong>
+                    <span>{{ row.error_label }}</span>
                   </div>
+                </td>
+                <td>
+                  {# TODO: conectar ao detalhe/revisão da questão quando houver rota dedicada. #}
+                  <a class="button link-button" href="{% url 'webapp:exam_home' %}">Revisar</a>
                 </td>
               </tr>
             {% empty %}
-              <tr><td colspan="5">Sem questoes respondidas ainda.</td></tr>
+              <tr><td colspan="6">Sem questões respondidas ainda.</td></tr>
             {% endfor %}
           </tbody>
         </table>
       </div>
     </article>
 
-    {% include "webapp/report_performance_table.html" with title="Por categoria" rows=metrics.category_performance_rows label_key="category" empty_text="Sem dados por categoria." %}
-    {% include "webapp/report_performance_table.html" with title="Por subcategoria" rows=metrics.subcategory_performance_rows label_key="subcategory" empty_text="Sem dados por subcategoria." %}
-    {% include "webapp/report_performance_table.html" with title="Por exame" rows=metrics.exam_performance_rows label_key="exam" empty_text="Sem dados por exame." %}
-    {% include "webapp/report_performance_table.html" with title="Por tag" rows=metrics.tag_performance_rows label_key="tag" empty_text="Sem dados por tag." %}
+    {% include "webapp/report_performance_table.html" with title="Por categoria" rows=metrics.category_performance_rows empty_text="Sem dados por categoria." %}
+    {% include "webapp/report_performance_table.html" with title="Por subcategoria" rows=metrics.subcategory_performance_rows empty_text="Sem dados por subcategoria." %}
+    {% include "webapp/report_performance_table.html" with title="Por exame" rows=metrics.exam_performance_rows empty_text="Sem dados por exame." %}
+    {% include "webapp/report_performance_table.html" with title="Por tag" rows=metrics.tag_performance_rows empty_text="Sem dados por tag." %}
   </section>
 {% else %}
   <section class="notice empty-state">

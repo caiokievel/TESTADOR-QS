@@ -1,0 +1,72 @@
+{% extends "webapp/base.html" %}
+{% block title %}Marketplace - Testador QS{% endblock %}
+{% block content %}
+<section class="page-head split">
+  <div>
+    <h1>Marketplace</h1>
+    <p>Exames publicados pelo administrador para importar para o seu banco.</p>
+  </div>
+</section>
+
+{% if request.user.is_superuser %}
+  <section class="form-panel marketplace-publish">
+    <h2>Publicar exame</h2>
+    <form class="marketplace-form" action="{% url 'webapp:marketplace_publish' %}" method="post">
+      {% csrf_token %}
+      <select name="exam" required>
+        <option value="">Selecione um exame do banco admin</option>
+        {% for exam in available_exams %}
+          <option value="{{ exam.name }}">{{ exam.name }} - {{ exam.category }} / {{ exam.subcategory|default:"-" }}</option>
+        {% endfor %}
+      </select>
+      <input name="description" placeholder="Descricao curta do pacote">
+      <button class="primary" type="submit">
+        <i class="icon-base ri ri-upload-cloud-2-line me-1"></i>
+        Publicar
+      </button>
+    </form>
+  </section>
+{% endif %}
+
+<section class="marketplace-grid">
+  {% for package in packages %}
+    <article class="marketplace-card">
+      <div class="marketplace-card-head">
+        <div>
+          <span class="tag-pill">{{ package.category|default:"Geral" }}</span>
+          {% if package.subcategory %}<span class="tag-pill">{{ package.subcategory }}</span>{% endif %}
+        </div>
+        <i class="icon-base ri ri-store-2-line"></i>
+      </div>
+      <h2>{{ package.name }}</h2>
+      <p>{{ package.description|default:"Pacote de questoes publicado no marketplace interno." }}</p>
+      <div class="marketplace-meta">
+        <div><span>Questoes</span><strong>{{ package.question_count }}</strong></div>
+        <div><span>Novas para voce</span><strong>{{ package.importable_count }}</strong></div>
+      </div>
+      <div class="actions-row">
+        <form action="{% url 'webapp:marketplace_import' %}" method="post">
+          {% csrf_token %}
+          <input type="hidden" name="package_id" value="{{ package.id }}">
+          <button class="primary" type="submit">
+            <i class="icon-base ri ri-download-cloud-2-line me-1"></i>
+            Importar
+          </button>
+        </form>
+        {% if request.user.is_superuser %}
+          <form action="{% url 'webapp:marketplace_delete' %}" method="post">
+            {% csrf_token %}
+            <input type="hidden" name="package_id" value="{{ package.id }}">
+            <button class="link danger" type="submit">Remover</button>
+          </form>
+        {% endif %}
+      </div>
+    </article>
+  {% empty %}
+    <section class="notice empty-state">
+      <h2>Nenhum exame publicado</h2>
+      <p>Quando o administrador publicar exames, eles aparecem aqui para importacao.</p>
+    </section>
+  {% endfor %}
+</section>
+{% endblock %}

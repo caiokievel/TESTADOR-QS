@@ -15,6 +15,13 @@
   <link rel="stylesheet" href="{% static 'materio/vendor/css/core.css' %}">
   <link rel="stylesheet" href="{% static 'materio/css/demo.css' %}">
   <link rel="stylesheet" href="{% static 'webapp/styles.css' %}">
+  <script>
+    (() => {
+      const storedTheme = localStorage.getItem("testador-theme");
+      const prefersDark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+      document.documentElement.dataset.bsTheme = storedTheme || (prefersDark ? "dark" : "light");
+    })();
+  </script>
   <script src="{% static 'materio/vendor/js/helpers.js' %}"></script>
   <script src="{% static 'materio/js/config.js' %}"></script>
 </head>
@@ -58,7 +65,7 @@
           <li class="menu-item {% if '/relatorios/' in request.path %}active{% endif %}">
             <a href="{% url 'webapp:reports' %}" class="menu-link">
               <i class="menu-icon icon-base ri ri-bar-chart-2-line"></i>
-              <div>Relatorios</div>
+              <div>Relatórios</div>
             </a>
           </li>
           <li class="menu-item {% if '/tags/' in request.path %}active{% endif %}">
@@ -71,6 +78,12 @@
             <a href="{% url 'webapp:classifications' %}" class="menu-link">
               <i class="menu-icon icon-base ri ri-folder-2-line"></i>
               <div>Classificacoes</div>
+            </a>
+          </li>
+          <li class="menu-item {% if '/marketplace/' in request.path %}active{% endif %}">
+            <a href="{% url 'webapp:marketplace' %}" class="menu-link">
+              <i class="menu-icon icon-base ri ri-store-2-line"></i>
+              <div>Marketplace</div>
             </a>
           </li>
           {% if request.user.is_superuser %}
@@ -99,6 +112,12 @@
               </div>
             </div>
             <ul class="navbar-nav flex-row align-items-center ms-auto">
+              <li class="nav-item me-2">
+                <button class="theme-toggle" type="button" id="theme-toggle" aria-label="Alternar para tema escuro" title="Alternar tema">
+                  <i class="icon-base ri ri-moon-line theme-toggle-dark"></i>
+                  <i class="icon-base ri ri-sun-line theme-toggle-light"></i>
+                </button>
+              </li>
               <li class="nav-item me-3">
                 <span class="text-body-secondary small">
                   {{ request.user.username }}{% if request.user.is_superuser %} - admin{% endif %}
@@ -160,5 +179,27 @@
   <script src="{% static 'materio/vendor/libs/perfect-scrollbar/perfect-scrollbar.js' %}"></script>
   <script src="{% static 'materio/vendor/js/menu.js' %}"></script>
   <script src="{% static 'materio/js/main.js' %}"></script>
+  <script>
+    (() => {
+      const root = document.documentElement;
+      const button = document.getElementById("theme-toggle");
+      if (!button) return;
+
+      const updateButton = () => {
+        const isDark = root.dataset.bsTheme === "dark";
+        button.setAttribute("aria-label", isDark ? "Alternar para tema claro" : "Alternar para tema escuro");
+        button.setAttribute("title", isDark ? "Tema claro" : "Tema escuro");
+      };
+
+      button.addEventListener("click", () => {
+        const nextTheme = root.dataset.bsTheme === "dark" ? "light" : "dark";
+        root.dataset.bsTheme = nextTheme;
+        localStorage.setItem("testador-theme", nextTheme);
+        updateButton();
+      });
+
+      updateButton();
+    })();
+  </script>
 </body>
 </html>

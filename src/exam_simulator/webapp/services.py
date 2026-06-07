@@ -15,6 +15,7 @@ LEGACY_DATA_DIR = DATA_DIR
 USERS_DIR = DATA_DIR / "users"
 ADMIN_DATA_DIR = DATA_DIR / "admin"
 EXHIBITS_DIR = DATA_DIR / "exhibits"
+MARKETPLACE_PATH = DATA_DIR / "marketplace.json"
 _STATE = local()
 
 DEFAULT_CATEGORIES = ["DELL", "HP", "VMWARE"]
@@ -144,6 +145,66 @@ def save_exams(exams: list[dict]) -> None:
             }
         )
     _path("exams.json").write_text(json.dumps(sorted(normalized, key=lambda item: item["name"].lower()), indent=2, ensure_ascii=False), encoding="utf-8")
+
+
+def load_marketplace() -> list[dict]:
+    if not MARKETPLACE_PATH.exists():
+        return []
+    try:
+        raw = json.loads(MARKETPLACE_PATH.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return []
+    if not isinstance(raw, list):
+        return []
+    packages = []
+    seen = set()
+    for item in raw:
+        if not isinstance(item, dict):
+            continue
+        package_id = _normalize_tag(item.get("id", ""))
+        name = _normalize_tag(item.get("name", ""))
+        if not package_id or not name or package_id in seen:
+            continue
+        seen.add(package_id)
+        questions = item.get("questions", [])
+        packages.append(
+            {
+                "id": package_id,
+                "name": name,
+                "category": _normalize_tag(item.get("category", "")),
+                "subcategory": _normalize_tag(item.get("subcategory", "")),
+                "description": str(item.get("description", "")).strip(),
+                "created_at": str(item.get("created_at", "")),
+                "question_count": len(questions) if isinstance(questions, list) else 0,
+                "questions": questions if isinstance(questions, list) else [],
+            }
+        )
+    return sorted(packages, key=lambda item: item["name"].lower())
+
+
+def save_marketplace(packages: list[dict]) -> None:
+    DATA_DIR.mkdir(parents=True, exist_ok=True)
+    normalized = []
+    seen = set()
+    for item in packages:
+        package_id = _normalize_tag(item.get("id", ""))
+        name = _normalize_tag(item.get("name", ""))
+        if not package_id or not name or package_id in seen:
+            continue
+        seen.add(package_id)
+        questions = item.get("questions", [])
+        normalized.append(
+            {
+                "id": package_id,
+                "name": name,
+                "category": _normalize_tag(item.get("category", "")),
+                "subcategory": _normalize_tag(item.get("subcategory", "")),
+                "description": str(item.get("description", "")).strip(),
+                "created_at": str(item.get("created_at", "")),
+                "questions": questions if isinstance(questions, list) else [],
+            }
+        )
+    MARKETPLACE_PATH.write_text(json.dumps(sorted(normalized, key=lambda item: item["name"].lower()), indent=2, ensure_ascii=False), encoding="utf-8")
 
 
 def _load_list(path: Path, defaults: list[str]) -> list[str]:

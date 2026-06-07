@@ -1,28 +1,21 @@
-<article class="report-panel">
+<article class="report-panel performance-card">
   <div class="report-panel-head">
     <h2>{{ title }}</h2>
   </div>
-  <div class="table-wrap flat">
-    <table>
-      <thead><tr><th>Nome</th><th>Acuracia</th><th>Acertos</th><th>Erros</th><th>Respostas</th></tr></thead>
-      <tbody>
-        {% for row in rows %}
-          <tr>
-            <td>{{ row.label }}</td>
-            <td>
-              <div class="metric-cell">
-                <span>{{ row.accuracy|floatformat:1 }}%</span>
-                <div class="metric-bar"><span style="width: {{ row.accuracy_width }}%"></span></div>
-              </div>
-            </td>
-            <td>{{ row.correct }}</td>
-            <td>{{ row.wrong }}</td>
-            <td>{{ row.answered }}</td>
-          </tr>
-        {% empty %}
-          <tr><td colspan="5">{{ empty_text }}</td></tr>
-        {% endfor %}
-      </tbody>
-    </table>
-  </div>
+  {% if rows %}
+    <div class="performance-list">
+      {% for row in rows|slice:":6" %}
+        <div class="performance-row">
+          <div class="performance-row-head">
+            <strong title="{{ row.label }}">{{ row.label }}</strong>
+            <em>{{ row.accuracy|floatformat:1 }}%</em>
+          </div>
+          <span>{{ row.accuracy_label }} · {{ row.correct_label }}</span>
+          <div class="metric-bar"><span style="width: {{ row.accuracy_width }}%"></span></div>
+        </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="panel-empty">{{ empty_text }}</div>
+  {% endif %}
 </article>
