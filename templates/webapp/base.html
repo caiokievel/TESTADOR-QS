@@ -73,6 +73,14 @@
               <div>Classificacoes</div>
             </a>
           </li>
+          {% if request.user.is_superuser %}
+            <li class="menu-item {% if '/usuarios/' in request.path %}active{% endif %}">
+              <a href="{% url 'webapp:users' %}" class="menu-link">
+                <i class="menu-icon icon-base ri ri-user-settings-line"></i>
+                <div>Usuarios</div>
+              </a>
+            </li>
+          {% endif %}
         </ul>
       </aside>
 
@@ -91,11 +99,25 @@
               </div>
             </div>
             <ul class="navbar-nav flex-row align-items-center ms-auto">
+              <li class="nav-item me-3">
+                <span class="text-body-secondary small">
+                  {{ request.user.username }}{% if request.user.is_superuser %} - admin{% endif %}
+                </span>
+              </li>
               <li class="nav-item">
                 <a class="btn btn-primary btn-sm" href="{% url 'webapp:exam_home' %}">
                   <i class="icon-base ri ri-play-circle-line me-1"></i>
                   Iniciar
                 </a>
+              </li>
+              <li class="nav-item ms-2">
+                <form action="{% url 'logout' %}" method="post">
+                  {% csrf_token %}
+                  <button class="btn btn-outline-secondary btn-sm" type="submit">
+                    <i class="icon-base ri ri-logout-box-r-line me-1"></i>
+                    Sair
+                  </button>
+                </form>
               </li>
             </ul>
           </div>

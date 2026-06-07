@@ -57,6 +57,25 @@ Acesse:
 http://127.0.0.1:8000
 ```
 
+Antes do primeiro acesso, crie as tabelas do Django e o usuario administrador:
+
+```bash
+python manage.py migrate
+python manage.py createsuperuser
+```
+
+Usuarios comuns podem ser criados pelo administrador em:
+
+```text
+http://127.0.0.1:8000/usuarios/
+```
+
+O admin nativo do Django tambem fica disponivel em:
+
+```text
+http://127.0.0.1:8000/admin/
+```
+
 Em outro computador da rede, acesse pelo IP do servidor:
 
 ```text
@@ -80,6 +99,8 @@ O aplicativo usa a pasta `data/`:
 - `data/categories.json`: categorias pre-cadastradas, como fabricantes.
 - `data/subcategories.json`: subcategorias pre-cadastradas, como segmentos.
 - `data/exams.json`: exames pre-cadastrados com categoria e subcategoria.
+- `data/users/<id>/`: dados isolados de cada usuario comum.
+- `data/admin/`: dados proprios do usuario administrador.
 - `data/exhibits/`: imagens de apoio anexadas ao enunciado das questoes.
 - `data/django.sqlite3`: banco interno do Django para sessoes.
 

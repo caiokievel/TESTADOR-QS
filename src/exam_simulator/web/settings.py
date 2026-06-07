@@ -13,6 +13,8 @@ DEBUG = os.environ.get("TESTADOR_QS_DEBUG", "1") == "1"
 ALLOWED_HOSTS = os.environ.get("TESTADOR_QS_ALLOWED_HOSTS", "127.0.0.1,localhost").split(",")
 
 INSTALLED_APPS = [
+    "django.contrib.admin",
+    "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "django.contrib.messages",
@@ -26,6 +28,8 @@ MIDDLEWARE = [
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
+    "django.contrib.auth.middleware.AuthenticationMiddleware",
+    "exam_simulator.webapp.auth_context.CurrentUserMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
 ]
 
@@ -39,6 +43,7 @@ TEMPLATES = [
         "OPTIONS": {
             "context_processors": [
                 "django.template.context_processors.request",
+                "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
             ],
         },
@@ -66,3 +71,6 @@ WHITENOISE_USE_FINDERS = True
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 SESSION_COOKIE_HTTPONLY = True
+LOGIN_URL = "login"
+LOGIN_REDIRECT_URL = "webapp:dashboard"
+LOGOUT_REDIRECT_URL = "login"

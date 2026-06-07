@@ -1,0 +1,130 @@
+{% extends "webapp/base.html" %}
+{% block title %}Usuarios - Testador QS{% endblock %}
+{% block content %}
+<section class="page-head split">
+  <div>
+    <h1>Usuarios</h1>
+    <p>Gestao de acessos e permissoes do sistema.</p>
+  </div>
+</section>
+<section class="settings-grid">
+  <article class="form-panel">
+    <h2>Novo usuario</h2>
+    <form class="stacked-form" action="{% url 'webapp:user_add' %}" method="post">
+      {% csrf_token %}
+      <input name="username" placeholder="Login" required>
+      <input name="email" type="email" placeholder="E-mail">
+      <input name="password" type="password" placeholder="Senha" required>
+      <label class="inline-check">
+        <input type="checkbox" name="is_admin" value="1">
+        Administrador
+      </label>
+      <button class="primary" type="submit">Criar usuario</button>
+    </form>
+  </article>
+  <article class="form-panel wide-panel">
+    <h2>Usuarios cadastrados</h2>
+    <div class="table-wrap flat">
+      <table>
+        <thead><tr><th>Usuario</th><th>E-mail</th><th>Perfil</th><th>Status</th><th>Ultimo login</th><th></th></tr></thead>
+        <tbody>
+          {% for item in users %}
+            <tr>
+              <td>{{ item.username }}</td>
+              <td>{{ item.email|default:"-" }}</td>
+              <td>{% if item.is_superuser %}<span class="tag-pill">Admin</span>{% else %}<span class="text-body-secondary">Usuario</span>{% endif %}</td>
+              <td><span class="status-pill {% if item.is_active %}ok{% else %}miss{% endif %}">{% if item.is_active %}Ativo{% else %}Inativo{% endif %}</span></td>
+              <td>{{ item.last_login|default:"-" }}</td>
+              <td class="row-actions">
+                <button class="icon-action" type="button" data-bs-toggle="modal" data-bs-target="#user-edit-modal" data-user-id="{{ item.id }}" data-user-username="{{ item.username }}" data-user-email="{{ item.email }}" data-user-active="{% if item.is_active %}1{% else %}0{% endif %}" data-user-admin="{% if item.is_superuser %}1{% else %}0{% endif %}" title="Editar usuario" aria-label="Editar {{ item.username }}">
+                  <i class="icon-base ri ri-pencil-line"></i>
+                </button>
+                <button class="icon-action" type="button" data-bs-toggle="modal" data-bs-target="#user-password-modal" data-user-id="{{ item.id }}" data-user-username="{{ item.username }}" title="Alterar senha" aria-label="Alterar senha de {{ item.username }}">
+                  <i class="icon-base ri ri-key-2-line"></i>
+                </button>
+              </td>
+            </tr>
+          {% empty %}
+            <tr><td colspan="6">Nenhum usuario cadastrado.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </article>
+</section>
+
+<div class="modal fade" id="user-edit-modal" tabindex="-1" aria-labelledby="user-edit-title" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <form class="modal-content" action="{% url 'webapp:user_update' %}" method="post">
+      {% csrf_token %}
+      <div class="modal-header">
+        <h5 class="modal-title" id="user-edit-title">Editar usuario</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+      </div>
+      <div class="modal-body modal-form">
+        <input type="hidden" name="user_id" id="user-edit-id">
+        <label>Usuario
+          <input name="username" id="user-edit-username" required>
+        </label>
+        <label>E-mail
+          <input name="email" id="user-edit-email" type="email">
+        </label>
+        <label class="inline-check">
+          <input type="checkbox" name="is_active" id="user-edit-active" value="1">
+          Ativo
+        </label>
+        <label class="inline-check">
+          <input type="checkbox" name="is_admin" id="user-edit-admin" value="1">
+          Administrador
+        </label>
+      </div>
+      <div class="modal-footer">
+        <button type="button" data-bs-dismiss="modal">Cancelar</button>
+        <button class="primary" type="submit">Salvar</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="modal fade" id="user-password-modal" tabindex="-1" aria-labelledby="user-password-title" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <form class="modal-content" action="{% url 'webapp:user_password' %}" method="post">
+      {% csrf_token %}
+      <div class="modal-header">
+        <h5 class="modal-title" id="user-password-title">Alterar senha</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+      </div>
+      <div class="modal-body modal-form">
+        <input type="hidden" name="user_id" id="user-password-id">
+        <p class="text-body-secondary" id="user-password-name"></p>
+        <label>Nova senha
+          <input name="password" type="password" required>
+        </label>
+      </div>
+      <div class="modal-footer">
+        <button type="button" data-bs-dismiss="modal">Cancelar</button>
+        <button class="primary" type="submit">Salvar senha</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+  const userEditModal = document.getElementById("user-edit-modal");
+  userEditModal.addEventListener("show.bs.modal", (event) => {
+    const button = event.relatedTarget;
+    document.getElementById("user-edit-id").value = button.dataset.userId;
+    document.getElementById("user-edit-username").value = button.dataset.userUsername;
+    document.getElementById("user-edit-email").value = button.dataset.userEmail;
+    document.getElementById("user-edit-active").checked = button.dataset.userActive === "1";
+    document.getElementById("user-edit-admin").checked = button.dataset.userAdmin === "1";
+  });
+
+  const userPasswordModal = document.getElementById("user-password-modal");
+  userPasswordModal.addEventListener("show.bs.modal", (event) => {
+    const button = event.relatedTarget;
+    document.getElementById("user-password-id").value = button.dataset.userId;
+    document.getElementById("user-password-name").textContent = button.dataset.userUsername;
+  });
+</script>
+{% endblock %}

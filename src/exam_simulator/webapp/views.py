@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import base64
 import binascii
+import calendar
 import csv
 import json
 import mimetypes
@@ -9,10 +10,11 @@ import random
 import tempfile
 import uuid
 from collections import defaultdict
-from datetime import datetime
+from datetime import date, datetime, timedelta
 from pathlib import Path
 
 from django.contrib import messages
+from django.contrib.auth.models import User
 from django.http import FileResponse, Http404, HttpRequest, HttpResponse
 from django.shortcuts import redirect, render
 from django.urls import reverse
@@ -25,6 +27,8 @@ from .services import (
     EXHIBITS_DIR,
     get_bank,
     get_reports,
+    get_visible_bank,
+    get_visible_reports,
     load_categories,
     load_exams,
     load_settings,
@@ -47,22 +51,57 @@ ALLOWED_EXHIBIT_TYPES = {
 
 
 def dashboard(request: HttpRequest) -> HttpResponse:
-    bank = get_bank()
-    metrics = get_reports().metrics()
+    bank = get_visible_bank()
+    metrics = get_visible_reports().metrics()
+    exam_configs = _merged_exam_configs(bank)
+    tagged_questions = sum(1 for question in bank.questions if question.tags)
+    exhibit_questions = sum(1 for question in bank.questions if question.exhibit_image)
+    recent_attempts = []
+    attempt_chart = None
+    bank_chart = _bank_chart(len(bank.questions), tagged_questions, exhibit_questions)
+    spaced_repetition_chart = _spaced_repetition_chart(bank.questions, metrics.get("history", []) if metrics else [])
+    study_calendar = _study_calendar(metrics.get("history", []) if metrics else [])
+    weak_exams = []
+    if metrics:
+        history = metrics.get("history", [])
+        recent_attempts = [
+            {
+                "finished_at": attempt.get("finished_at", "-"),
+                "percent": attempt.get("percent", 0),
+                "approved": attempt.get("approved", False),
+                "answered": attempt.get("answered", 0),
+                "total": attempt.get("total", 0),
+            }
+            for attempt in reversed(history[-3:])
+        ]
+        attempt_chart = _attempt_chart(history[-8:])
+        weak_exams = _performance_rows(metrics.get("exam_performance", {}), "exam")[:5]
     return render(
         request,
         "webapp/dashboard.html",
         {
             "question_count": len(bank.questions),
+            "exam_count": len(exam_configs),
+            "category_count": len({exam["category"] for exam in exam_configs if exam["category"]}),
+            "tag_count": len(load_tags()),
+            "tagged_questions": tagged_questions,
+            "untagged_questions": len(bank.questions) - tagged_questions,
+            "exhibit_questions": exhibit_questions,
             "history_count": len(metrics.get("history", [])) if metrics else 0,
             "global_accuracy": metrics.get("global_accuracy") if metrics else None,
             "has_metrics": bool(metrics),
+            "recent_attempts": recent_attempts,
+            "attempt_chart": attempt_chart,
+            "bank_chart": bank_chart,
+            "spaced_repetition_chart": spaced_repetition_chart,
+            "study_calendar": study_calendar,
+            "weak_exams": weak_exams,
         },
     )
 
 
 def bank(request: HttpRequest) -> HttpResponse:
-    bank_payload = get_bank()
+    bank_payload = get_visible_bank()
     categories = _exam_groups(bank_payload.questions)
     exam_count = sum(len(subcategory["exams"]) for category in categories for subcategory in category["subcategories"])
     return render(
@@ -80,12 +119,13 @@ def bank_exam(request: HttpRequest) -> HttpResponse:
     exam = request.GET.get("exam", "")
     category = request.GET.get("category", "")
     subcategory = request.GET.get("subcategory", "")
+    bank = get_visible_bank()
     questions = [
         q
-        for q in get_bank().questions
+        for q in bank.questions
         if _question_exam(q) == exam
-        and (not category or _exam_config(_question_exam(q), get_bank())["category"] == category)
-        and (not subcategory or _exam_config(_question_exam(q), get_bank())["subcategory"] == subcategory)
+        and (not category or _exam_config(_question_exam(q), bank)["category"] == category)
+        and (not subcategory or _exam_config(_question_exam(q), bank)["subcategory"] == subcategory)
     ]
     if not exam or not questions:
         messages.error(request, "Exame nao encontrado.")
@@ -95,8 +135,8 @@ def bank_exam(request: HttpRequest) -> HttpResponse:
         "webapp/bank_exam.html",
         {
             "exam": exam,
-            "category": category or _exam_config(exam, get_bank())["category"],
-            "subcategory": subcategory or _exam_config(exam, get_bank())["subcategory"],
+            "category": category or _exam_config(exam, bank)["category"],
+            "subcategory": subcategory or _exam_config(exam, bank)["subcategory"],
             "questions": questions,
         },
     )
@@ -212,6 +252,83 @@ def tags(request: HttpRequest) -> HttpResponse:
             "tags": [{"name": tag, "question_count": usage[tag]} for tag in load_tags()],
         },
     )
+
+
+def users(request: HttpRequest) -> HttpResponse:
+    return render(
+        request,
+        "webapp/users.html",
+        {
+            "users": User.objects.order_by("username"),
+        },
+    )
+
+
+@require_POST
+def user_add(request: HttpRequest) -> HttpResponse:
+    username = _normalize_tag(request.POST.get("username", ""))
+    password = request.POST.get("password", "")
+    email = request.POST.get("email", "").strip()
+    is_admin = bool(request.POST.get("is_admin"))
+    if not username or not password:
+        messages.error(request, "Informe usuario e senha.")
+        return redirect("webapp:users")
+    if User.objects.filter(username__iexact=username).exists():
+        messages.error(request, "Ja existe um usuario com esse login.")
+        return redirect("webapp:users")
+    user = User.objects.create_user(username=username, email=email, password=password)
+    user.is_staff = is_admin
+    user.is_superuser = is_admin
+    user.save()
+    messages.success(request, "Usuario criado.")
+    return redirect("webapp:users")
+
+
+@require_POST
+def user_update(request: HttpRequest) -> HttpResponse:
+    try:
+        user = _target_user(request)
+    except ValueError:
+        messages.error(request, "Usuario nao encontrado.")
+        return redirect("webapp:users")
+    username = _normalize_tag(request.POST.get("username", ""))
+    email = request.POST.get("email", "").strip()
+    is_active = bool(request.POST.get("is_active"))
+    is_admin = bool(request.POST.get("is_admin"))
+    if not username:
+        messages.error(request, "Informe o usuario.")
+        return redirect("webapp:users")
+    if User.objects.exclude(pk=user.pk).filter(username__iexact=username).exists():
+        messages.error(request, "Ja existe outro usuario com esse login.")
+        return redirect("webapp:users")
+    if user.pk == request.user.pk and (not is_active or not is_admin):
+        messages.error(request, "Nao e possivel desativar ou remover o admin do seu proprio usuario.")
+        return redirect("webapp:users")
+    user.username = username
+    user.email = email
+    user.is_active = is_active
+    user.is_staff = is_admin
+    user.is_superuser = is_admin
+    user.save()
+    messages.success(request, "Usuario atualizado.")
+    return redirect("webapp:users")
+
+
+@require_POST
+def user_password(request: HttpRequest) -> HttpResponse:
+    try:
+        user = _target_user(request)
+    except ValueError:
+        messages.error(request, "Usuario nao encontrado.")
+        return redirect("webapp:users")
+    password = request.POST.get("password", "")
+    if not password:
+        messages.error(request, "Informe a nova senha.")
+        return redirect("webapp:users")
+    user.set_password(password)
+    user.save()
+    messages.success(request, "Senha atualizada.")
+    return redirect("webapp:users")
 
 
 @require_POST
@@ -454,6 +571,7 @@ def exam_start(request: HttpRequest) -> HttpResponse:
         "flagged": [],
         "passing_score": passing_score,
         "option_orders": option_orders,
+        "started_at": datetime.now().isoformat(timespec="seconds"),
     }
     return redirect("webapp:exam_question", index=0)
 
@@ -532,8 +650,13 @@ def exam_finish(request: HttpRequest) -> HttpResponse:
             }
         )
 
+    finished_at = datetime.now()
+    started_at = _parse_datetime(exam.get("started_at")) or finished_at
+    duration_seconds = max(int((finished_at - started_at).total_seconds()), 0)
     attempt = {
-        "finished_at": datetime.now().isoformat(timespec="seconds"),
+        "started_at": started_at.isoformat(timespec="seconds"),
+        "finished_at": finished_at.isoformat(timespec="seconds"),
+        "duration_seconds": duration_seconds,
         "total": result.total,
         "answered": result.answered,
         "correct": result.correct,
@@ -548,7 +671,7 @@ def exam_finish(request: HttpRequest) -> HttpResponse:
 
 
 def reports(request: HttpRequest) -> HttpResponse:
-    return render(request, "webapp/reports.html", {"metrics": _template_metrics(get_reports().metrics())})
+    return render(request, "webapp/reports.html", {"metrics": _template_metrics(get_visible_reports().metrics())})
 
 
 def export_reports_csv(request: HttpRequest) -> HttpResponse:
@@ -705,6 +828,14 @@ def _selected_registered_tags(request: HttpRequest) -> list[str]:
     return [tag for tag in load_tags() if tag in registered and tag in request.POST.getlist("tags")]
 
 
+def _target_user(request: HttpRequest) -> User:
+    user_id = request.POST.get("user_id")
+    try:
+        return User.objects.get(pk=user_id)
+    except User.DoesNotExist as exc:
+        raise ValueError("Usuario nao encontrado.") from exc
+
+
 def _selected_exam_config(request: HttpRequest) -> dict:
     bank = get_bank()
     selected = _normalize_tag(request.POST.get("exam", ""))
@@ -817,6 +948,210 @@ def _performance_rows(items: dict, label_key: str, empty_label: str = "-") -> li
         for label, stats in items.items()
     ]
     return sorted(rows, key=lambda row: (row["accuracy"], -row["answered"]))
+
+
+def _attempt_chart(history: list[dict]) -> dict:
+    rows = []
+    total = len(history)
+    points = []
+    for index, attempt in enumerate(history, start=1):
+        percent = max(0, min(float(attempt.get("percent", 0) or 0), 100))
+        x = 50 if total == 1 else (index - 1) / (total - 1) * 100
+        y = 100 - percent
+        points.append(f"{x:.2f},{y:.2f}")
+        rows.append(
+            {
+                "label": f"#{index}",
+                "percent": percent,
+                "percent_height": round(percent),
+                "point_x": round(x, 2),
+                "point_y": round(y, 2),
+                "approved": attempt.get("approved", False),
+                "finished_at": attempt.get("finished_at", "-"),
+            }
+        )
+    return {"rows": rows, "points": " ".join(points)}
+
+
+def _bank_chart(total: int, tagged: int, exhibits: int) -> dict:
+    if not total:
+        return {
+            "tagged_percent": 0,
+            "exhibit_percent": 0,
+            "untagged": 0,
+            "without_exhibit": 0,
+        }
+    return {
+        "tagged_percent": round(tagged / total * 100),
+        "exhibit_percent": round(exhibits / total * 100),
+        "untagged": max(total - tagged, 0),
+        "without_exhibit": max(total - exhibits, 0),
+    }
+
+
+def _spaced_repetition_chart(questions: list, history: list[dict]) -> dict:
+    events_by_qid = defaultdict(list)
+    buried_qids = set()
+    for attempt in history:
+        for result in attempt.get("question_results", []):
+            qid = result.get("qid")
+            if not qid:
+                continue
+            if result.get("buried"):
+                buried_qids.add(qid)
+            events_by_qid[qid].append(bool(result.get("is_correct")))
+
+    counts = {
+        "new": 0,
+        "learning": 0,
+        "relearning": 0,
+        "young": 0,
+        "mature": 0,
+        "buried": 0,
+    }
+    for question in questions:
+        qid = getattr(question, "qid", "")
+        if qid in buried_qids:
+            counts["buried"] += 1
+            continue
+        events = events_by_qid.get(qid, [])
+        if not events:
+            counts["new"] += 1
+            continue
+        if not events[-1]:
+            if any(events[:-1]):
+                counts["relearning"] += 1
+            else:
+                counts["learning"] += 1
+            continue
+        correct_streak = 0
+        for event in reversed(events):
+            if not event:
+                break
+            correct_streak += 1
+        if correct_streak >= 4 and len(events) >= 4:
+            counts["mature"] += 1
+        elif correct_streak >= 2:
+            counts["young"] += 1
+        else:
+            counts["learning"] += 1
+
+    labels = [
+        ("new", "Novas", "Ainda nao praticadas.", "#56cfe1"),
+        ("learning", "Aprendizagem", "Em primeiros ciclos.", "#8b5cf6"),
+        ("relearning", "Reaprendizagem", "Erradas apos acertos anteriores.", "#f59f2f"),
+        ("young", "Jovens", "Acertos recentes.", "#35c98b"),
+        ("mature", "Maduras", "Sequencia consistente.", "#546a76"),
+        ("buried", "Buried", "Pausadas temporariamente.", "#9aa1a8"),
+    ]
+    max_count = max(counts.values()) or 1
+    total_count = len(questions)
+    cursor = 0.0
+    segments = []
+    rows = [
+        {
+            "key": key,
+            "label": label,
+            "description": description,
+            "count": counts[key],
+            "percent": (counts[key] / total_count * 100) if total_count else 0,
+            "width": round(counts[key] / max_count * 100),
+            "color": color,
+        }
+        for key, label, description, color in labels
+    ]
+    for row in rows:
+        if not total_count or not row["count"]:
+            continue
+        end = cursor + (row["count"] / total_count * 360)
+        segments.append(f'{row["color"]} {cursor:.2f}deg {end:.2f}deg')
+        cursor = end
+    pie_gradient = ", ".join(segments) if segments else "rgba(var(--bs-secondary-rgb), .12) 0deg 360deg"
+    return {"total": total_count, "rows": rows, "pie_style": f"--segments: conic-gradient({pie_gradient});"}
+
+
+def _study_calendar(history: list[dict]) -> dict:
+    today = date.today()
+    month_names = [
+        "janeiro",
+        "fevereiro",
+        "marco",
+        "abril",
+        "maio",
+        "junho",
+        "julho",
+        "agosto",
+        "setembro",
+        "outubro",
+        "novembro",
+        "dezembro",
+    ]
+    by_day = defaultdict(lambda: {"questions": 0, "seconds": 0})
+    for attempt in history:
+        finished_at = _parse_datetime(attempt.get("finished_at"))
+        if not finished_at:
+            continue
+        day = finished_at.date()
+        by_day[day]["questions"] += int(attempt.get("answered", 0) or len(attempt.get("question_results", [])))
+        by_day[day]["seconds"] += int(attempt.get("duration_seconds", 0) or 0)
+
+    active_days = {day for day, payload in by_day.items() if payload["seconds"] >= 600}
+    current_streak = 0
+    cursor = today
+    while cursor in active_days:
+        current_streak += 1
+        cursor -= timedelta(days=1)
+
+    _, days_in_month = calendar.monthrange(today.year, today.month)
+    first_weekday = date(today.year, today.month, 1).weekday()
+    day_cells = [{"empty": True} for _ in range(first_weekday)]
+    month_offensive_days = 0
+    month_questions = 0
+    max_questions = max((payload["questions"] for day, payload in by_day.items() if day.year == today.year and day.month == today.month), default=0)
+    for day_number in range(1, days_in_month + 1):
+        current = date(today.year, today.month, day_number)
+        payload = by_day[current]
+        questions = payload["questions"]
+        minutes = payload["seconds"] // 60
+        active = current in active_days
+        if active:
+            month_offensive_days += 1
+        month_questions += questions
+        intensity = 0
+        if questions and max_questions:
+            intensity = max(1, min(round(questions / max_questions * 4), 4))
+        day_cells.append(
+            {
+                "empty": False,
+                "day": day_number,
+                "questions": questions,
+                "minutes": minutes,
+                "active": active,
+                "today": current == today,
+                "intensity": intensity,
+                "title": f"{current.strftime('%d/%m/%Y')} - {questions} questoes - {minutes} min",
+            }
+        )
+    while len(day_cells) % 7:
+        day_cells.append({"empty": True})
+
+    weeks = [day_cells[index:index + 7] for index in range(0, len(day_cells), 7)]
+    return {
+        "month_label": f"{month_names[today.month - 1]} {today.year}",
+        "current_streak": current_streak,
+        "month_offensive_days": month_offensive_days,
+        "month_questions": month_questions,
+        "weeks": weeks,
+    }
+
+
+def _parse_datetime(value: object) -> datetime | None:
+    if not value:
+        return None
+    try:
+        return datetime.fromisoformat(str(value))
+    except ValueError:
+        return None
 
 
 def _accuracy(correct: int | float, answered: int | float) -> float:

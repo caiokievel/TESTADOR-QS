@@ -1,0 +1,39 @@
+{% load static %}
+<!doctype html>
+<html lang="pt-br" data-bs-theme="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Login - Testador QS</title>
+  <link rel="stylesheet" href="{% static 'materio/vendor/fonts/iconify-icons.css' %}">
+  <link rel="stylesheet" href="{% static 'materio/vendor/css/core.css' %}">
+  <link rel="stylesheet" href="{% static 'materio/css/demo.css' %}">
+  <link rel="stylesheet" href="{% static 'webapp/styles.css' %}">
+</head>
+<body class="login-page">
+  <main class="login-shell">
+    <section class="login-card">
+      <div class="login-brand">
+        <span class="text-primary"><i class="icon-base ri ri-graduation-cap-line icon-28px"></i></span>
+        <strong>Testador QS</strong>
+      </div>
+      <h1>Entrar</h1>
+      <p>Acesse seus exames e simulados.</p>
+      {% if form.errors %}
+        <div class="alert alert-danger" role="alert">Usuario ou senha invalidos.</div>
+      {% endif %}
+      <form method="post">
+        {% csrf_token %}
+        <label>Usuario
+          <input type="text" name="username" autocomplete="username" required autofocus>
+        </label>
+        <label>Senha
+          <input type="password" name="password" autocomplete="current-password" required>
+        </label>
+        <input type="hidden" name="next" value="{{ next }}">
+        <button class="primary" type="submit">Entrar</button>
+      </form>
+    </section>
+  </main>
+</body>
+</html>
