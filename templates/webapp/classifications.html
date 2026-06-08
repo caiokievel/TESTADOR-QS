@@ -1,10 +1,10 @@
 {% extends "webapp/base.html" %}
-{% block title %}Classificacoes - Testador QS{% endblock %}
+{% block title %}Classificações - Testador QS{% endblock %}
 {% block content %}
 <section class="page-head split">
   <div>
-    <h1>Classificacoes</h1>
-    <p>Categorias, subcategorias e exames pre-cadastrados.</p>
+    <h1>Classificações</h1>
+    <p>Categorias, subcategorias e exames pré-cadastrados.</p>
   </div>
 </section>
 <section class="settings-grid">
@@ -17,7 +17,7 @@
     </form>
     <div class="table-wrap flat">
       <table>
-        <thead><tr><th>Categoria</th><th>Questoes</th><th></th></tr></thead>
+        <thead><tr><th>Categoria</th><th>Questões</th><th></th></tr></thead>
         <tbody>
           {% for category in categories %}
             <tr>
@@ -42,12 +42,12 @@
     <h2>Subcategorias</h2>
     <form class="actions-row" action="{% url 'webapp:subcategory_add' %}" method="post">
       {% csrf_token %}
-      <input name="name" placeholder="Redes, Seguranca, Storage..." required>
+      <input name="name" placeholder="Redes, Segurança, Storage..." required>
       <button class="primary" type="submit">Adicionar</button>
     </form>
     <div class="table-wrap flat">
       <table>
-        <thead><tr><th>Subcategoria</th><th>Questoes</th><th></th></tr></thead>
+        <thead><tr><th>Subcategoria</th><th>Questões</th><th></th></tr></thead>
         <tbody>
           {% for subcategory in subcategories %}
             <tr>
@@ -72,6 +72,7 @@
     <h2>Exames</h2>
     <form class="stacked-form" action="{% url 'webapp:exam_add' %}" method="post">
       {% csrf_token %}
+      <input name="code" placeholder="Código do exame">
       <input name="name" placeholder="Nome do exame" required>
       <select name="category" required>
         <option value="">Categoria</option>
@@ -85,20 +86,41 @@
           <option value="{{ subcategory.name }}">{{ subcategory.name }}</option>
         {% endfor %}
       </select>
+      <div class="exam-blueprint-grid">
+        <input type="number" name="passing_score" min="0" max="100" step="0.1" placeholder="Nota mínima (%)" value="90">
+        <input type="number" name="duration_minutes" min="0" step="1" placeholder="Tempo (min)">
+        <input type="number" name="question_count" min="0" step="1" placeholder="Qtd. questões">
+      </div>
+      <fieldset class="domain-editor compact-domain-editor">
+        <legend>Domínios</legend>
+        <div class="domain-rows">
+          <div class="domain-row">
+            <input name="domain_name" placeholder="Domínio/tópico">
+            <input name="domain_weight" type="number" min="0" max="100" step="0.1" placeholder="Peso %">
+          </div>
+        </div>
+      </fieldset>
       <button class="primary" type="submit">Adicionar exame</button>
     </form>
     <div class="table-wrap flat">
       <table>
-        <thead><tr><th>Exame</th><th>Categoria</th><th>Subcategoria</th><th>Questoes</th><th></th></tr></thead>
+        <thead><tr><th>Exame</th><th>Categoria</th><th>Subcategoria</th><th>Blueprint</th><th>Questões</th><th></th></tr></thead>
         <tbody>
           {% for exam in exams %}
             <tr>
-              <td>{{ exam.name }}</td>
+              <td>
+                <strong>{{ exam.name }}</strong>
+                {% if exam.code %}<br><small>{{ exam.code }}</small>{% endif %}
+              </td>
               <td><span class="tag-pill">{{ exam.category }}</span></td>
               <td>{{ exam.subcategory|default:"-" }}</td>
-              <td>{{ exam.question_count }}</td>
+              <td>
+                {{ exam.passing_score|floatformat:1 }}% · {{ exam.duration_minutes }} min · {{ exam.question_count }} questões
+                <br><small>{{ exam.domains|length }} domínio{% if exam.domains|length != 1 %}s{% endif %}</small>
+              </td>
+              <td>{{ exam.registered_question_count }}</td>
               <td class="row-actions">
-                <button class="icon-action" type="button" data-bs-toggle="modal" data-bs-target="#exam-edit-modal" data-exam-name="{{ exam.name }}" data-exam-category="{{ exam.category }}" data-exam-subcategory="{{ exam.subcategory }}" title="Editar exame" aria-label="Editar {{ exam.name }}">
+                <button class="icon-action" type="button" data-bs-toggle="modal" data-bs-target="#exam-edit-modal" data-exam-code="{{ exam.code }}" data-exam-name="{{ exam.name }}" data-exam-category="{{ exam.category }}" data-exam-subcategory="{{ exam.subcategory }}" data-exam-passing-score="{{ exam.passing_score }}" data-exam-duration-minutes="{{ exam.duration_minutes }}" data-exam-question-count="{{ exam.question_count }}" data-exam-domains="{{ exam.domains_json|escape }}" title="Editar exame" aria-label="Editar {{ exam.name }}">
                   <i class="icon-base ri ri-pencil-line"></i>
                 </button>
                 <form action="{% url 'webapp:exam_delete' %}" method="post">
@@ -109,7 +131,7 @@
               </td>
             </tr>
           {% empty %}
-            <tr><td colspan="5">Nenhum exame cadastrado.</td></tr>
+            <tr><td colspan="6">Nenhum exame cadastrado.</td></tr>
           {% endfor %}
         </tbody>
       </table>
@@ -129,6 +151,9 @@
         <label>Exame
           <input name="name" id="exam-name" required>
         </label>
+        <label>Código do exame
+          <input name="code" id="exam-code">
+        </label>
         <label>Categoria
           <select name="category" id="exam-category" required>
             {% for category in categories %}
@@ -136,6 +161,22 @@
             {% endfor %}
           </select>
         </label>
+        <div class="exam-blueprint-grid">
+          <label>Nota mínima (%)
+            <input type="number" name="passing_score" id="exam-passing-score" min="0" max="100" step="0.1">
+          </label>
+          <label>Tempo de prova (min)
+            <input type="number" name="duration_minutes" id="exam-duration-minutes" min="0" step="1">
+          </label>
+          <label>Quantidade de questões
+            <input type="number" name="question_count" id="exam-question-count" min="0" step="1">
+          </label>
+        </div>
+        <fieldset class="domain-editor">
+          <legend>Domínios do exame</legend>
+          <div id="classification-domain-rows" class="domain-rows"></div>
+          <button type="button" class="button" id="classification-add-domain-row">Adicionar domínio</button>
+        </fieldset>
         <label>Subcategoria
           <select name="subcategory" id="exam-subcategory" required>
             {% for subcategory in subcategories %}
@@ -155,10 +196,58 @@
   const examEditModal = document.getElementById("exam-edit-modal");
   examEditModal.addEventListener("show.bs.modal", (event) => {
     const button = event.relatedTarget;
+    document.getElementById("exam-code").value = button.dataset.examCode || "";
     document.getElementById("exam-original-name").value = button.dataset.examName;
     document.getElementById("exam-name").value = button.dataset.examName;
     document.getElementById("exam-category").value = button.dataset.examCategory;
     document.getElementById("exam-subcategory").value = button.dataset.examSubcategory;
+    document.getElementById("exam-passing-score").value = button.dataset.examPassingScore || "90";
+    document.getElementById("exam-duration-minutes").value = button.dataset.examDurationMinutes || "0";
+    document.getElementById("exam-question-count").value = button.dataset.examQuestionCount || "0";
+    fillDomainRows("classification-domain-rows", button.dataset.examDomains || "[]");
   });
+
+  function addDomainRow(containerId, name = "", weight = "") {
+    const container = document.getElementById(containerId);
+    const row = document.createElement("div");
+    row.className = "domain-row";
+    row.innerHTML = `
+      <input name="domain_name" placeholder="Domínio/tópico" value="${escapeHtml(name)}">
+      <input name="domain_weight" type="number" min="0" max="100" step="0.1" placeholder="Peso %" value="${escapeHtml(weight)}">
+      <button type="button" class="icon-action" aria-label="Remover domínio">
+        <i class="icon-base ri ri-close-line"></i>
+      </button>
+    `;
+    row.querySelector("button").addEventListener("click", () => row.remove());
+    container.appendChild(row);
+  }
+
+  function fillDomainRows(containerId, payload) {
+    const container = document.getElementById(containerId);
+    container.innerHTML = "";
+    let domains = [];
+    try {
+      domains = JSON.parse(payload);
+    } catch {
+      domains = [];
+    }
+    if (!domains.length) {
+      addDomainRow(containerId);
+      return;
+    }
+    domains.forEach((domain) => addDomainRow(containerId, domain.name || "", domain.weight ?? ""));
+  }
+
+  function escapeHtml(value) {
+    return String(value).replace(/[&<>"']/g, (char) => ({
+      "&": "&amp;",
+      "<": "&lt;",
+      ">": "&gt;",
+      '"': "&quot;",
+      "'": "&#39;"
+    }[char]));
+  }
+
+  document.getElementById("classification-add-domain-row").addEventListener("click", () => addDomainRow("classification-domain-rows"));
 </script>
 {% endblock %}

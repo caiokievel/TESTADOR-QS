@@ -4,10 +4,10 @@
 <section class="page-head dashboard-head split">
   <div>
     <h1>Painel</h1>
-    <p>Visão geral do banco, desempenho e próximas ações.</p>
+    <p>Visão geral dos estudos, desempenho e próximas ações.</p>
   </div>
   <div class="actions-row dashboard-actions">
-    <a class="button primary" href="{% url 'webapp:exam_home' %}">
+    <a class="button primary" href="{% url 'webapp:bank' %}">
       <i class="icon-base ri ri-play-circle-line me-1"></i>
       Iniciar simulado
     </a>
@@ -176,7 +176,7 @@
       <div><span>Questões</span><strong>{{ question_count }}</strong></div>
     </div>
     <div class="actions-row">
-      <a class="button" href="{% url 'webapp:bank' %}">Banco</a>
+      <a class="button" href="{% url 'webapp:bank' %}">Estudos</a>
       <a class="button" href="{% url 'webapp:classifications' %}">Classificações</a>
       <a class="button" href="{% url 'webapp:tags' %}">Tags</a>
     </div>
@@ -216,7 +216,7 @@
         <h2>Repetição espaçada</h2>
         <span>{{ spaced_repetition_chart.learning_count }} questões em aprendizagem · {{ spaced_repetition_chart.review_today_count }} para revisar hoje</span>
       </div>
-      <a class="button primary" href="{% url 'webapp:exam_home' %}">Praticar agora</a>
+      <a class="button primary" href="{% url 'webapp:bank' %}">Praticar agora</a>
     </div>
     {% if spaced_repetition_chart.total %}
       <div class="spaced-pie-layout">

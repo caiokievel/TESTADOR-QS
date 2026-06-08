@@ -115,7 +115,7 @@
                 </td>
                 <td>
                   {# TODO: conectar ao detalhe/revisão da questão quando houver rota dedicada. #}
-                  <a class="button link-button" href="{% url 'webapp:exam_home' %}">Revisar</a>
+                  <a class="button link-button" href="{% url 'webapp:bank' %}">Revisar</a>
                 </td>
               </tr>
             {% empty %}
@@ -129,13 +129,14 @@
     {% include "webapp/report_performance_table.html" with title="Por categoria" rows=metrics.category_performance_rows empty_text="Sem dados por categoria." %}
     {% include "webapp/report_performance_table.html" with title="Por subcategoria" rows=metrics.subcategory_performance_rows empty_text="Sem dados por subcategoria." %}
     {% include "webapp/report_performance_table.html" with title="Por exame" rows=metrics.exam_performance_rows empty_text="Sem dados por exame." %}
+    {% include "webapp/report_performance_table.html" with title="Por domínio" rows=metrics.domain_performance_rows empty_text="Sem dados por domínio." %}
     {% include "webapp/report_performance_table.html" with title="Por tag" rows=metrics.tag_performance_rows empty_text="Sem dados por tag." %}
   </section>
 {% else %}
   <section class="notice empty-state">
     <h2>Nenhum simulado finalizado</h2>
     <p>Assim que um simulado for finalizado, os indicadores e rankings aparecem aqui.</p>
-    <a class="button primary" href="{% url 'webapp:exam_home' %}">Iniciar simulado</a>
+    <a class="button primary" href="{% url 'webapp:bank' %}">Iniciar simulado</a>
   </section>
 {% endif %}
 {% endblock %}

@@ -2,7 +2,7 @@
 {% block title %}Resultado - Testador QS{% endblock %}
 {% block content %}
 <section class="page-head">
-  <h1>Resultado</h1>
+  <h1>{% if is_study_mode %}Resumo do estudo{% else %}Resultado da prova real{% endif %}</h1>
   <p>{{ attempt.finished_at }}</p>
 </section>
 <section class="stats-grid">
@@ -10,32 +10,76 @@
   <article class="stat"><span>Acertos</span><strong>{{ result.correct }}</strong></article>
   <article class="stat"><span>Erros</span><strong>{{ result.wrong }}</strong></article>
   <article class="stat"><span>Percentual</span><strong>{{ result.percent|floatformat:2 }}%</strong></article>
+  {% if not is_study_mode %}
+    <article class="stat"><span>Nota mínima</span><strong>{{ attempt.passing_score|floatformat:1 }}%</strong></article>
+    {% if attempt.duration_minutes %}
+      <article class="stat"><span>Tempo de prova</span><strong>{{ attempt.duration_minutes }} min</strong></article>
+    {% endif %}
+  {% endif %}
 </section>
-<div class="result-banner {% if result.approved %}approved{% else %}failed{% endif %}">
-  {% if result.approved %}Aprovado{% else %}Reprovado{% endif %}
-</div>
+{% if not is_study_mode %}
+  <div class="result-banner {% if result.approved %}approved{% else %}failed{% endif %}">
+    {% if result.approved %}Aprovado{% else %}Reprovado{% endif %}
+  </div>
+{% else %}
+  <div class="result-banner approved">
+    Modo estudo finalizado. Use a revisão abaixo para reforçar os pontos de atenção.
+  </div>
+{% endif %}
 <section class="actions-row">
-  <a class="button primary" href="{% url 'webapp:exam_home' %}">Novo simulado</a>
-  <a class="button" href="{% url 'webapp:reports' %}">Ver relatorios</a>
+  <a class="button primary" href="{% url 'webapp:bank' %}">Novo estudo ou prova</a>
+  <a class="button" href="{% url 'webapp:reports' %}">Ver relatórios</a>
 </section>
+{% if attempt.domain_performance %}
+  <section class="report-panel wide">
+    <div class="report-panel-head">
+      <div>
+        <h2>Desempenho por domínio</h2>
+        <span>Resultado agrupado pelos tópicos do blueprint do exame.</span>
+      </div>
+    </div>
+    <div class="performance-list">
+      {% for row in attempt.domain_performance %}
+        <div class="performance-row">
+          <div class="performance-row-head">
+            <strong>{{ row.label }}</strong>
+            <em>{{ row.accuracy|floatformat:1 }}%</em>
+          </div>
+          <div class="metric-bar"><span style="width: {{ row.accuracy_width }}%"></span></div>
+          <span>{{ row.correct }} acerto{% if row.correct != 1 %}s{% endif %} em {{ row.answered }} resposta{% if row.answered != 1 %}s{% endif %}</span>
+        </div>
+      {% endfor %}
+    </div>
+  </section>
+{% endif %}
 <section class="review-list">
-  <h2>Revisao das questoes</h2>
+  <h2>Revisão das questões</h2>
   {% for item in attempt.question_results %}
     <article class="review-item">
       <div class="review-status {% if item.is_correct %}ok{% else %}miss{% endif %}">
         {% if item.is_correct %}Correta{% else %}Revisar{% endif %}
       </div>
       <div>
-        <h3>{{ item.qid }} - {{ item.category }}{% if item.subcategory %} / {{ item.subcategory }}{% endif %} / {{ item.exam }}</h3>
+        <h3>{{ item.qid }} - {{ item.category }}{% if item.subcategory %} / {{ item.subcategory }}{% endif %} / {{ item.exam }}{% if item.domain %} / {{ item.domain }}{% endif %}</h3>
         <p>{{ item.question }}</p>
         {% if item.exhibit_filename %}
           <figure class="question-exhibit">
-            <img src="{% url 'webapp:exhibit_image' item.exhibit_filename %}" alt="Imagem de apoio da questao">
+            <img src="{% url 'webapp:exhibit_image' item.exhibit_filename %}" alt="Imagem de apoio da questão">
           </figure>
         {% endif %}
+        <dl class="answer-summary">
+          <div>
+            <dt>Sua resposta</dt>
+            <dd>{{ item.user_answer }}</dd>
+          </div>
+          <div>
+            <dt>Resposta correta</dt>
+            <dd>{{ item.correct_answer }}</dd>
+          </div>
+        </dl>
         {% if item.explanation %}
           <div class="explanation">
-            <strong>Explanation</strong>
+            <strong>Explicação</strong>
             {% if item.explanation|slice:":8" == "https://" or item.explanation|slice:":7" == "http://" %}
               <a href="{{ item.explanation }}" target="_blank" rel="noopener noreferrer">{{ item.explanation }}</a>
             {% else %}

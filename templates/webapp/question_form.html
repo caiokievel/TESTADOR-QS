@@ -15,14 +15,22 @@
       <option value="drag_and_drop" {% if type == "drag_and_drop" %}selected{% endif %}>drag_and_drop</option>
     </select>
   </label>
-  <label>Exam
-    <select name="exam" required>
+  <label>Exame
+    <select name="exam" id="question-exam-select" required>
       <option value="">Selecione</option>
       {% for item in available_exams %}
         <option value="{{ item.name }}" {% if item.name == exam %}selected{% endif %}>{{ item.name }} - {{ item.category }}{% if item.subcategory %} / {{ item.subcategory }}{% endif %}</option>
       {% endfor %}
     </select>
     <a href="{% url 'webapp:classifications' %}">Gerenciar exames</a>
+  </label>
+  <label>Domínio do exame
+    <select name="domain" id="question-domain-select">
+      <option value="">Sem domínio</option>
+      {% for item in available_exam_domains %}
+        <option value="{{ item.name }}" data-exam="{{ item.exam }}" {% if item.name == domain and item.exam == exam %}selected{% endif %}>{{ item.exam }} - {{ item.name }} ({{ item.weight|floatformat:1 }}%)</option>
+      {% endfor %}
+    </select>
   </label>
   <label>Enunciado
     <textarea name="question" rows="3" required>{{ question }}</textarea>
@@ -44,12 +52,12 @@
       </label>
     {% endif %}
   </fieldset>
-  <label>Explanation
-    <textarea name="explanation" rows="4" placeholder="Link de documentacao ou texto curto de explicacao">{{ explanation }}</textarea>
+  <label>Explicação
+    <textarea name="explanation" rows="4" placeholder="Link de documentação ou texto curto de explicação">{{ explanation }}</textarea>
   </label>
   <label class="inline-check">
     <input type="checkbox" name="allow_multiple" value="1" {% if allow_multiple %}checked{% endif %}>
-    Permitir multiplas respostas para questoes multiple_choice
+    Permitir múltiplas respostas para questões multiple_choice
   </label>
   <div class="tag-dropdown-field">
     <div class="field-label">Tags</div>
@@ -88,6 +96,8 @@
   const tagSummary = document.getElementById("tag-dropdown-summary");
   const selectedTagList = document.getElementById("selected-tag-list");
   const tagCheckboxes = Array.from(document.querySelectorAll(".tag-checkbox"));
+  const examSelect = document.getElementById("question-exam-select");
+  const domainSelect = document.getElementById("question-domain-select");
 
   function showPreview(src) {
     preview.src = src;
@@ -136,5 +146,22 @@
 
   tagCheckboxes.forEach((checkbox) => checkbox.addEventListener("change", refreshTags));
   refreshTags();
+
+  function refreshDomains() {
+    const selectedExam = examSelect.value;
+    Array.from(domainSelect.options).forEach((option) => {
+      if (!option.dataset.exam) {
+        option.hidden = false;
+        return;
+      }
+      option.hidden = option.dataset.exam !== selectedExam;
+      if (option.hidden && option.selected) {
+        domainSelect.value = "";
+      }
+    });
+  }
+
+  examSelect.addEventListener("change", refreshDomains);
+  refreshDomains();
 </script>
 {% endblock %}

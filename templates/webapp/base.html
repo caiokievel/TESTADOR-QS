@@ -50,16 +50,10 @@
               <div>Painel</div>
             </a>
           </li>
-          <li class="menu-item {% if '/banco/' in request.path %}active{% endif %}">
+          <li class="menu-item {% if '/banco/' in request.path or '/simulado/' in request.path %}active{% endif %}">
             <a href="{% url 'webapp:bank' %}" class="menu-link">
               <i class="menu-icon icon-base ri ri-book-2-line"></i>
-              <div>Banco</div>
-            </a>
-          </li>
-          <li class="menu-item {% if '/simulado/' in request.path %}active{% endif %}">
-            <a href="{% url 'webapp:exam_home' %}" class="menu-link">
-              <i class="menu-icon icon-base ri ri-file-list-3-line"></i>
-              <div>Simulado</div>
+              <div>Estudos</div>
             </a>
           </li>
           <li class="menu-item {% if '/relatorios/' in request.path %}active{% endif %}">
@@ -77,7 +71,7 @@
           <li class="menu-item {% if '/classificacoes/' in request.path %}active{% endif %}">
             <a href="{% url 'webapp:classifications' %}" class="menu-link">
               <i class="menu-icon icon-base ri ri-folder-2-line"></i>
-              <div>Classificacoes</div>
+              <div>Classificações</div>
             </a>
           </li>
           <li class="menu-item {% if '/marketplace/' in request.path %}active{% endif %}">
@@ -90,7 +84,7 @@
             <li class="menu-item {% if '/usuarios/' in request.path %}active{% endif %}">
               <a href="{% url 'webapp:users' %}" class="menu-link">
                 <i class="menu-icon icon-base ri ri-user-settings-line"></i>
-                <div>Usuarios</div>
+                <div>Usuários</div>
               </a>
             </li>
           {% endif %}
@@ -108,7 +102,7 @@
             <div class="navbar-nav align-items-center">
               <div class="nav-item d-flex align-items-center">
                 <i class="icon-base ri ri-search-line icon-lg lh-0"></i>
-                <span class="navbar-caption">Simulador de provas e banco de questoes</span>
+                <span class="navbar-caption">Simulador de provas e banco de questões</span>
               </div>
             </div>
             <ul class="navbar-nav flex-row align-items-center ms-auto">
@@ -124,7 +118,7 @@
                 </span>
               </li>
               <li class="nav-item">
-                <a class="btn btn-primary btn-sm" href="{% url 'webapp:exam_home' %}">
+                <a class="btn btn-primary btn-sm" href="{% url 'webapp:bank' %}">
                   <i class="icon-base ri ri-play-circle-line me-1"></i>
                   Iniciar
                 </a>
@@ -160,7 +154,7 @@
             <div class="container-xxl">
               <div class="footer-container d-flex align-items-center justify-content-between py-4 flex-md-row flex-column">
                 <div class="text-body">Testador QS</div>
-                <div class="text-body-secondary small">UI baseada em Materio, licenca MIT.</div>
+                <div class="text-body-secondary small">UI baseada em Materio, licença MIT.</div>
               </div>
             </div>
           </footer>

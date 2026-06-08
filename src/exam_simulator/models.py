@@ -14,6 +14,7 @@ class BaseQuestion:
     question: str
     subcategory: str = ""
     exam: str = ""
+    domain: str = ""
     explanation: str = ""
     tags: List[str] = field(default_factory=list)
     exhibit_image: str = ""

@@ -4,11 +4,11 @@
 <section class="page-head split">
   <div>
     <h1>{{ exam }}</h1>
-    <p>{{ category }}{% if subcategory %} / {{ subcategory }}{% endif %} - {{ questions|length }} questoes cadastradas</p>
+    <p>{{ category }}{% if subcategory %} / {{ subcategory }}{% endif %} - {{ questions|length }} questões cadastradas</p>
   </div>
   <div class="actions-row">
-    <a class="button" href="{% url 'webapp:bank' %}">Voltar aos exames</a>
-    <a class="button primary" href="{% url 'webapp:question_new' %}">Adicionar questao</a>
+    <a class="button" href="{% url 'webapp:bank' %}">Voltar aos estudos</a>
+    <a class="button primary" href="{% url 'webapp:question_new' %}">Adicionar questão</a>
   </div>
 </section>
 <div class="table-wrap">

@@ -19,7 +19,7 @@
           <option value="{{ exam.name }}">{{ exam.name }} - {{ exam.category }} / {{ exam.subcategory|default:"-" }}</option>
         {% endfor %}
       </select>
-      <input name="description" placeholder="Descricao curta do pacote">
+      <input name="description" placeholder="Descrição curta do pacote">
       <button class="primary" type="submit">
         <i class="icon-base ri ri-upload-cloud-2-line me-1"></i>
         Publicar
@@ -39,10 +39,10 @@
         <i class="icon-base ri ri-store-2-line"></i>
       </div>
       <h2>{{ package.name }}</h2>
-      <p>{{ package.description|default:"Pacote de questoes publicado no marketplace interno." }}</p>
+      <p>{{ package.description|default:"Pacote de questões publicado no marketplace interno." }}</p>
       <div class="marketplace-meta">
-        <div><span>Questoes</span><strong>{{ package.question_count }}</strong></div>
-        <div><span>Novas para voce</span><strong>{{ package.importable_count }}</strong></div>
+        <div><span>Questões</span><strong>{{ package.question_count }}</strong></div>
+        <div><span>Novas para você</span><strong>{{ package.importable_count }}</strong></div>
       </div>
       <div class="actions-row">
         <form action="{% url 'webapp:marketplace_import' %}" method="post">
@@ -65,7 +65,7 @@
   {% empty %}
     <section class="notice empty-state">
       <h2>Nenhum exame publicado</h2>
-      <p>Quando o administrador publicar exames, eles aparecem aqui para importacao.</p>
+      <p>Quando o administrador publicar exames, eles aparecem aqui para importação.</p>
     </section>
   {% endfor %}
 </section>

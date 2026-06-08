@@ -29,6 +29,7 @@ from .services import (
     get_bank,
     get_reports,
     get_visible_bank,
+    get_visible_question_banks,
     get_visible_reports,
     load_categories,
     load_exams,
@@ -109,7 +110,10 @@ def dashboard(request: HttpRequest) -> HttpResponse:
 
 def bank(request: HttpRequest) -> HttpResponse:
     bank_payload = get_visible_bank()
-    categories = _exam_groups(bank_payload.questions)
+    own_bank = get_bank()
+    settings_payload = load_settings()
+    metrics = get_reports().metrics()
+    categories = _exam_groups(bank_payload.questions, bank_payload)
     exam_count = sum(len(subcategory["exams"]) for category in categories for subcategory in category["subcategories"])
     return render(
         request,
@@ -118,6 +122,13 @@ def bank(request: HttpRequest) -> HttpResponse:
             "categories": categories,
             "exam_count": exam_count,
             "question_count": len(bank_payload.questions),
+            "own_question_count": len(own_bank.questions),
+            "simulatable_exams": _exam_groups(own_bank.questions, own_bank),
+            "passing_score": settings_payload.get("passing_score", 90.0),
+            "active_exam": request.session.get("exam") is not None,
+            "study_plan": _study_plan(own_bank, metrics),
+            "available_categories": [{"name": item} for item in _available_categories(bank_payload)],
+            "available_subcategories": [{"name": item} for item in _available_subcategories(bank_payload)],
         },
     )
 
@@ -127,23 +138,29 @@ def bank_exam(request: HttpRequest) -> HttpResponse:
     category = request.GET.get("category", "")
     subcategory = request.GET.get("subcategory", "")
     bank = get_visible_bank()
-    questions = [
-        q
-        for q in bank.questions
-        if _question_exam(q) == exam
-        and (not category or _exam_config(_question_exam(q), bank)["category"] == category)
-        and (not subcategory or _exam_config(_question_exam(q), bank)["subcategory"] == subcategory)
-    ]
+    selected_exam = _exam_config(exam, bank)
+    normalized_category = _normalize_tag(category)
+    normalized_subcategory = _normalize_tag(subcategory)
+    questions = []
+    for question in bank.questions:
+        question_exam = _exam_config(_question_exam(question), bank)
+        if question_exam["name"].lower() != selected_exam["name"].lower():
+            continue
+        if normalized_category and question_exam["category"].lower() != normalized_category.lower():
+            continue
+        if normalized_subcategory and question_exam["subcategory"].lower() != normalized_subcategory.lower():
+            continue
+        questions.append(question)
     if not exam or not questions:
-        messages.error(request, "Exame nao encontrado.")
+        messages.error(request, "Exame não encontrado.")
         return redirect("webapp:bank")
     return render(
         request,
         "webapp/bank_exam.html",
         {
-            "exam": exam,
-            "category": category or _exam_config(exam, bank)["category"],
-            "subcategory": subcategory or _exam_config(exam, bank)["subcategory"],
+            "exam": selected_exam["name"],
+            "category": category or selected_exam["category"],
+            "subcategory": subcategory or selected_exam["subcategory"],
             "questions": questions,
         },
     )
@@ -162,14 +179,25 @@ def import_questions(request: HttpRequest) -> HttpResponse:
                 tmp.write(chunk)
             tmp_path = tmp.name
         bank = get_bank()
-        bank.load_json(tmp_path)
-        bank.save()
-        imported_tags = [tag for question in bank.questions for tag in question.tags]
+        imported_bank = QuestionBank(tmp_path)
+        existing_qids = {question.qid for question in bank.questions}
+        imported_questions = []
+        skipped = 0
+        for question in imported_bank.questions:
+            if question.qid in existing_qids:
+                skipped += 1
+                continue
+            bank.questions.append(question)
+            existing_qids.add(question.qid)
+            imported_questions.append(question)
+        if imported_questions:
+            bank.save()
+        imported_tags = [tag for question in imported_questions for tag in question.tags]
         save_tags([*load_tags(), *imported_tags])
-        save_categories([*load_categories(), *[question.category for question in bank.questions]])
-        save_subcategories([*load_subcategories(), *[question.subcategory for question in bank.questions]])
+        save_categories([*load_categories(), *[question.category for question in imported_questions]])
+        save_subcategories([*load_subcategories(), *[question.subcategory for question in imported_questions]])
         save_exams(_merged_exam_configs(bank))
-        messages.success(request, "Banco de questões importado.")
+        messages.success(request, f"{len(imported_questions)} questões importadas. {skipped} duplicadas ignoradas.")
     except Exception as exc:
         messages.error(request, f"Não foi possível importar: {exc}")
     finally:
@@ -235,7 +263,9 @@ def question_form(request: HttpRequest, qid: str | None = None) -> HttpResponse:
             "type": request.POST.get("type", getattr(existing, "type", "multiple_choice")),
             "qid": request.POST.get("qid", getattr(existing, "qid", "")),
             "exam": request.POST.get("exam", _question_exam(existing) if existing else ""),
+            "domain": request.POST.get("domain", getattr(existing, "domain", "")),
             "available_exams": _available_exams(bank),
+            "available_exam_domains": _available_exam_domains(bank),
             "question": request.POST.get("question", getattr(existing, "question", "")),
             "explanation": request.POST.get("explanation", getattr(existing, "explanation", "")),
             "allow_multiple": request.POST.get("allow_multiple", "1" if getattr(existing, "allow_multiple", False) else ""),
@@ -278,10 +308,10 @@ def user_add(request: HttpRequest) -> HttpResponse:
     email = request.POST.get("email", "").strip()
     is_admin = bool(request.POST.get("is_admin"))
     if not username or not password:
-        messages.error(request, "Informe usuario e senha.")
+        messages.error(request, "Informe usuário e senha.")
         return redirect("webapp:users")
     if User.objects.filter(username__iexact=username).exists():
-        messages.error(request, "Ja existe um usuario com esse login.")
+        messages.error(request, "Já existe um usuário com esse login.")
         return redirect("webapp:users")
     user = User.objects.create_user(username=username, email=email, password=password)
     user.is_staff = is_admin
@@ -303,13 +333,13 @@ def user_update(request: HttpRequest) -> HttpResponse:
     is_active = bool(request.POST.get("is_active"))
     is_admin = bool(request.POST.get("is_admin"))
     if not username:
-        messages.error(request, "Informe o usuario.")
+        messages.error(request, "Informe o usuário.")
         return redirect("webapp:users")
     if User.objects.exclude(pk=user.pk).filter(username__iexact=username).exists():
-        messages.error(request, "Ja existe outro usuario com esse login.")
+        messages.error(request, "Já existe outro usuário com esse login.")
         return redirect("webapp:users")
     if user.pk == request.user.pk and (not is_active or not is_admin):
-        messages.error(request, "Nao e possivel desativar ou remover o admin do seu proprio usuario.")
+        messages.error(request, "Não é possível desativar ou remover o admin do seu próprio usuário.")
         return redirect("webapp:users")
     user.username = username
     user.email = email
@@ -373,7 +403,7 @@ def tag_delete(request: HttpRequest) -> HttpResponse:
 
 
 def classifications(request: HttpRequest) -> HttpResponse:
-    bank = get_bank()
+    bank = get_visible_bank()
     category_usage = defaultdict(int)
     subcategory_usage = defaultdict(int)
     exam_usage = defaultdict(int)
@@ -389,7 +419,7 @@ def classifications(request: HttpRequest) -> HttpResponse:
         {
             "categories": [{"name": item, "question_count": category_usage[item]} for item in _available_categories(bank)],
             "subcategories": [{"name": item, "question_count": subcategory_usage[item]} for item in _available_subcategories(bank)],
-            "exams": [{**item, "question_count": exam_usage[item["name"]]} for item in _available_exams(bank)],
+            "exams": [{**item, "registered_question_count": exam_usage[item["name"]], "domains_json": json.dumps(item.get("domains", []), ensure_ascii=False)} for item in _available_exams(bank)],
         },
     )
 
@@ -431,9 +461,14 @@ def marketplace_publish(request: HttpRequest) -> HttpResponse:
     exam_config = _exam_config(exam_name, bank)
     package = {
         "id": uuid.uuid4().hex,
+        "code": exam_config.get("code", ""),
         "name": exam_config["name"],
         "category": exam_config["category"],
         "subcategory": exam_config["subcategory"],
+        "passing_score": exam_config.get("passing_score", 90.0),
+        "duration_minutes": exam_config.get("duration_minutes", 0),
+        "question_count": exam_config.get("question_count", 0),
+        "domains": exam_config.get("domains", []),
         "description": description,
         "created_at": datetime.now().isoformat(timespec="seconds"),
         "questions": [_question_to_dict(question) for question in questions],
@@ -466,7 +501,21 @@ def marketplace_import(request: HttpRequest) -> HttpResponse:
         save_tags([*load_tags(), *[tag for question in bank.questions for tag in question.tags]])
         save_categories([*load_categories(), package.get("category", "")])
         save_subcategories([*load_subcategories(), package.get("subcategory", "")])
-        save_exams([*load_exams(), {"name": package["name"], "category": package.get("category", ""), "subcategory": package.get("subcategory", "")}])
+        save_exams(
+            [
+                *load_exams(),
+                {
+                    "code": package.get("code", ""),
+                    "name": package["name"],
+                    "category": package.get("category", ""),
+                    "subcategory": package.get("subcategory", ""),
+                    "passing_score": package.get("passing_score", 90.0),
+                    "duration_minutes": package.get("duration_minutes", 0),
+                    "question_count": package.get("question_count", 0),
+                    "domains": package.get("domains", []),
+                },
+            ]
+        )
     messages.success(request, f"{imported} questões importadas. {skipped} já existiam no seu banco.")
     return redirect("webapp:marketplace")
 
@@ -504,7 +553,7 @@ def category_delete(request: HttpRequest) -> HttpResponse:
         messages.error(request, "Categoria invalida.")
         return redirect("webapp:classifications")
     if any(exam["category"] == name for exam in _available_exams(get_bank())):
-        messages.error(request, "Nao e possivel remover uma categoria em uso.")
+        messages.error(request, "Não é possível remover uma categoria em uso.")
         return redirect("webapp:classifications")
     save_categories([item for item in load_categories() if item != name])
     messages.success(request, "Categoria removida.")
@@ -533,7 +582,7 @@ def subcategory_delete(request: HttpRequest) -> HttpResponse:
         messages.error(request, "Subcategoria invalida.")
         return redirect("webapp:classifications")
     if any(exam["subcategory"] == name for exam in _available_exams(get_bank())):
-        messages.error(request, "Nao e possivel remover uma subcategoria em uso.")
+        messages.error(request, "Não é possível remover uma subcategoria em uso.")
         return redirect("webapp:classifications")
     save_subcategories([item for item in load_subcategories() if item != name])
     messages.success(request, "Subcategoria removida.")
@@ -543,9 +592,10 @@ def subcategory_delete(request: HttpRequest) -> HttpResponse:
 @require_POST
 def exam_add(request: HttpRequest) -> HttpResponse:
     bank = get_bank()
-    name = _normalize_tag(request.POST.get("name", ""))
-    category = _normalize_tag(request.POST.get("category", ""))
-    subcategory = _normalize_tag(request.POST.get("subcategory", ""))
+    replacement = _exam_payload_from_post(request)
+    name = replacement["name"]
+    category = replacement["category"]
+    subcategory = replacement["subcategory"]
     if not name:
         messages.error(request, "Informe o nome do exame.")
         return redirect("webapp:classifications")
@@ -553,7 +603,6 @@ def exam_add(request: HttpRequest) -> HttpResponse:
         messages.error(request, "Selecione categoria e subcategoria cadastradas.")
         return redirect("webapp:classifications")
     current = load_exams()
-    replacement = {"name": name, "category": category, "subcategory": subcategory}
     save_exams([*[item for item in current if item["name"].lower() != name.lower()], replacement])
     messages.success(request, "Exame salvo.")
     return redirect("webapp:classifications")
@@ -561,49 +610,74 @@ def exam_add(request: HttpRequest) -> HttpResponse:
 
 @require_POST
 def exam_update(request: HttpRequest) -> HttpResponse:
-    bank = get_bank()
+    visible_bank = get_visible_bank()
+    redirect_to = _post_redirect_target(request, "webapp:classifications")
     original_name = _normalize_tag(request.POST.get("original_name", ""))
-    name = _normalize_tag(request.POST.get("name", ""))
-    category = _normalize_tag(request.POST.get("category", ""))
-    subcategory = _normalize_tag(request.POST.get("subcategory", ""))
+    updated = _exam_payload_from_post(request)
+    name = updated["name"]
+    category = updated["category"]
+    subcategory = updated["subcategory"]
     if not original_name or not name:
-        messages.error(request, "Exame invalido.")
-        return redirect("webapp:classifications")
-    if category not in _available_categories(bank) or subcategory not in _available_subcategories(bank):
+        messages.error(request, "Exame inválido.")
+        return redirect(redirect_to)
+    if category not in _available_categories(visible_bank) or subcategory not in _available_subcategories(visible_bank):
         messages.error(request, "Selecione categoria e subcategoria cadastradas.")
-        return redirect("webapp:classifications")
-    if original_name.lower() != name.lower() and any(exam["name"].lower() == name.lower() for exam in _available_exams(bank)):
-        messages.error(request, "Ja existe um exame com esse nome.")
-        return redirect("webapp:classifications")
+        return redirect(redirect_to)
+    if original_name.lower() != name.lower() and any(exam["name"].lower() == name.lower() for exam in _available_exams(visible_bank)):
+        messages.error(request, "Já existe um exame com esse nome.")
+        return redirect(redirect_to)
 
-    updated = {"name": name, "category": category, "subcategory": subcategory}
     save_exams([*[item for item in load_exams() if item["name"].lower() != original_name.lower()], updated])
 
     changed = False
-    for question in bank.questions:
-        if _question_exam(question).lower() == original_name.lower():
-            question.exam = name
-            question.category = category
-            question.subcategory = subcategory
-            changed = True
-    if changed:
-        bank.save()
+    for question_bank in get_visible_question_banks():
+        bank_changed = False
+        for question in question_bank.questions:
+            if _question_exam(question).lower() == original_name.lower():
+                question.exam = name
+                question.category = category
+                question.subcategory = subcategory
+                if getattr(question, "domain", "") and question.domain not in [domain["name"] for domain in updated["domains"]]:
+                    question.domain = ""
+                changed = True
+                bank_changed = True
+        if bank_changed:
+            question_bank.save()
     messages.success(request, "Exame atualizado.")
-    return redirect("webapp:classifications")
+    return redirect(redirect_to)
 
 
 @require_POST
 def exam_delete(request: HttpRequest) -> HttpResponse:
+    redirect_to = _post_redirect_target(request, "webapp:classifications")
     name = _normalize_tag(request.POST.get("name", ""))
+    delete_questions = request.POST.get("delete_questions") == "1"
     if not name:
-        messages.error(request, "Exame invalido.")
-        return redirect("webapp:classifications")
-    if any(_question_exam(question) == name for question in get_bank().questions):
-        messages.error(request, "Nao e possivel remover um exame em uso.")
-        return redirect("webapp:classifications")
+        messages.error(request, "Exame inválido.")
+        return redirect(redirect_to)
+    question_banks = get_visible_question_banks()
+    exam_in_use = any(
+        _question_exam(question).lower() == name.lower()
+        for question_bank in question_banks
+        for question in question_bank.questions
+    )
+    if exam_in_use:
+        if not delete_questions:
+            messages.error(request, "Não é possível remover um exame em uso.")
+            return redirect(redirect_to)
+        removed = 0
+        for question_bank in question_banks:
+            before = len(question_bank.questions)
+            question_bank.questions = [question for question in question_bank.questions if _question_exam(question).lower() != name.lower()]
+            bank_removed = before - len(question_bank.questions)
+            if bank_removed:
+                question_bank.save()
+                removed += bank_removed
+        messages.success(request, f"Exame removido com {removed} questões.")
+    else:
+        messages.success(request, "Exame removido.")
     save_exams([item for item in load_exams() if item["name"] != name])
-    messages.success(request, "Exame removido.")
-    return redirect("webapp:classifications")
+    return redirect(redirect_to)
 
 
 @require_POST
@@ -627,17 +701,7 @@ def exhibit_image(request: HttpRequest, filename: str) -> FileResponse:
 
 
 def exam_home(request: HttpRequest) -> HttpResponse:
-    bank = get_bank()
-    settings_payload = load_settings()
-    return render(
-        request,
-        "webapp/exam_home.html",
-        {
-            "question_count": len(bank.questions),
-            "passing_score": settings_payload.get("passing_score", 90.0),
-            "active_exam": request.session.get("exam") is not None,
-        },
-    )
+    return redirect("webapp:bank")
 
 
 @require_POST
@@ -645,29 +709,53 @@ def exam_start(request: HttpRequest) -> HttpResponse:
     bank = get_bank()
     if not bank.questions:
         messages.error(request, "Cadastre ou importe questões primeiro.")
-        return redirect("webapp:exam_home")
+        return redirect("webapp:bank")
 
+    selected_exam = _normalize_tag(request.POST.get("exam", ""))
+    if not selected_exam:
+        messages.error(request, "Selecione um exame para iniciar o simulado.")
+        return redirect("webapp:bank")
+
+    exam_config = _exam_config(selected_exam, bank)
+    questions = [question for question in bank.questions if _exam_config(_question_exam(question), bank)["name"].lower() == selected_exam.lower()]
+    if not questions:
+        messages.error(request, "O exame selecionado não possui questões no seu banco.")
+        return redirect("webapp:bank")
+
+    mode = request.POST.get("mode", "real")
+    if mode not in {"study", "real"}:
+        mode = "real"
     passing_score = float(request.POST.get("passing_score") or 90.0)
-    save_settings({"passing_score": passing_score})
-    qids = [q.qid for q in bank.questions]
-    random.shuffle(qids)
+    if mode == "real":
+        save_settings({"passing_score": passing_score})
+        questions = _weighted_exam_questions(questions, exam_config)
+    _start_exam_session(request, bank, questions, passing_score, selected_exam, mode=mode, exam_config=exam_config)
+    return redirect("webapp:exam_question", index=0)
 
-    option_orders = {}
-    for qid in qids:
-        q = bank.find_by_id(qid)
-        if q and q.type == "multiple_choice":
-            options = q.options[:]
-            random.shuffle(options)
-            option_orders[qid] = options
 
-    request.session["exam"] = {
-        "qids": qids,
-        "answers": {},
-        "flagged": [],
-        "passing_score": passing_score,
-        "option_orders": option_orders,
-        "started_at": datetime.now().isoformat(timespec="seconds"),
-    }
+@require_POST
+def study_plan_start(request: HttpRequest) -> HttpResponse:
+    bank = get_bank()
+    if not bank.questions:
+        messages.error(request, "Cadastre ou importe questões primeiro.")
+        return redirect("webapp:bank")
+
+    plan = _study_plan(bank, get_reports().metrics())
+    tags = [row["tag"] for row in plan["rows"]]
+    if not tags:
+        messages.error(request, "Ainda não há tags suficientes para montar um plano personalizado.")
+        return redirect("webapp:bank")
+
+    tag_set = set(tags)
+    questions = [question for question in bank.questions if tag_set.intersection(question.tags)]
+    if not questions:
+        messages.error(request, "As tags recomendadas ainda não possuem questões no seu banco.")
+        return redirect("webapp:bank")
+
+    random.shuffle(questions)
+    question_limit = max(plan["recommended_count"], 1)
+    passing_score = float(load_settings().get("passing_score", 90.0))
+    _start_exam_session(request, bank, questions[:question_limit], passing_score, "Plano de estudos", tags, mode="study")
     return redirect("webapp:exam_question", index=0)
 
 
@@ -675,7 +763,7 @@ def exam_question(request: HttpRequest, index: int) -> HttpResponse:
     exam = request.session.get("exam")
     if not exam:
         messages.error(request, "Inicie um simulado primeiro.")
-        return redirect("webapp:exam_home")
+        return redirect("webapp:bank")
 
     qids = exam["qids"]
     if index < 0 or index >= len(qids):
@@ -685,17 +773,30 @@ def exam_question(request: HttpRequest, index: int) -> HttpResponse:
     question = bank.find_by_id(qids[index])
     if question is None:
         messages.error(request, "A questão do simulado não existe mais no banco.")
-        return redirect("webapp:exam_home")
+        return redirect("webapp:bank")
 
+    mode = exam.get("mode", "real")
+    feedback = None
     if request.method == "POST":
+        action = request.POST.get("action")
+        if mode == "study" and action == "next_after_feedback":
+            return redirect("webapp:exam_question", index=min(index + 1, len(qids) - 1))
+        if mode == "study" and action == "finish_after_feedback":
+            return redirect("webapp:exam_finish")
+        if mode == "study" and action == "previous":
+            return redirect("webapp:exam_question", index=max(index - 1, 0))
+
         _save_exam_answer(request, exam, question)
         request.session["exam"] = exam
-        action = request.POST.get("action")
-        if action == "finish":
+        if mode == "study":
+            answer = exam.get("answers", {}).get(question.qid)
+            feedback = _question_feedback(question, answer)
+        elif action == "finish":
             return redirect("webapp:exam_finish")
         if action == "previous":
             return redirect("webapp:exam_question", index=max(index - 1, 0))
-        return redirect("webapp:exam_question", index=min(index + 1, len(qids) - 1))
+        if mode == "real":
+            return redirect("webapp:exam_question", index=min(index + 1, len(qids) - 1))
 
     answer = exam.get("answers", {}).get(question.qid)
     options = exam.get("option_orders", {}).get(question.qid, getattr(question, "options", []))
@@ -709,6 +810,10 @@ def exam_question(request: HttpRequest, index: int) -> HttpResponse:
             "answer": answer,
             "options": options,
             "flagged": question.qid in exam.get("flagged", []),
+            "mode": mode,
+            "is_study_mode": mode == "study",
+            "is_last": index >= len(qids) - 1,
+            "feedback": feedback,
             "exam_config": _exam_config(_question_exam(question), bank),
             "exhibit_filename": _exhibit_filename(question.exhibit_image),
             "previous_url": reverse("webapp:exam_question", kwargs={"index": max(index - 1, 0)}),
@@ -720,10 +825,11 @@ def exam_question(request: HttpRequest, index: int) -> HttpResponse:
 def exam_finish(request: HttpRequest) -> HttpResponse:
     exam = request.session.get("exam")
     if not exam:
-        return redirect("webapp:exam_home")
+        return redirect("webapp:bank")
 
     bank = get_bank()
     questions = [q for qid in exam["qids"] if (q := bank.find_by_id(qid)) is not None]
+    mode = exam.get("mode", "real")
     simulator = Simulator(questions, exam.get("passing_score", 90.0))
     simulator.answers = exam.get("answers", {})
     result = simulator.evaluate()
@@ -736,12 +842,15 @@ def exam_finish(request: HttpRequest) -> HttpResponse:
                 "category": exam_config["category"],
                 "subcategory": exam_config["subcategory"],
                 "exam": exam_config["name"],
+                "domain": getattr(q, "domain", ""),
                 "question": q.question,
                 "explanation": q.explanation,
                 "tags": q.tags,
                 "exhibit_image": q.exhibit_image,
                 "exhibit_filename": _exhibit_filename(q.exhibit_image),
                 "is_correct": simulator._is_correct(q, simulator.answers.get(q.qid)),
+                "user_answer": _answer_label(q, simulator.answers.get(q.qid)),
+                "correct_answer": _correct_answer_label(q),
             }
         )
 
@@ -758,11 +867,17 @@ def exam_finish(request: HttpRequest) -> HttpResponse:
         "wrong": result.wrong,
         "percent": result.percent,
         "approved": result.approved,
+        "passing_score": exam.get("passing_score", 90.0),
+        "duration_minutes": exam.get("duration_minutes", 0),
+        "configured_question_count": exam.get("configured_question_count", 0),
+        "mode": mode,
         "question_results": details,
+        "domain_performance": _attempt_domain_performance(details),
     }
-    get_reports().save_attempt(attempt)
+    if mode == "real":
+        get_reports().save_attempt(attempt)
     request.session.pop("exam", None)
-    return render(request, "webapp/exam_result.html", {"result": result, "attempt": attempt})
+    return render(request, "webapp/exam_result.html", {"result": result, "attempt": attempt, "is_study_mode": mode == "study"})
 
 
 def reports(request: HttpRequest) -> HttpResponse:
@@ -782,11 +897,11 @@ def export_reports_csv(request: HttpRequest) -> HttpResponse:
     response = HttpResponse(content_type="text/csv")
     response["Content-Disposition"] = 'attachment; filename="reports.csv"'
     writer = csv.writer(response)
-    writer.writerow(["qid", "answers", "correct", "wrong", "accuracy_percent"])
+    writer.writerow(["qid", "exam", "domain", "answers", "correct", "wrong", "accuracy_percent"])
     for qid, stats in metrics.get("question_stats", {}).items():
         answers = stats["answers"]
         acc = (stats["correct"] / answers * 100) if answers else 0
-        writer.writerow([qid, answers, stats["correct"], stats["wrong"], f"{acc:.2f}"])
+        writer.writerow([qid, stats.get("exam", ""), stats.get("domain", ""), answers, stats["correct"], stats["wrong"], f"{acc:.2f}"])
     return response
 
 
@@ -801,6 +916,7 @@ def _question_from_post(request: HttpRequest, existing=None):
     qtype = request.POST.get("type")
     exhibit_image = _resolve_exhibit_image(request, existing)
     exam_config = _selected_exam_config(request)
+    domain = _selected_exam_domain(request, exam_config)
     if qtype == "multiple_choice":
         return MultipleChoiceQuestion(
             qid=request.POST["qid"].strip(),
@@ -808,6 +924,7 @@ def _question_from_post(request: HttpRequest, existing=None):
             category=exam_config["category"],
             subcategory=exam_config["subcategory"],
             exam=exam_config["name"],
+            domain=domain,
             question=request.POST["question"].strip(),
             tags=_selected_registered_tags(request),
             exhibit_image=exhibit_image,
@@ -823,6 +940,7 @@ def _question_from_post(request: HttpRequest, existing=None):
             category=exam_config["category"],
             subcategory=exam_config["subcategory"],
             exam=exam_config["name"],
+            domain=domain,
             question=request.POST["question"].strip(),
             tags=_selected_registered_tags(request),
             exhibit_image=exhibit_image,
@@ -842,6 +960,7 @@ def _question_to_dict(question) -> dict:
         "category": exam_config["category"],
         "subcategory": exam_config["subcategory"],
         "exam": exam_config["name"],
+        "domain": getattr(question, "domain", ""),
         "question": question.question,
         "explanation": question.explanation,
         "tags": question.tags,
@@ -944,6 +1063,75 @@ def _selected_registered_tags(request: HttpRequest) -> list[str]:
     return [tag for tag in load_tags() if tag in registered and tag in request.POST.getlist("tags")]
 
 
+def _start_exam_session(
+    request: HttpRequest,
+    bank,
+    questions: list,
+    passing_score: float,
+    selected_exam: str,
+    focus_tags: list[str] | None = None,
+    mode: str = "real",
+    exam_config: dict | None = None,
+) -> None:
+    qids = [question.qid for question in questions]
+    random.shuffle(qids)
+
+    option_orders = {}
+    for qid in qids:
+        question = bank.find_by_id(qid)
+        if question and question.type == "multiple_choice":
+            options = question.options[:]
+            random.shuffle(options)
+            option_orders[qid] = options
+
+    request.session["exam"] = {
+        "qids": qids,
+        "answers": {},
+        "flagged": [],
+        "passing_score": passing_score,
+        "duration_minutes": (exam_config or {}).get("duration_minutes", 0),
+        "configured_question_count": (exam_config or {}).get("question_count", 0),
+        "mode": mode,
+        "selected_exam": selected_exam,
+        "focus_tags": focus_tags or [],
+        "option_orders": option_orders,
+        "started_at": datetime.now().isoformat(timespec="seconds"),
+    }
+
+
+def _question_feedback(question, answer: object) -> dict:
+    simulator = Simulator([question])
+    is_correct = simulator._is_correct(question, answer)
+    return {
+        "is_correct": is_correct,
+        "user_answer": _answer_label(question, answer),
+        "correct_answer": _correct_answer_label(question),
+        "explanation": getattr(question, "explanation", ""),
+    }
+
+
+def _answer_label(question, answer: object) -> str:
+    if answer is None or answer == [] or answer == {}:
+        return "Sem resposta"
+    if isinstance(question, MultipleChoiceQuestion):
+        if isinstance(answer, list):
+            return "; ".join(str(item) for item in answer) or "Sem resposta"
+        return str(answer)
+    if isinstance(question, DragAndDropQuestion) and isinstance(answer, dict):
+        rows = [f"{item} -> {target or 'sem destino'}" for item, target in answer.items()]
+        return "; ".join(rows) or "Sem resposta"
+    return str(answer)
+
+
+def _correct_answer_label(question) -> str:
+    if isinstance(question, MultipleChoiceQuestion):
+        return "; ".join(question.correct_answers) or "Sem resposta correta cadastrada"
+    if isinstance(question, DragAndDropQuestion):
+        rows = [f"{item} -> {target}" for item, target in question.correct_mapping.items()]
+        return "; ".join(rows) or "Sem resposta correta cadastrada"
+    return "Sem resposta correta cadastrada"
+
+
 def _target_user(request: HttpRequest) -> User:
     user_id = request.POST.get("user_id")
     try:
@@ -961,8 +1149,54 @@ def _selected_exam_config(request: HttpRequest) -> dict:
     raise ValueError("Selecione um exame cadastrado.")
 
 
+def _selected_exam_domain(request: HttpRequest, exam_config: dict) -> str:
+    selected = _normalize_tag(request.POST.get("domain", ""))
+    if not selected:
+        return ""
+    domains = [domain["name"] for domain in exam_config.get("domains", [])]
+    if domains and selected not in domains:
+        raise ValueError("Selecione um domínio cadastrado para este exame.")
+    return selected
+
+
+def _exam_payload_from_post(request: HttpRequest) -> dict:
+    return _normalize_exam_config(
+        {
+            "code": request.POST.get("code", ""),
+            "name": request.POST.get("name", ""),
+            "category": request.POST.get("category", ""),
+            "subcategory": request.POST.get("subcategory", ""),
+            "passing_score": request.POST.get("passing_score", 90.0),
+            "duration_minutes": request.POST.get("duration_minutes", 0),
+            "question_count": request.POST.get("question_count", 0),
+            "domains": _domains_from_post(request),
+        }
+    )
+
+
+def _domains_from_post(request: HttpRequest) -> list[dict]:
+    rows = []
+    for name, weight in zip(request.POST.getlist("domain_name"), request.POST.getlist("domain_weight")):
+        domain_name = _normalize_tag(name)
+        if not domain_name:
+            continue
+        try:
+            domain_weight = float(weight)
+        except (TypeError, ValueError):
+            domain_weight = 0
+        rows.append({"name": domain_name, "weight": max(min(domain_weight, 100), 0)})
+    return rows
+
+
 def _normalize_tag(tag: object) -> str:
     return " ".join(str(tag).strip().split())
+
+
+def _post_redirect_target(request: HttpRequest, fallback_url_name: str) -> str:
+    target = request.POST.get("next", "")
+    if target.startswith("/") and not target.startswith("//"):
+        return target
+    return reverse(fallback_url_name)
 
 
 def _available_categories(bank) -> list[str]:
@@ -977,26 +1211,83 @@ def _available_exams(bank) -> list[dict]:
     return _merged_exam_configs(bank)
 
 
+def _available_exam_domains(bank) -> list[dict]:
+    rows = []
+    for exam in _available_exams(bank):
+        for domain in exam.get("domains", []):
+            rows.append({"exam": exam["name"], "name": domain["name"], "weight": domain["weight"]})
+    return rows
+
+
 def _merged_exam_configs(bank) -> list[dict]:
-    by_name = {item["name"].lower(): item for item in load_exams()}
+    by_name = {item["name"].lower(): _normalize_exam_config(item) for item in load_exams()}
     for question in bank.questions:
         name = _question_exam(question)
-        if not name or name.lower() in by_name:
+        if not name:
             continue
-        by_name[name.lower()] = {
-            "name": name,
-            "category": question.category or "General",
-            "subcategory": question.subcategory or "",
-        }
+        key = name.lower()
+        if key not in by_name:
+            by_name[key] = _normalize_exam_config(
+                {
+                    "name": name,
+                    "category": question.category or "General",
+                    "subcategory": question.subcategory or "",
+                }
+            )
+        domain = _normalize_tag(getattr(question, "domain", ""))
+        if domain and domain not in [item["name"] for item in by_name[key]["domains"]]:
+            by_name[key]["domains"].append({"name": domain, "weight": 0})
     return sorted(by_name.values(), key=lambda item: item["name"].lower())
 
 
 def _exam_config(name: str, bank) -> dict:
     normalized = _normalize_tag(name)
     for item in _merged_exam_configs(bank):
-        if item["name"] == normalized:
+        if item["name"].lower() == normalized.lower():
             return item
-    return {"name": normalized or "General", "category": "General", "subcategory": ""}
+    return _normalize_exam_config({"name": normalized or "General", "category": "General", "subcategory": ""})
+
+
+def _normalize_exam_config(item: dict) -> dict:
+    domains = []
+    seen = set()
+    raw_domains = item.get("domains", [])
+    if not isinstance(raw_domains, list):
+        raw_domains = []
+    for domain in raw_domains:
+        if not isinstance(domain, dict):
+            continue
+        name = _normalize_tag(domain.get("name", ""))
+        if not name or name.lower() in seen:
+            continue
+        seen.add(name.lower())
+        try:
+            weight = float(domain.get("weight", 0))
+        except (TypeError, ValueError):
+            weight = 0
+        domains.append({"name": name, "weight": max(min(weight, 100), 0)})
+    try:
+        passing_score = float(item.get("passing_score", 90.0))
+    except (TypeError, ValueError):
+        passing_score = 90.0
+    try:
+        duration_minutes = max(int(item.get("duration_minutes", 0)), 0)
+    except (TypeError, ValueError):
+        duration_minutes = 0
+    try:
+        question_count = max(int(item.get("question_count", 0)), 0)
+    except (TypeError, ValueError):
+        question_count = 0
+    return {
+        "code": _normalize_tag(item.get("code", "")),
+        "name": _normalize_tag(item.get("name", "")),
+        "category": _normalize_tag(item.get("category", "")),
+        "subcategory": _normalize_tag(item.get("subcategory", "")),
+        "passing_score": passing_score,
+        "duration_minutes": duration_minutes,
+        "question_count": question_count,
+        "domains": domains,
+    }
 
 
 def _template_metrics(metrics: dict, question_count: int = 0) -> dict:
@@ -1043,6 +1334,7 @@ def _template_metrics(metrics: dict, question_count: int = 0) -> dict:
             "category": stats.get("category", "General"),
             "subcategory": stats.get("subcategory", ""),
             "exam": stats.get("exam", ""),
+            "domain": stats.get("domain", ""),
             "accuracy_label": f"{_accuracy(stats['correct'], stats['answers']):.1f}% de acerto",
             "error_label": f"{stats['wrong']} erro{'s' if stats['wrong'] != 1 else ''} em {stats['answers']} resposta{'s' if stats['answers'] != 1 else ''}",
         }
@@ -1051,6 +1343,7 @@ def _template_metrics(metrics: dict, question_count: int = 0) -> dict:
     prepared["category_performance_rows"] = _performance_rows(metrics.get("category_performance", {}), "category")
     prepared["subcategory_performance_rows"] = _performance_rows(metrics.get("subcategory_performance", {}), "subcategory", "Sem subcategoria")
     prepared["exam_performance_rows"] = _performance_rows(metrics.get("exam_performance", {}), "exam")
+    prepared["domain_performance_rows"] = _performance_rows(metrics.get("domain_performance", {}), "domain", "Sem domínio")
     prepared["tag_performance_rows"] = _performance_rows(metrics.get("tag_performance", {}), "tag")
     prepared["insight"] = _report_insight(prepared)
     return prepared
@@ -1091,6 +1384,71 @@ def _performance_rows(items: dict, label_key: str, empty_label: str = "-") -> li
     return sorted(rows, key=lambda row: (row["accuracy"], -row["answered"]))
 
 
+def _weighted_exam_questions(questions: list, exam_config: dict) -> list:
+    target_count = exam_config.get("question_count") or len(questions)
+    target_count = min(max(int(target_count), 1), len(questions))
+    domains = [domain for domain in exam_config.get("domains", []) if domain.get("name") and domain.get("weight", 0) > 0]
+    if not domains:
+        random.shuffle(questions)
+        return questions[:target_count]
+
+    by_domain = defaultdict(list)
+    without_domain = []
+    for question in questions:
+        domain = _normalize_tag(getattr(question, "domain", ""))
+        if domain:
+            by_domain[domain].append(question)
+        else:
+            without_domain.append(question)
+
+    if any(len(by_domain[domain["name"]]) < 1 for domain in domains):
+        random.shuffle(questions)
+        return questions[:target_count]
+
+    total_weight = sum(domain["weight"] for domain in domains) or 100
+    quotas = []
+    allocated = 0
+    for domain in domains:
+        exact = target_count * domain["weight"] / total_weight
+        count = int(exact)
+        quotas.append({"name": domain["name"], "count": count, "remainder": exact - count})
+        allocated += count
+    for quota in sorted(quotas, key=lambda item: item["remainder"], reverse=True):
+        if allocated >= target_count:
+            break
+        quota["count"] += 1
+        allocated += 1
+
+    selected = []
+    for quota in quotas:
+        pool = by_domain[quota["name"]][:]
+        if len(pool) < quota["count"]:
+            random.shuffle(questions)
+            return questions[:target_count]
+        random.shuffle(pool)
+        selected.extend(pool[: quota["count"]])
+
+    remaining_slots = target_count - len(selected)
+    if remaining_slots > 0:
+        selected_ids = {question.qid for question in selected}
+        remainder_pool = [question for question in questions if question.qid not in selected_ids]
+        random.shuffle(remainder_pool)
+        selected.extend(remainder_pool[:remaining_slots])
+
+    random.shuffle(selected)
+    return selected[:target_count]
+
+
+def _attempt_domain_performance(question_results: list[dict]) -> list[dict]:
+    stats = defaultdict(lambda: {"correct": 0, "answered": 0})
+    for result in question_results:
+        domain = result.get("domain") or "Sem domínio"
+        stats[domain]["answered"] += 1
+        if result.get("is_correct"):
+            stats[domain]["correct"] += 1
+    return _performance_rows(stats, "domain", "Sem domínio")
+
+
 def _attempt_chart(history: list[dict]) -> dict:
     rows = []
     total = len(history)
@@ -1129,15 +1487,78 @@ def _dashboard_insight(untagged_questions: int, metrics: dict) -> dict:
             "title": "Comece pelo primeiro simulado",
             "message": "Finalize um simulado para acompanhar sua evolução, pontos de atenção e histórico de estudos.",
             "action_label": "Iniciar simulado",
-            "action_url": "webapp:exam_home",
+            "action_url": "webapp:bank",
             "tone": "primary",
         }
     return {
         "title": "Painel em dia",
         "message": "Seu banco está classificado. Continue praticando para manter a evolução visível nos relatórios.",
         "action_label": "Praticar agora",
-        "action_url": "webapp:exam_home",
+        "action_url": "webapp:bank",
         "tone": "success",
+    }
+
+
+def _study_plan(bank, metrics: dict) -> dict:
+    tag_usage = defaultdict(int)
+    for question in bank.questions:
+        for tag in question.tags:
+            tag_usage[tag] += 1
+
+    tag_performance = metrics.get("tag_performance", {}) if metrics else {}
+    rows = []
+    for tag, total_questions in tag_usage.items():
+        stats = tag_performance.get(tag, {})
+        answered = stats.get("answered", 0)
+        correct = stats.get("correct", 0)
+        wrong = max(answered - correct, 0)
+        accuracy = _accuracy(correct, answered)
+        if answered:
+            priority = (100 - accuracy) + min(answered, 20) + wrong * 2
+            reason = f"{wrong} erro{'s' if wrong != 1 else ''} em {answered} resposta{'s' if answered != 1 else ''}"
+        else:
+            priority = 35
+            reason = "Sem histórico de respostas"
+        rows.append(
+            {
+                "tag": tag,
+                "question_count": total_questions,
+                "answered": answered,
+                "correct": correct,
+                "wrong": wrong,
+                "accuracy": accuracy,
+                "accuracy_width": max(round(accuracy), 4) if answered else 0,
+                "reason": reason,
+                "priority": priority,
+                "suggested_questions": min(max(total_questions, 5), 20),
+            }
+        )
+
+    rows.sort(key=lambda row: (-row["priority"], row["accuracy"], row["tag"].lower()))
+    focus_rows = rows[:3]
+    recommended_count = min(sum(row["suggested_questions"] for row in focus_rows), 30)
+    focus_tags = [row["tag"] for row in focus_rows]
+    if focus_rows:
+        answered_total = sum(row["answered"] for row in focus_rows)
+        weak_tags = ", ".join(focus_tags)
+        summary = (
+            f"Seguindo sua performance em {answered_total} resposta{'s' if answered_total != 1 else ''} "
+            f"nas tags {weak_tags}, recomendamos um simulado personalizado com foco nesses pontos."
+        )
+        recommendation = f"Simulado recomendado: {recommended_count} questões focadas em {weak_tags}."
+    elif bank.questions:
+        summary = "Cadastre tags nas questões para gerar um plano mais preciso."
+        recommendation = ""
+    else:
+        summary = "Importe questões e cadastre tags para gerar um plano de estudos."
+        recommendation = ""
+    return {
+        "rows": focus_rows,
+        "focus_tags": focus_tags,
+        "total_tags": len(rows),
+        "recommended_count": recommended_count,
+        "summary": summary,
+        "recommendation": recommendation,
     }
 
 
@@ -1343,9 +1764,8 @@ def _accuracy(correct: int | float, answered: int | float) -> float:
     return (correct / answered * 100) if answered else 0
 
 
-def _exam_groups(questions) -> list[dict]:
+def _exam_groups(questions, bank) -> list[dict]:
     grouped = defaultdict(lambda: defaultdict(lambda: defaultdict(list)))
-    bank = get_bank()
     for question in questions:
         exam_config = _exam_config(_question_exam(question), bank)
         grouped[exam_config["category"] or "General"][exam_config["subcategory"] or "Sem subcategoria"][exam_config["name"]].append(question)
@@ -1358,13 +1778,20 @@ def _exam_groups(questions) -> list[dict]:
             exam_rows = []
             subcategory_count = 0
             for exam, items in sorted(exams.items(), key=lambda item: item[0].lower()):
+                exam_config = _exam_config(exam, bank)
                 question_count = len(items)
                 subcategory_count += question_count
                 exam_rows.append(
                     {
+                        "code": exam_config.get("code", ""),
                         "name": exam,
                         "category": category,
                         "subcategory": "" if subcategory == "Sem subcategoria" else subcategory,
+                        "passing_score": exam_config.get("passing_score", 90.0),
+                        "duration_minutes": exam_config.get("duration_minutes", 0),
+                        "configured_question_count": exam_config.get("question_count", 0),
+                        "domains": exam_config.get("domains", []),
+                        "domains_json": json.dumps(exam_config.get("domains", []), ensure_ascii=False),
                         "question_count": question_count,
                         "multiple_choice_count": sum(1 for item in items if item.type == "multiple_choice"),
                         "drag_and_drop_count": sum(1 for item in items if item.type == "drag_and_drop"),

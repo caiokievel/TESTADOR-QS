@@ -27,13 +27,14 @@ class ReportManager:
         if not history:
             return {}
         question_stats: Dict[str, dict] = defaultdict(
-            lambda: {"answers": 0, "correct": 0, "wrong": 0, "category": "General", "subcategory": "", "exam": ""}
+            lambda: {"answers": 0, "correct": 0, "wrong": 0, "category": "General", "subcategory": "", "exam": "", "domain": ""}
         )
         total_correct = 0
         total_answered = 0
         by_category = defaultdict(lambda: {"correct": 0, "answered": 0})
         by_subcategory = defaultdict(lambda: {"correct": 0, "answered": 0})
         by_exam = defaultdict(lambda: {"correct": 0, "answered": 0})
+        by_domain = defaultdict(lambda: {"correct": 0, "answered": 0})
         by_tag = defaultdict(lambda: {"correct": 0, "answered": 0})
 
         for attempt in history:
@@ -44,20 +45,24 @@ class ReportManager:
                 category = q.get("category", "General")
                 subcategory = q.get("subcategory", "")
                 exam = q.get("exam") or category
+                domain = q.get("domain", "") or "Sem domínio"
                 question_stats[qid]["answers"] += 1
                 question_stats[qid]["category"] = category
                 question_stats[qid]["subcategory"] = subcategory
                 question_stats[qid]["exam"] = exam
+                question_stats[qid]["domain"] = domain
                 if q.get("is_correct"):
                     question_stats[qid]["correct"] += 1
                     by_category[category]["correct"] += 1
                     by_subcategory[subcategory]["correct"] += 1
                     by_exam[exam]["correct"] += 1
+                    by_domain[domain]["correct"] += 1
                 else:
                     question_stats[qid]["wrong"] += 1
                 by_category[category]["answered"] += 1
                 by_subcategory[subcategory]["answered"] += 1
                 by_exam[exam]["answered"] += 1
+                by_domain[domain]["answered"] += 1
                 for tag in q.get("tags", []):
                     if q.get("is_correct"):
                         by_tag[tag]["correct"] += 1
@@ -71,6 +76,7 @@ class ReportManager:
             "category_performance": by_category,
             "subcategory_performance": by_subcategory,
             "exam_performance": by_exam,
+            "domain_performance": by_domain,
             "tag_performance": by_tag,
             "history": history,
         }
@@ -79,11 +85,11 @@ class ReportManager:
         metrics = self.metrics()
         with open(path, "w", newline="", encoding="utf-8") as f:
             writer = csv.writer(f)
-            writer.writerow(["qid", "answers", "correct", "wrong", "accuracy_percent"])
+            writer.writerow(["qid", "exam", "domain", "answers", "correct", "wrong", "accuracy_percent"])
             for qid, stats in metrics.get("question_stats", {}).items():
                 answers = stats["answers"]
                 acc = (stats["correct"] / answers * 100) if answers else 0
-                writer.writerow([qid, answers, stats["correct"], stats["wrong"], f"{acc:.2f}"])
+                writer.writerow([qid, stats.get("exam", ""), stats.get("domain", ""), answers, stats["correct"], stats["wrong"], f"{acc:.2f}"])
 
     def export_json(self, path: str | Path) -> None:
         Path(path).write_text(json.dumps(self.metrics(), indent=2, ensure_ascii=False), encoding="utf-8")

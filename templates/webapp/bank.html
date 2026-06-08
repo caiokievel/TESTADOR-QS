@@ -1,42 +1,129 @@
 {% extends "webapp/base.html" %}
-{% block title %}Banco - Testador QS{% endblock %}
+{% block title %}Estudos - Testador QS{% endblock %}
 {% block content %}
 <section class="page-head split">
   <div>
-    <h1>Banco de Questoes</h1>
-    <p>{{ exam_count }} exames disponiveis - {{ question_count }} questoes cadastradas</p>
+    <h1>Estudos</h1>
+    <p>{{ exam_count }} exames disponíveis - {{ question_count }} questões cadastradas</p>
   </div>
-  <a class="button primary" href="{% url 'webapp:question_new' %}">Adicionar questao</a>
+  <a class="button primary" href="{% url 'webapp:question_new' %}">Adicionar questão</a>
 </section>
-<form class="toolbar" action="{% url 'webapp:import_questions' %}" method="post" enctype="multipart/form-data">
-  {% csrf_token %}
-  <input type="file" name="questions_file" accept="application/json">
-  <button type="submit">Importar JSON</button>
-  <a class="button" href="{% url 'webapp:export_questions' %}">Exportar JSON</a>
-  <a class="button" href="{% url 'webapp:classifications' %}">Classificacoes</a>
-</form>
+
+<section class="study-workspace">
+  <article class="study-start-card study-mode-card">
+    <div>
+      <span class="insight-kicker">Modo Estudo</span>
+      <h2>Treine com feedback imediato.</h2>
+      <p>Responda uma questão por vez, veja a resposta correta e revise a explicação quando existir.</p>
+    </div>
+    <button class="primary study-simulated-button" type="button" data-bs-toggle="modal" data-bs-target="#start-study-modal" {% if own_question_count == 0 %}disabled{% endif %}>
+      <i class="icon-base ri ri-book-open-line me-1"></i>
+      Iniciar estudo
+    </button>
+    {% if active_exam %}
+      <div class="notice inline-note">Existe uma sessão em andamento. Iniciar outra substituirá a sessão atual.</div>
+    {% endif %}
+    {% if own_question_count == 0 %}
+      <div class="notice inline-note">Importe ou cadastre questões no seu banco para iniciar.</div>
+    {% endif %}
+  </article>
+
+  <article class="study-start-card real-exam-card">
+    <div>
+      <span class="insight-kicker">Modo Prova Real</span>
+      <h2>Simule uma prova completa.</h2>
+      <p>Responda, marque questões para revisão e veja o resultado apenas ao finalizar.</p>
+    </div>
+    <button class="primary study-simulated-button" type="button" data-bs-toggle="modal" data-bs-target="#start-exam-modal" {% if own_question_count == 0 %}disabled{% endif %}>
+      <i class="icon-base ri ri-play-circle-line me-1"></i>
+      Iniciar prova
+    </button>
+    {% if active_exam %}
+      <div class="notice inline-note">Existe uma prova em andamento. Iniciar outra substituirá a sessão atual.</div>
+    {% endif %}
+    {% if own_question_count == 0 %}
+      <div class="notice inline-note">Importe ou cadastre questões no seu banco para iniciar.</div>
+    {% endif %}
+  </article>
+
+  <article class="study-manage-card">
+    <div>
+      <span class="insight-kicker">Banco</span>
+      <h2>Gerenciar questões</h2>
+      <p>Importe pacotes, exporte seu banco ou copie o modelo para montar novos exames.</p>
+    </div>
+    <form class="toolbar compact-toolbar" action="{% url 'webapp:import_questions' %}" method="post" enctype="multipart/form-data">
+      {% csrf_token %}
+      <input type="file" name="questions_file" accept="application/json">
+      <button type="submit">Importar JSON</button>
+      <a class="button" href="{% url 'webapp:export_questions' %}">Exportar JSON</a>
+      <button type="button" data-bs-toggle="modal" data-bs-target="#json-template-modal">
+        <i class="icon-base ri ri-file-copy-line me-1"></i>
+        Modelo JSON
+      </button>
+      <a class="button" href="{% url 'webapp:classifications' %}">Classificações</a>
+    </form>
+  </article>
+
+  <article class="study-plan-card">
+    <div class="study-plan-head">
+      <div>
+        <span class="insight-kicker">Plano de estudos</span>
+        <h2>Recomendação personalizada</h2>
+        <p>{{ study_plan.summary }}</p>
+      </div>
+      {% if study_plan.recommended_count %}
+        <span class="status-pill neutral">{{ study_plan.recommended_count }} questões</span>
+      {% endif %}
+    </div>
+    {% if study_plan.rows %}
+      <div class="study-plan-recommendation">
+        <strong>{{ study_plan.recommendation }}</strong>
+        <div class="tag-list">
+          {% for tag in study_plan.focus_tags %}
+            <span class="tag-pill">{{ tag }}</span>
+          {% endfor %}
+        </div>
+      </div>
+      <form action="{% url 'webapp:study_plan_start' %}" method="post">
+        {% csrf_token %}
+        <button class="primary" type="submit">
+          <i class="icon-base ri ri-compass-3-line me-1"></i>
+          Iniciar plano recomendado
+        </button>
+      </form>
+    {% else %}
+      <div class="notice inline-note">Adicione tags às questões e finalize simulados para gerar recomendações.</div>
+      <a class="button" href="{% url 'webapp:tags' %}">Gerenciar tags</a>
+    {% endif %}
+  </article>
+</section>
+
 <section class="bank-hierarchy">
   {% for category in categories %}
     <article class="bank-category">
       <header class="bank-category-head">
         <h2>{{ category.name }}</h2>
-        <span>{{ category.question_count }} questoes</span>
+        <span>{{ category.question_count }} questões</span>
       </header>
       {% for subcategory in category.subcategories %}
         <section class="bank-subcategory">
           <div class="bank-subcategory-head">
             <h3>{{ subcategory.name }}</h3>
-            <span>{{ subcategory.question_count }} questoes</span>
+            <span>{{ subcategory.question_count }} questões</span>
           </div>
           <div class="exam-grid">
             {% for exam in subcategory.exams %}
               <article class="exam-card-link">
+                <button class="icon-action exam-edit-action" type="button" data-bs-toggle="modal" data-bs-target="#bank-exam-edit-modal" data-exam-code="{{ exam.code }}" data-exam-name="{{ exam.name }}" data-exam-category="{{ exam.category }}" data-exam-subcategory="{{ exam.subcategory }}" data-exam-passing-score="{{ exam.passing_score }}" data-exam-duration-minutes="{{ exam.duration_minutes }}" data-exam-question-count="{{ exam.configured_question_count }}" data-exam-domains="{{ exam.domains_json|escape }}" title="Editar exame" aria-label="Editar {{ exam.name }}">
+                  <i class="icon-base ri ri-edit-line" aria-hidden="true"></i>
+                </button>
                 <a href="{% url 'webapp:bank_exam' %}?category={{ exam.category|urlencode }}&subcategory={{ exam.subcategory|urlencode }}&exam={{ exam.name|urlencode }}">
                   <span>Exame</span>
                   <strong>{{ exam.name }}</strong>
-                  <small>{{ exam.question_count }} questoes</small>
+                  <small>{{ exam.question_count }} questões</small>
                   <div class="exam-meta">
-                    <em>{{ exam.multiple_choice_count }} multipla escolha</em>
+                    <em>{{ exam.multiple_choice_count }} múltipla escolha</em>
                     <em>{{ exam.drag_and_drop_count }} drag and drop</em>
                   </div>
                 </a>
@@ -47,7 +134,328 @@
       {% endfor %}
     </article>
   {% empty %}
-    <div class="notice">Nenhum exame encontrado. Importe um JSON ou cadastre uma questao.</div>
+    <div class="notice">Nenhum exame encontrado. Importe um JSON ou cadastre uma questão.</div>
   {% endfor %}
 </section>
+
+<div class="modal fade" id="start-study-modal" tabindex="-1" aria-labelledby="start-study-title" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <form class="modal-content" action="{% url 'webapp:exam_start' %}" method="post">
+      {% csrf_token %}
+      <input type="hidden" name="mode" value="study">
+      <input type="hidden" name="passing_score" value="{{ passing_score }}">
+      <div class="modal-header">
+        <h5 class="modal-title" id="start-study-title">Iniciar modo estudo</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+      </div>
+      <div class="modal-body modal-form">
+        <label>Exame
+          <select name="exam" required>
+            <option value="">Selecione um exame</option>
+            {% for category in simulatable_exams %}
+              {% for subcategory in category.subcategories %}
+                {% for exam in subcategory.exams %}
+                  <option value="{{ exam.name }}" data-passing-score="{{ exam.passing_score }}" data-duration-minutes="{{ exam.duration_minutes }}" data-question-count="{{ exam.configured_question_count }}">{{ exam.name }} - {{ category.name }}{% if subcategory.name %} / {{ subcategory.name }}{% endif %} · {{ exam.question_count }} questões</option>
+                {% endfor %}
+              {% endfor %}
+            {% endfor %}
+          </select>
+        </label>
+      </div>
+      <div class="modal-footer">
+        <button type="button" data-bs-dismiss="modal">Cancelar</button>
+        <button class="primary" type="submit">
+          <i class="icon-base ri ri-book-open-line me-1"></i>
+          Iniciar estudo
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="modal fade" id="start-exam-modal" tabindex="-1" aria-labelledby="start-exam-title" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <form class="modal-content" action="{% url 'webapp:exam_start' %}" method="post">
+      {% csrf_token %}
+      <input type="hidden" name="mode" value="real">
+      <div class="modal-header">
+        <h5 class="modal-title" id="start-exam-title">Iniciar modo prova real</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+      </div>
+      <div class="modal-body modal-form">
+        <label>Exame
+          <select name="exam" id="real-exam-select" required>
+            <option value="">Selecione um exame</option>
+            {% for category in simulatable_exams %}
+              {% for subcategory in category.subcategories %}
+                {% for exam in subcategory.exams %}
+                  <option value="{{ exam.name }}" data-passing-score="{{ exam.passing_score }}" data-duration-minutes="{{ exam.duration_minutes }}" data-question-count="{{ exam.configured_question_count }}">{{ exam.name }} - {{ category.name }}{% if subcategory.name %} / {{ subcategory.name }}{% endif %} · {{ exam.question_count }} questões</option>
+                {% endfor %}
+              {% endfor %}
+            {% endfor %}
+          </select>
+        </label>
+        <label>Nota de aprovação (%)
+          <input type="number" name="passing_score" id="real-exam-passing-score" min="0" max="100" step="0.1" value="{{ passing_score }}">
+        </label>
+        <div class="notice inline-note" id="real-exam-blueprint-note">Selecione um exame para aplicar o blueprint cadastrado.</div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" data-bs-dismiss="modal">Cancelar</button>
+        <button class="primary" type="submit">
+          <i class="icon-base ri ri-play-circle-line me-1"></i>
+          Iniciar
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="modal fade" id="json-template-modal" tabindex="-1" aria-labelledby="json-template-title" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="json-template-title">Modelo de JSON para importar questões</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+      </div>
+      <div class="modal-body modal-form">
+        <p class="text-body-secondary">
+          Use este formato para montar exames e importar pelo botão Importar JSON.
+        </p>
+        <textarea class="json-template-copy" id="json-template-content" rows="24" readonly spellcheck="false">[
+  {
+    "qid": "D-PDC-DY-23-Q001",
+    "type": "multiple_choice",
+    "category": "DELL",
+    "subcategory": "Network",
+    "exam": "PowerSwitch Data Center Deploy",
+    "domain": "VLANs e Switching",
+    "question": "Refer to the exhibit. Which configuration will allow S1 to ping S2's Lo0 address?",
+    "explanation": "https://docs.exemplo.com/rota-estatica",
+    "tags": ["Routing", "OS10"],
+    "exhibit_image": "",
+    "options": [
+      "S1(config-router)# ip route 144.254.32.1 192.168.32.2/32",
+      "S1(config-router)# ip route 192.168.32.2 144.254.32.1/32",
+      "S1(config)# ip route 144.254.32.1/32 192.168.32.2",
+      "S1(config)# ip route 192.168.32.2 144.254.32.1/32"
+    ],
+    "correct_answers": [
+      "S1(config)# ip route 144.254.32.1/32 192.168.32.2"
+    ],
+    "allow_multiple": false
+  },
+  {
+    "qid": "D-PDC-DY-23-Q002",
+    "type": "multiple_choice",
+    "category": "DELL",
+    "subcategory": "Network",
+    "exam": "PowerSwitch Data Center Deploy",
+    "domain": "STP/LACP",
+    "question": "Which two protocols are used for redundancy?",
+    "explanation": "Texto curto explicando a resposta.",
+    "tags": ["Redundancy"],
+    "exhibit_image": "",
+    "options": [
+      "VRRP",
+      "STP",
+      "SMTP",
+      "SNMP"
+    ],
+    "correct_answers": [
+      "VRRP",
+      "STP"
+    ],
+    "allow_multiple": true
+  },
+  {
+    "qid": "D-PDC-DY-23-Q003",
+    "type": "drag_and_drop",
+    "category": "DELL",
+    "subcategory": "Network",
+    "exam": "PowerSwitch Data Center Deploy",
+    "domain": "Troubleshooting",
+    "question": "Associe cada item ao alvo correto.",
+    "explanation": "",
+    "tags": ["Conceitos"],
+    "exhibit_image": "",
+    "items": ["VRRP", "STP"],
+    "targets": ["Gateway redundante", "Prevenção de loop"],
+    "correct_mapping": {
+      "VRRP": "Gateway redundante",
+      "STP": "Prevenção de loop"
+    }
+  }
+]</textarea>
+      </div>
+      <div class="modal-footer">
+        <button type="button" data-bs-dismiss="modal">Fechar</button>
+        <button class="primary" type="button" id="copy-json-template">
+          <i class="icon-base ri ri-file-copy-line me-1"></i>
+          Copiar modelo
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="bank-exam-edit-modal" tabindex="-1" aria-labelledby="bank-exam-edit-title" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="bank-exam-edit-title">Editar exame</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+      </div>
+      <form id="bank-exam-edit-form" action="{% url 'webapp:exam_update' %}" method="post">
+        {% csrf_token %}
+        <div class="modal-body modal-form">
+          <input type="hidden" name="next" value="{{ request.path }}">
+          <input type="hidden" name="original_name" id="bank-exam-original-name">
+          <label>Exame
+            <input name="name" id="bank-exam-name" required>
+          </label>
+          <label>Código do exame
+            <input name="code" id="bank-exam-code" placeholder="Ex.: D-PDC-DY-23">
+          </label>
+          <label>Categoria
+            <select name="category" id="bank-exam-category" required>
+              {% for category in available_categories %}
+                <option value="{{ category.name }}">{{ category.name }}</option>
+              {% endfor %}
+            </select>
+          </label>
+          <label>Subcategoria
+            <select name="subcategory" id="bank-exam-subcategory" required>
+              {% for subcategory in available_subcategories %}
+                <option value="{{ subcategory.name }}">{{ subcategory.name }}</option>
+              {% endfor %}
+            </select>
+          </label>
+          <div class="exam-blueprint-grid">
+            <label>Nota mínima (%)
+              <input type="number" name="passing_score" id="bank-exam-passing-score" min="0" max="100" step="0.1">
+            </label>
+            <label>Tempo de prova (min)
+              <input type="number" name="duration_minutes" id="bank-exam-duration-minutes" min="0" step="1">
+            </label>
+            <label>Quantidade de questões
+              <input type="number" name="question_count" id="bank-exam-question-count" min="0" step="1">
+            </label>
+          </div>
+          <fieldset class="domain-editor">
+            <legend>Domínios do exame</legend>
+            <div id="bank-domain-rows" class="domain-rows"></div>
+            <button type="button" class="button" id="bank-add-domain-row">Adicionar domínio</button>
+          </fieldset>
+        </div>
+      </form>
+      <form id="bank-exam-delete-form" action="{% url 'webapp:exam_delete' %}" method="post" onsubmit="return confirm('Remover este exame também apaga todas as questões dele. Deseja continuar?');">
+        {% csrf_token %}
+        <input type="hidden" name="next" value="{{ request.path }}">
+        <input type="hidden" name="name" id="bank-exam-delete-name">
+        <input type="hidden" name="delete_questions" value="1">
+      </form>
+      <div class="modal-footer split-footer">
+        <button class="danger-soft" type="submit" form="bank-exam-delete-form">Remover</button>
+        <div class="actions-row">
+          <button type="button" data-bs-dismiss="modal">Cancelar</button>
+          <button class="primary" type="submit" form="bank-exam-edit-form">Salvar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+  const copyJsonTemplateButton = document.getElementById("copy-json-template");
+  copyJsonTemplateButton.addEventListener("click", async () => {
+    const template = document.getElementById("json-template-content");
+    template.select();
+    template.setSelectionRange(0, template.value.length);
+    try {
+      await navigator.clipboard.writeText(template.value);
+      copyJsonTemplateButton.textContent = "Modelo copiado";
+      setTimeout(() => {
+        copyJsonTemplateButton.textContent = "Copiar modelo";
+      }, 1800);
+    } catch {
+      document.execCommand("copy");
+    }
+  });
+
+  const bankExamEditModal = document.getElementById("bank-exam-edit-modal");
+  bankExamEditModal.addEventListener("show.bs.modal", (event) => {
+    const button = event.relatedTarget;
+    document.getElementById("bank-exam-code").value = button.dataset.examCode || "";
+    document.getElementById("bank-exam-original-name").value = button.dataset.examName;
+    document.getElementById("bank-exam-name").value = button.dataset.examName;
+    document.getElementById("bank-exam-category").value = button.dataset.examCategory;
+    document.getElementById("bank-exam-subcategory").value = button.dataset.examSubcategory;
+    document.getElementById("bank-exam-passing-score").value = button.dataset.examPassingScore || "90";
+    document.getElementById("bank-exam-duration-minutes").value = button.dataset.examDurationMinutes || "0";
+    document.getElementById("bank-exam-question-count").value = button.dataset.examQuestionCount || "0";
+    document.getElementById("bank-exam-delete-name").value = button.dataset.examName;
+    fillDomainRows("bank-domain-rows", button.dataset.examDomains || "[]");
+  });
+
+  function addDomainRow(containerId, name = "", weight = "") {
+    const container = document.getElementById(containerId);
+    const row = document.createElement("div");
+    row.className = "domain-row";
+    row.innerHTML = `
+      <input name="domain_name" placeholder="Domínio/tópico" value="${escapeHtml(name)}">
+      <input name="domain_weight" type="number" min="0" max="100" step="0.1" placeholder="Peso %" value="${escapeHtml(weight)}">
+      <button type="button" class="icon-action" aria-label="Remover domínio">
+        <i class="icon-base ri ri-close-line"></i>
+      </button>
+    `;
+    row.querySelector("button").addEventListener("click", () => row.remove());
+    container.appendChild(row);
+  }
+
+  function fillDomainRows(containerId, payload) {
+    const container = document.getElementById(containerId);
+    container.innerHTML = "";
+    let domains = [];
+    try {
+      domains = JSON.parse(payload);
+    } catch {
+      domains = [];
+    }
+    if (!domains.length) {
+      addDomainRow(containerId);
+      return;
+    }
+    domains.forEach((domain) => addDomainRow(containerId, domain.name || "", domain.weight ?? ""));
+  }
+
+  function escapeHtml(value) {
+    return String(value).replace(/[&<>"']/g, (char) => ({
+      "&": "&amp;",
+      "<": "&lt;",
+      ">": "&gt;",
+      '"': "&quot;",
+      "'": "&#39;"
+    }[char]));
+  }
+
+  document.getElementById("bank-add-domain-row").addEventListener("click", () => addDomainRow("bank-domain-rows"));
+
+  const realExamSelect = document.getElementById("real-exam-select");
+  const realExamPassingScore = document.getElementById("real-exam-passing-score");
+  const realExamBlueprintNote = document.getElementById("real-exam-blueprint-note");
+  realExamSelect.addEventListener("change", () => {
+    const option = realExamSelect.selectedOptions[0];
+    if (!option || !option.value) {
+      realExamBlueprintNote.textContent = "Selecione um exame para aplicar o blueprint cadastrado.";
+      return;
+    }
+    realExamPassingScore.value = option.dataset.passingScore || realExamPassingScore.value;
+    const questionCount = Number(option.dataset.questionCount || 0);
+    const duration = Number(option.dataset.durationMinutes || 0);
+    const parts = [];
+    if (questionCount) parts.push(`${questionCount} questões`);
+    if (duration) parts.push(`${duration} min`);
+    realExamBlueprintNote.textContent = parts.length ? `Blueprint aplicado: ${parts.join(" · ")}.` : "Este exame ainda não tem quantidade/tempo configurados.";
+  });
+</script>
 {% endblock %}

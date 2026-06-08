@@ -1,15 +1,15 @@
 {% extends "webapp/base.html" %}
-{% block title %}Usuarios - Testador QS{% endblock %}
+{% block title %}Usuários - Testador QS{% endblock %}
 {% block content %}
 <section class="page-head split">
   <div>
-    <h1>Usuarios</h1>
-    <p>Gestao de acessos e permissoes do sistema.</p>
+    <h1>Usuários</h1>
+    <p>Gestão de acessos e permissões do sistema.</p>
   </div>
 </section>
 <section class="settings-grid">
   <article class="form-panel">
-    <h2>Novo usuario</h2>
+    <h2>Novo usuário</h2>
     <form class="stacked-form" action="{% url 'webapp:user_add' %}" method="post">
       {% csrf_token %}
       <input name="username" placeholder="Login" required>
@@ -19,24 +19,24 @@
         <input type="checkbox" name="is_admin" value="1">
         Administrador
       </label>
-      <button class="primary" type="submit">Criar usuario</button>
+      <button class="primary" type="submit">Criar usuário</button>
     </form>
   </article>
   <article class="form-panel wide-panel">
-    <h2>Usuarios cadastrados</h2>
+    <h2>Usuários cadastrados</h2>
     <div class="table-wrap flat">
       <table>
-        <thead><tr><th>Usuario</th><th>E-mail</th><th>Perfil</th><th>Status</th><th>Ultimo login</th><th></th></tr></thead>
+        <thead><tr><th>Usuário</th><th>E-mail</th><th>Perfil</th><th>Status</th><th>Último login</th><th></th></tr></thead>
         <tbody>
           {% for item in users %}
             <tr>
               <td>{{ item.username }}</td>
               <td>{{ item.email|default:"-" }}</td>
-              <td>{% if item.is_superuser %}<span class="tag-pill">Admin</span>{% else %}<span class="text-body-secondary">Usuario</span>{% endif %}</td>
+              <td>{% if item.is_superuser %}<span class="tag-pill">Admin</span>{% else %}<span class="text-body-secondary">Usuário</span>{% endif %}</td>
               <td><span class="status-pill {% if item.is_active %}ok{% else %}miss{% endif %}">{% if item.is_active %}Ativo{% else %}Inativo{% endif %}</span></td>
               <td>{{ item.last_login|default:"-" }}</td>
               <td class="row-actions">
-                <button class="icon-action" type="button" data-bs-toggle="modal" data-bs-target="#user-edit-modal" data-user-id="{{ item.id }}" data-user-username="{{ item.username }}" data-user-email="{{ item.email }}" data-user-active="{% if item.is_active %}1{% else %}0{% endif %}" data-user-admin="{% if item.is_superuser %}1{% else %}0{% endif %}" title="Editar usuario" aria-label="Editar {{ item.username }}">
+                <button class="icon-action" type="button" data-bs-toggle="modal" data-bs-target="#user-edit-modal" data-user-id="{{ item.id }}" data-user-username="{{ item.username }}" data-user-email="{{ item.email }}" data-user-active="{% if item.is_active %}1{% else %}0{% endif %}" data-user-admin="{% if item.is_superuser %}1{% else %}0{% endif %}" title="Editar usuário" aria-label="Editar {{ item.username }}">
                   <i class="icon-base ri ri-pencil-line"></i>
                 </button>
                 <button class="icon-action" type="button" data-bs-toggle="modal" data-bs-target="#user-password-modal" data-user-id="{{ item.id }}" data-user-username="{{ item.username }}" title="Alterar senha" aria-label="Alterar senha de {{ item.username }}">
@@ -45,7 +45,7 @@
               </td>
             </tr>
           {% empty %}
-            <tr><td colspan="6">Nenhum usuario cadastrado.</td></tr>
+            <tr><td colspan="6">Nenhum usuário cadastrado.</td></tr>
           {% endfor %}
         </tbody>
       </table>
@@ -58,12 +58,12 @@
     <form class="modal-content" action="{% url 'webapp:user_update' %}" method="post">
       {% csrf_token %}
       <div class="modal-header">
-        <h5 class="modal-title" id="user-edit-title">Editar usuario</h5>
+        <h5 class="modal-title" id="user-edit-title">Editar usuário</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
       </div>
       <div class="modal-body modal-form">
         <input type="hidden" name="user_id" id="user-edit-id">
-        <label>Usuario
+        <label>Usuário
           <input name="username" id="user-edit-username" required>
         </label>
         <label>E-mail

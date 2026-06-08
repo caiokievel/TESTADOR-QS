@@ -47,6 +47,13 @@ def get_visible_bank() -> QuestionBank:
     return bank
 
 
+def get_visible_question_banks() -> list[QuestionBank]:
+    user = get_current_user()
+    if not getattr(user, "is_superuser", False):
+        return [get_bank()]
+    return [QuestionBank(data_dir / "questions.json") for data_dir in _visible_data_dirs()]
+
+
 def get_reports() -> ReportManager:
     return ReportManager(_path("history.json"))
 
@@ -120,9 +127,14 @@ def load_exams() -> list[dict]:
         seen.add(name.lower())
         exams.append(
             {
+                "code": _normalize_tag(item.get("code", "")),
                 "name": name,
                 "category": _normalize_tag(item.get("category", "")),
                 "subcategory": _normalize_tag(item.get("subcategory", "")),
+                "passing_score": _as_float(item.get("passing_score"), 90.0),
+                "duration_minutes": _as_int(item.get("duration_minutes"), 0),
+                "question_count": _as_int(item.get("question_count"), 0),
+                "domains": _normalize_domains(item.get("domains", [])),
             }
         )
     return sorted(exams, key=lambda item: item["name"].lower())
@@ -139,9 +151,14 @@ def save_exams(exams: list[dict]) -> None:
         seen.add(name.lower())
         normalized.append(
             {
+                "code": _normalize_tag(item.get("code", "")),
                 "name": name,
                 "category": _normalize_tag(item.get("category", "")),
                 "subcategory": _normalize_tag(item.get("subcategory", "")),
+                "passing_score": _as_float(item.get("passing_score"), 90.0),
+                "duration_minutes": _as_int(item.get("duration_minutes"), 0),
+                "question_count": _as_int(item.get("question_count"), 0),
+                "domains": _normalize_domains(item.get("domains", [])),
             }
         )
     _path("exams.json").write_text(json.dumps(sorted(normalized, key=lambda item: item["name"].lower()), indent=2, ensure_ascii=False), encoding="utf-8")
@@ -170,9 +187,14 @@ def load_marketplace() -> list[dict]:
         packages.append(
             {
                 "id": package_id,
+                "code": _normalize_tag(item.get("code", "")),
                 "name": name,
                 "category": _normalize_tag(item.get("category", "")),
                 "subcategory": _normalize_tag(item.get("subcategory", "")),
+                "passing_score": _as_float(item.get("passing_score"), 90.0),
+                "duration_minutes": _as_int(item.get("duration_minutes"), 0),
+                "question_count": _as_int(item.get("question_count"), 0),
+                "domains": _normalize_domains(item.get("domains", [])),
                 "description": str(item.get("description", "")).strip(),
                 "created_at": str(item.get("created_at", "")),
                 "question_count": len(questions) if isinstance(questions, list) else 0,
@@ -196,9 +218,14 @@ def save_marketplace(packages: list[dict]) -> None:
         normalized.append(
             {
                 "id": package_id,
+                "code": _normalize_tag(item.get("code", "")),
                 "name": name,
                 "category": _normalize_tag(item.get("category", "")),
                 "subcategory": _normalize_tag(item.get("subcategory", "")),
+                "passing_score": _as_float(item.get("passing_score"), 90.0),
+                "duration_minutes": _as_int(item.get("duration_minutes"), 0),
+                "question_count": _as_int(item.get("question_count"), 0),
+                "domains": _normalize_domains(item.get("domains", [])),
                 "description": str(item.get("description", "")).strip(),
                 "created_at": str(item.get("created_at", "")),
                 "questions": questions if isinstance(questions, list) else [],
@@ -227,6 +254,36 @@ def _save_list(path: Path, values: list[str]) -> None:
 
 def _normalize_tag(tag: object) -> str:
     return " ".join(str(tag).strip().split())
+
+
+def _as_float(value: object, default: float = 0.0) -> float:
+    try:
+        return float(value)
+    except (TypeError, ValueError):
+        return default
+
+
+def _as_int(value: object, default: int = 0) -> int:
+    try:
+        return max(int(value), 0)
+    except (TypeError, ValueError):
+        return default
+
+
+def _normalize_domains(domains: object) -> list[dict]:
+    if not isinstance(domains, list):
+        return []
+    normalized = []
+    seen = set()
+    for item in domains:
+        if not isinstance(item, dict):
+            continue
+        name = _normalize_tag(item.get("name", ""))
+        if not name or name.lower() in seen:
+            continue
+        seen.add(name.lower())
+        normalized.append({"name": name, "weight": max(min(_as_float(item.get("weight"), 0), 100), 0)})
+    return normalized
 
 
 def _path(filename: str) -> Path:
