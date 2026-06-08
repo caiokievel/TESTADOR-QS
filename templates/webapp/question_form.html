@@ -35,6 +35,20 @@
   <label>Enunciado
     <textarea name="question" rows="3" required>{{ question }}</textarea>
   </label>
+  <div class="exam-blueprint-grid">
+    <label>Versão
+      <input type="number" name="version" min="1" step="1" value="{{ version }}">
+    </label>
+    <label>Status
+      <select name="status">
+        <option value="ativa" {% if status == "ativa" %}selected{% endif %}>Ativa</option>
+        <option value="rascunho" {% if status == "rascunho" %}selected{% endif %}>Rascunho</option>
+        <option value="em_revisao" {% if status == "em_revisao" %}selected{% endif %}>Em revisão</option>
+        <option value="obsoleta" {% if status == "obsoleta" %}selected{% endif %}>Obsoleta</option>
+        <option value="arquivada" {% if status == "arquivada" %}selected{% endif %}>Arquivada</option>
+      </select>
+    </label>
+  </div>
   <fieldset class="image-dropzone" id="exhibit-zone">
     <legend>Imagem do enunciado</legend>
     <input type="hidden" name="pasted_exhibit_image" id="pasted-exhibit-image">
@@ -55,6 +69,49 @@
   <label>Explicação
     <textarea name="explanation" rows="4" placeholder="Link de documentação ou texto curto de explicação">{{ explanation }}</textarea>
   </label>
+  <label>Referência oficial
+    <input name="reference_url" value="{{ reference_url }}" placeholder="https://docs.fabricante.com/...">
+  </label>
+  <label>Motivo da resposta correta
+    <textarea name="correct_explanation" rows="4" placeholder="Explique por que a resposta correta está correta">{{ correct_explanation }}</textarea>
+  </label>
+  <fieldset class="domain-editor">
+    <legend>Filtros para concursos</legend>
+    <div class="exam-blueprint-grid">
+      <label>Banca
+        <input name="banca" value="{{ banca }}">
+      </label>
+      <label>Ano
+        <input name="year" value="{{ year }}">
+      </label>
+      <label>Órgão
+        <input name="orgao" value="{{ orgao }}">
+      </label>
+      <label>Cargo
+        <input name="cargo" value="{{ cargo }}">
+      </label>
+      <label>Disciplina
+        <input name="disciplina" value="{{ disciplina }}">
+      </label>
+      <label>Assunto
+        <input name="assunto" value="{{ assunto }}">
+      </label>
+      <label>Subassunto
+        <input name="subassunto" value="{{ subassunto }}">
+      </label>
+      <label>Escolaridade
+        <input name="escolaridade" value="{{ escolaridade }}">
+      </label>
+      <label>Status da questão
+        <select name="contest_status">
+          <option value="" {% if not contest_status %}selected{% endif %}>Não se aplica</option>
+          <option value="ativa" {% if contest_status == "ativa" %}selected{% endif %}>Ativa</option>
+          <option value="anulada" {% if contest_status == "anulada" %}selected{% endif %}>Anulada</option>
+          <option value="desatualizada" {% if contest_status == "desatualizada" %}selected{% endif %}>Desatualizada</option>
+        </select>
+      </label>
+    </div>
+  </fieldset>
   <label class="inline-check">
     <input type="checkbox" name="allow_multiple" value="1" {% if allow_multiple %}checked{% endif %}>
     Permitir múltiplas respostas para questões multiple_choice

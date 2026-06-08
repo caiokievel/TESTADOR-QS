@@ -20,7 +20,7 @@
         <th>Tags</th>
         <th>Imagem</th>
         <th>Enunciado</th>
-        {% if not request.user.is_superuser %}<th></th>{% endif %}
+        <th>Ações</th>
       </tr>
     </thead>
     <tbody>
@@ -39,15 +39,16 @@
           </td>
           <td>{% if q.exhibit_image %}<span class="tag-pill">Sim</span>{% else %}<span class="text-body-secondary">-</span>{% endif %}</td>
           <td>{{ q.question }}</td>
-          {% if not request.user.is_superuser %}
-            <td class="row-actions">
-              <a href="{% url 'webapp:question_edit' q.qid %}">Editar</a>
-              <form action="{% url 'webapp:question_delete' q.qid %}" method="post">
-                {% csrf_token %}
-                <button class="link danger" type="submit">Remover</button>
-              </form>
-            </td>
-          {% endif %}
+          <td class="row-actions">
+            <a class="button link-button" href="{% url 'webapp:question_edit' q.qid %}">
+              <i class="icon-base ri ri-pencil-line me-1"></i>
+              Editar
+            </a>
+            <form action="{% url 'webapp:question_delete' q.qid %}" method="post" onsubmit="return confirm('Remover esta questão?');">
+              {% csrf_token %}
+              <button class="danger-soft" type="submit">Remover</button>
+            </form>
+          </td>
         </tr>
       {% endfor %}
     </tbody>

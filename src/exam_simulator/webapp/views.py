@@ -27,6 +27,8 @@ from exam_simulator.simulator import Simulator
 from .services import (
     EXHIBITS_DIR,
     get_bank,
+    get_due_review_count,
+    get_due_review_questions,
     get_reports,
     get_visible_bank,
     get_visible_question_banks,
@@ -37,6 +39,7 @@ from .services import (
     load_settings,
     load_subcategories,
     load_tags,
+    record_study_review,
     save_categories,
     save_exams,
     save_marketplace,
@@ -52,6 +55,8 @@ ALLOWED_EXHIBIT_TYPES = {
     "image/gif": ".gif",
     "image/webp": ".webp",
 }
+
+_CONTEST_FILTER_FIELDS = ["banca", "year", "orgao", "cargo", "disciplina", "assunto", "subassunto", "escolaridade", "contest_status"]
 
 
 def dashboard(request: HttpRequest) -> HttpResponse:
@@ -113,7 +118,9 @@ def bank(request: HttpRequest) -> HttpResponse:
     own_bank = get_bank()
     settings_payload = load_settings()
     metrics = get_reports().metrics()
-    categories = _exam_groups(bank_payload.questions, bank_payload)
+    filtered_questions = _filter_questions(bank_payload.questions, request.GET)
+    own_filtered_questions = _filter_questions(own_bank.questions, request.GET)
+    categories = _exam_groups(filtered_questions, bank_payload)
     exam_count = sum(len(subcategory["exams"]) for category in categories for subcategory in category["subcategories"])
     return render(
         request,
@@ -121,12 +128,16 @@ def bank(request: HttpRequest) -> HttpResponse:
         {
             "categories": categories,
             "exam_count": exam_count,
-            "question_count": len(bank_payload.questions),
-            "own_question_count": len(own_bank.questions),
-            "simulatable_exams": _exam_groups(own_bank.questions, own_bank),
+            "question_count": len(filtered_questions),
+            "own_question_count": len(own_filtered_questions),
+            "simulatable_exams": _exam_groups(own_filtered_questions, own_bank),
             "passing_score": settings_payload.get("passing_score", 90.0),
             "active_exam": request.session.get("exam") is not None,
             "study_plan": _study_plan(own_bank, metrics),
+            "review_due_count": get_due_review_count(),
+            "readiness": _exam_readiness(own_bank, metrics),
+            "contest_filters": _contest_filter_options(bank_payload.questions),
+            "active_filters": {key: request.GET.get(key, "") for key in _CONTEST_FILTER_FIELDS},
             "available_categories": [{"name": item} for item in _available_categories(bank_payload)],
             "available_subcategories": [{"name": item} for item in _available_subcategories(bank_payload)],
         },
@@ -178,18 +189,60 @@ def import_questions(request: HttpRequest) -> HttpResponse:
             for chunk in upload.chunks():
                 tmp.write(chunk)
             tmp_path = tmp.name
+        raw_payload = json.loads(Path(tmp_path).read_text(encoding="utf-8"))
+        if not isinstance(raw_payload, list):
+            raise ValueError("O JSON deve ser uma lista de questões.")
+        conflict_action = request.POST.get("conflict_action", "ignore")
+        if conflict_action not in {"ignore", "update", "version"}:
+            conflict_action = "ignore"
         bank = get_bank()
-        imported_bank = QuestionBank(tmp_path)
         existing_qids = {question.qid for question in bank.questions}
+        report = {"added": 0, "updated": 0, "ignored": 0, "duplicated": 0, "errors": 0}
         imported_questions = []
-        skipped = 0
-        for question in imported_bank.questions:
-            if question.qid in existing_qids:
-                skipped += 1
+        for index, item in enumerate(raw_payload, start=1):
+            errors = _validate_import_item(item)
+            if errors:
+                report["errors"] += 1
+                messages.error(request, f"Questão #{index}: {'; '.join(errors)}")
                 continue
+            item = dict(item)
+            if item.get("type") == "multiple_response":
+                item["type"] = "multiple_choice"
+                item["allow_multiple"] = True
+            try:
+                question = _questions_from_payload([item])[0]
+            except Exception as exc:
+                report["errors"] += 1
+                messages.error(request, f"Questão #{index}: não foi possível converter ({exc})")
+                continue
+            existing = bank.find_by_id(question.qid)
+            if existing and conflict_action == "ignore":
+                report["ignored"] += 1
+                report["duplicated"] += 1
+                continue
+            if existing and conflict_action == "update" and _question_has_history(existing.qid):
+                conflict_action_for_item = "version"
+            else:
+                conflict_action_for_item = conflict_action
+            if existing and conflict_action_for_item == "update":
+                question.version = max(getattr(existing, "version", 1), getattr(question, "version", 1))
+                bank.update(existing.qid, question)
+                report["updated"] += 1
+                imported_questions.append(question)
+                continue
+            if existing and conflict_action_for_item == "version":
+                base_qid = question.qid
+                current_versions = [
+                    getattr(existing_question, "version", 1)
+                    for existing_question in bank.questions
+                    if existing_question.qid == base_qid or existing_question.qid.startswith(f"{base_qid}__v")
+                ]
+                question.version = max(current_versions or [1]) + 1
+                question.qid = f"{base_qid}__v{question.version}"
             bank.questions.append(question)
             existing_qids.add(question.qid)
             imported_questions.append(question)
+            report["added"] += 1
         if imported_questions:
             bank.save()
         imported_tags = [tag for question in imported_questions for tag in question.tags]
@@ -197,7 +250,13 @@ def import_questions(request: HttpRequest) -> HttpResponse:
         save_categories([*load_categories(), *[question.category for question in imported_questions]])
         save_subcategories([*load_subcategories(), *[question.subcategory for question in imported_questions]])
         save_exams(_merged_exam_configs(bank))
-        messages.success(request, f"{len(imported_questions)} questões importadas. {skipped} duplicadas ignoradas.")
+        messages.success(
+            request,
+            (
+                f"Importação concluída: {report['added']} adicionadas, {report['updated']} atualizadas, "
+                f"{report['ignored']} ignoradas, {report['duplicated']} duplicadas, {report['errors']} com erro."
+            ),
+        )
     except Exception as exc:
         messages.error(request, f"Não foi possível importar: {exc}")
     finally:
@@ -239,6 +298,7 @@ def question_form(request: HttpRequest, qid: str | None = None) -> HttpResponse:
             {
                 "options": existing.options,
                 "correct_answers": existing.correct_answers,
+                "wrong_explanations": getattr(existing, "wrong_explanations", {}),
             },
             indent=2,
             ensure_ascii=False,
@@ -268,6 +328,19 @@ def question_form(request: HttpRequest, qid: str | None = None) -> HttpResponse:
             "available_exam_domains": _available_exam_domains(bank),
             "question": request.POST.get("question", getattr(existing, "question", "")),
             "explanation": request.POST.get("explanation", getattr(existing, "explanation", "")),
+            "reference_url": request.POST.get("reference_url", getattr(existing, "reference_url", "")),
+            "correct_explanation": request.POST.get("correct_explanation", getattr(existing, "correct_explanation", "")),
+            "version": request.POST.get("version", getattr(existing, "version", 1)),
+            "status": request.POST.get("status", getattr(existing, "status", "ativa")),
+            "banca": request.POST.get("banca", getattr(existing, "banca", "")),
+            "year": request.POST.get("year", getattr(existing, "year", "")),
+            "orgao": request.POST.get("orgao", getattr(existing, "orgao", "")),
+            "cargo": request.POST.get("cargo", getattr(existing, "cargo", "")),
+            "disciplina": request.POST.get("disciplina", getattr(existing, "disciplina", "")),
+            "assunto": request.POST.get("assunto", getattr(existing, "assunto", "")),
+            "subassunto": request.POST.get("subassunto", getattr(existing, "subassunto", "")),
+            "escolaridade": request.POST.get("escolaridade", getattr(existing, "escolaridade", "")),
+            "contest_status": request.POST.get("contest_status", getattr(existing, "contest_status", "")),
             "allow_multiple": request.POST.get("allow_multiple", "1" if getattr(existing, "allow_multiple", False) else ""),
             "available_tags": load_tags(),
             "selected_tags": request.POST.getlist("tags") if request.method == "POST" else getattr(existing, "tags", []),
@@ -306,7 +379,10 @@ def user_add(request: HttpRequest) -> HttpResponse:
     username = _normalize_tag(request.POST.get("username", ""))
     password = request.POST.get("password", "")
     email = request.POST.get("email", "").strip()
-    is_admin = bool(request.POST.get("is_admin"))
+    profile = request.POST.get("profile", "user")
+    is_admin = profile == "admin"
+    is_editor = profile == "editor"
+    is_active = request.POST.get("is_active", "1") == "1"
     if not username or not password:
         messages.error(request, "Informe usuário e senha.")
         return redirect("webapp:users")
@@ -314,8 +390,9 @@ def user_add(request: HttpRequest) -> HttpResponse:
         messages.error(request, "Já existe um usuário com esse login.")
         return redirect("webapp:users")
     user = User.objects.create_user(username=username, email=email, password=password)
-    user.is_staff = is_admin
+    user.is_staff = is_admin or is_editor
     user.is_superuser = is_admin
+    user.is_active = is_active
     user.save()
     messages.success(request, "Usuario criado.")
     return redirect("webapp:users")
@@ -331,7 +408,9 @@ def user_update(request: HttpRequest) -> HttpResponse:
     username = _normalize_tag(request.POST.get("username", ""))
     email = request.POST.get("email", "").strip()
     is_active = bool(request.POST.get("is_active"))
-    is_admin = bool(request.POST.get("is_admin"))
+    profile = request.POST.get("profile", "user")
+    is_admin = profile == "admin"
+    is_editor = profile == "editor"
     if not username:
         messages.error(request, "Informe o usuário.")
         return redirect("webapp:users")
@@ -344,7 +423,7 @@ def user_update(request: HttpRequest) -> HttpResponse:
     user.username = username
     user.email = email
     user.is_active = is_active
-    user.is_staff = is_admin
+    user.is_staff = is_admin or is_editor
     user.is_superuser = is_admin
     user.save()
     messages.success(request, "Usuario atualizado.")
@@ -511,7 +590,7 @@ def marketplace_import(request: HttpRequest) -> HttpResponse:
                     "subcategory": package.get("subcategory", ""),
                     "passing_score": package.get("passing_score", 90.0),
                     "duration_minutes": package.get("duration_minutes", 0),
-                    "question_count": package.get("question_count", 0),
+                    "question_count": package.get("configured_question_count", 0),
                     "domains": package.get("domains", []),
                 },
             ]
@@ -717,7 +796,7 @@ def exam_start(request: HttpRequest) -> HttpResponse:
         return redirect("webapp:bank")
 
     exam_config = _exam_config(selected_exam, bank)
-    questions = [question for question in bank.questions if _exam_config(_question_exam(question), bank)["name"].lower() == selected_exam.lower()]
+    questions = [question for question in _filter_questions(bank.questions, request.POST) if _exam_config(_question_exam(question), bank)["name"].lower() == selected_exam.lower()]
     if not questions:
         messages.error(request, "O exame selecionado não possui questões no seu banco.")
         return redirect("webapp:bank")
@@ -725,7 +804,7 @@ def exam_start(request: HttpRequest) -> HttpResponse:
     mode = request.POST.get("mode", "real")
     if mode not in {"study", "real"}:
         mode = "real"
-    passing_score = float(request.POST.get("passing_score") or 90.0)
+    passing_score = _parse_decimal(request.POST.get("passing_score"), 90.0)
     if mode == "real":
         save_settings({"passing_score": passing_score})
         questions = _weighted_exam_questions(questions, exam_config)
@@ -754,8 +833,20 @@ def study_plan_start(request: HttpRequest) -> HttpResponse:
 
     random.shuffle(questions)
     question_limit = max(plan["recommended_count"], 1)
-    passing_score = float(load_settings().get("passing_score", 90.0))
+    passing_score = _parse_decimal(load_settings().get("passing_score", 90.0), 90.0)
     _start_exam_session(request, bank, questions[:question_limit], passing_score, "Plano de estudos", tags, mode="study")
+    return redirect("webapp:exam_question", index=0)
+
+
+@require_POST
+def review_start(request: HttpRequest) -> HttpResponse:
+    questions = get_due_review_questions()
+    if not questions:
+        messages.info(request, "Não há revisões pendentes para hoje.")
+        return redirect("webapp:bank")
+    bank = get_bank()
+    passing_score = _parse_decimal(load_settings().get("passing_score", 90.0), 90.0)
+    _start_exam_session(request, bank, questions, passing_score, "Revisão espaçada", mode="study")
     return redirect("webapp:exam_question", index=0)
 
 
@@ -780,8 +871,10 @@ def exam_question(request: HttpRequest, index: int) -> HttpResponse:
     if request.method == "POST":
         action = request.POST.get("action")
         if mode == "study" and action == "next_after_feedback":
+            _record_study_feedback(request, exam, question)
             return redirect("webapp:exam_question", index=min(index + 1, len(qids) - 1))
         if mode == "study" and action == "finish_after_feedback":
+            _record_study_feedback(request, exam, question)
             return redirect("webapp:exam_finish")
         if mode == "study" and action == "previous":
             return redirect("webapp:exam_question", index=max(index - 1, 0))
@@ -845,6 +938,11 @@ def exam_finish(request: HttpRequest) -> HttpResponse:
                 "domain": getattr(q, "domain", ""),
                 "question": q.question,
                 "explanation": q.explanation,
+                "reference_url": getattr(q, "reference_url", ""),
+                "correct_explanation": getattr(q, "correct_explanation", ""),
+                "wrong_explanations": getattr(q, "wrong_explanations", {}),
+                "version": getattr(q, "version", 1),
+                "status": getattr(q, "status", "ativa"),
                 "tags": q.tags,
                 "exhibit_image": q.exhibit_image,
                 "exhibit_filename": _exhibit_filename(q.exhibit_image),
@@ -932,6 +1030,20 @@ def _question_from_post(request: HttpRequest, existing=None):
             correct_answers=payload.get("correct_answers", []),
             allow_multiple=bool(request.POST.get("allow_multiple")),
             explanation=request.POST.get("explanation", "").strip(),
+            reference_url=request.POST.get("reference_url", "").strip(),
+            correct_explanation=request.POST.get("correct_explanation", "").strip(),
+            wrong_explanations=payload.get("wrong_explanations", {}),
+            version=_parse_int(request.POST.get("version"), 1),
+            status=request.POST.get("status", "ativa"),
+            banca=request.POST.get("banca", "").strip(),
+            year=request.POST.get("year", "").strip(),
+            orgao=request.POST.get("orgao", "").strip(),
+            cargo=request.POST.get("cargo", "").strip(),
+            disciplina=request.POST.get("disciplina", "").strip(),
+            assunto=request.POST.get("assunto", "").strip(),
+            subassunto=request.POST.get("subassunto", "").strip(),
+            escolaridade=request.POST.get("escolaridade", "").strip(),
+            contest_status=request.POST.get("contest_status", "").strip(),
         )
     if qtype == "drag_and_drop":
         return DragAndDropQuestion(
@@ -948,6 +1060,20 @@ def _question_from_post(request: HttpRequest, existing=None):
             targets=payload.get("targets", []),
             correct_mapping=payload.get("correct_mapping", {}),
             explanation=request.POST.get("explanation", "").strip(),
+            reference_url=request.POST.get("reference_url", "").strip(),
+            correct_explanation=request.POST.get("correct_explanation", "").strip(),
+            wrong_explanations=payload.get("wrong_explanations", {}),
+            version=_parse_int(request.POST.get("version"), 1),
+            status=request.POST.get("status", "ativa"),
+            banca=request.POST.get("banca", "").strip(),
+            year=request.POST.get("year", "").strip(),
+            orgao=request.POST.get("orgao", "").strip(),
+            cargo=request.POST.get("cargo", "").strip(),
+            disciplina=request.POST.get("disciplina", "").strip(),
+            assunto=request.POST.get("assunto", "").strip(),
+            subassunto=request.POST.get("subassunto", "").strip(),
+            escolaridade=request.POST.get("escolaridade", "").strip(),
+            contest_status=request.POST.get("contest_status", "").strip(),
         )
     raise ValueError("Tipo de questão inválido.")
 
@@ -963,6 +1089,20 @@ def _question_to_dict(question) -> dict:
         "domain": getattr(question, "domain", ""),
         "question": question.question,
         "explanation": question.explanation,
+        "reference_url": getattr(question, "reference_url", ""),
+        "correct_explanation": getattr(question, "correct_explanation", ""),
+        "wrong_explanations": getattr(question, "wrong_explanations", {}),
+        "version": getattr(question, "version", 1),
+        "status": getattr(question, "status", "ativa"),
+        "banca": getattr(question, "banca", ""),
+        "ano": getattr(question, "year", ""),
+        "orgao": getattr(question, "orgao", ""),
+        "cargo": getattr(question, "cargo", ""),
+        "disciplina": getattr(question, "disciplina", ""),
+        "assunto": getattr(question, "assunto", ""),
+        "subassunto": getattr(question, "subassunto", ""),
+        "escolaridade": getattr(question, "escolaridade", ""),
+        "contest_status": getattr(question, "contest_status", ""),
         "tags": question.tags,
         "exhibit_image": question.exhibit_image,
     }
@@ -988,6 +1128,71 @@ def _questions_from_payload(payload: list[dict]) -> list:
         return bank.questions
     finally:
         Path(tmp_path).unlink(missing_ok=True)
+
+
+def _validate_import_item(item: object) -> list[str]:
+    errors = []
+    if not isinstance(item, dict):
+        return ["item inválido"]
+    qid = _normalize_tag(item.get("qid", ""))
+    qtype = item.get("type")
+    if not qid:
+        errors.append("qid obrigatório")
+    if qtype not in {"multiple_choice", "multiple_response", "drag_and_drop"}:
+        errors.append("tipo inválido")
+    if not _normalize_tag(item.get("question", "")):
+        errors.append("enunciado obrigatório")
+    if not _normalize_tag(item.get("exam", "")):
+        errors.append("exame obrigatório")
+    tags = item.get("tags", [])
+    if tags is not None and not isinstance(tags, list):
+        errors.append("tags deve ser uma lista")
+    exhibit_image = str(item.get("exhibit_image", "") or "")
+    if exhibit_image and not (exhibit_image.startswith("exhibits/") or exhibit_image.startswith("data:image/") or exhibit_image.startswith("http://") or exhibit_image.startswith("https://")):
+        errors.append("imagem deve ser exhibits/, data:image ou URL")
+    if qtype in {"multiple_choice", "multiple_response"}:
+        options = item.get("options", [])
+        correct_answers = item.get("correct_answers", [])
+        if not isinstance(options, list) or len(options) < 2:
+            errors.append("multiple_choice precisa de pelo menos 2 alternativas")
+        if not isinstance(correct_answers, list) or not correct_answers:
+            errors.append("respostas corretas obrigatórias")
+        if isinstance(options, list) and isinstance(correct_answers, list):
+            missing = [answer for answer in correct_answers if answer not in options]
+            if missing:
+                errors.append("resposta correta fora das alternativas")
+        if qtype == "multiple_choice" and isinstance(correct_answers, list) and len(correct_answers) > 1 and not item.get("allow_multiple"):
+            errors.append("use multiple_response ou allow_multiple=true para múltiplas respostas")
+        wrong_explanations = item.get("wrong_explanations", {})
+        if wrong_explanations and not isinstance(wrong_explanations, dict):
+            errors.append("wrong_explanations deve ser objeto")
+    if qtype == "drag_and_drop":
+        items = item.get("items", [])
+        targets = item.get("targets", [])
+        mapping = item.get("correct_mapping", {})
+        if not isinstance(items, list) or not items:
+            errors.append("drag_and_drop precisa de items")
+        if not isinstance(targets, list) or not targets:
+            errors.append("drag_and_drop precisa de targets")
+        if not isinstance(mapping, dict) or not mapping:
+            errors.append("drag_and_drop precisa de correct_mapping")
+        if isinstance(items, list) and isinstance(targets, list) and isinstance(mapping, dict):
+            for key, value in mapping.items():
+                if key not in items or value not in targets:
+                    errors.append("correct_mapping contém item ou destino inválido")
+                    break
+    status = item.get("status", "ativa")
+    if status not in {"ativa", "rascunho", "em_revisao", "obsoleta", "arquivada"}:
+        errors.append("status inválido")
+    contest_status = item.get("contest_status", item.get("status_questao", ""))
+    if contest_status and contest_status not in {"ativa", "anulada", "desatualizada"}:
+        errors.append("status da questão inválido")
+    return errors
+
+
+def _question_has_history(qid: str) -> bool:
+    metrics = get_reports().metrics()
+    return qid in metrics.get("question_stats", {})
 
 
 def _plain_data(value):
@@ -1107,7 +1312,23 @@ def _question_feedback(question, answer: object) -> dict:
         "user_answer": _answer_label(question, answer),
         "correct_answer": _correct_answer_label(question),
         "explanation": getattr(question, "explanation", ""),
+        "reference_url": getattr(question, "reference_url", ""),
+        "correct_explanation": getattr(question, "correct_explanation", ""),
+        "wrong_explanations": getattr(question, "wrong_explanations", {}),
     }
+
+
+def _record_study_feedback(request: HttpRequest, exam: dict, question) -> None:
+    answer = exam.get("answers", {}).get(question.qid)
+    if answer is None:
+        return
+    try:
+        confidence_level = int(request.POST.get("confidence_level", "3"))
+    except ValueError:
+        confidence_level = 3
+    simulator = Simulator([question])
+    is_correct = simulator._is_correct(question, answer)
+    record_study_review(question, answer, confidence_level, is_correct)
 
 
 def _answer_label(question, answer: object) -> str:
@@ -1762,6 +1983,91 @@ def _format_datetime_label(value: object) -> str:
 
 def _accuracy(correct: int | float, answered: int | float) -> float:
     return (correct / answered * 100) if answered else 0
+
+
+def _filter_questions(questions: list, params) -> list:
+    filtered = questions
+    for field in _CONTEST_FILTER_FIELDS:
+        value = _normalize_tag(params.get(field, ""))
+        if value:
+            filtered = [question for question in filtered if _normalize_tag(getattr(question, field, "")).lower() == value.lower()]
+    return filtered
+
+
+def _contest_filter_options(questions: list) -> dict:
+    options = {}
+    for field in _CONTEST_FILTER_FIELDS:
+        values = sorted({_normalize_tag(getattr(question, field, "")) for question in questions if _normalize_tag(getattr(question, field, ""))}, key=str.lower)
+        options[field] = values
+    return options
+
+
+def _exam_readiness(bank, metrics: dict) -> dict:
+    history = metrics.get("history", []) if metrics else []
+    recent = history[-5:]
+    recent_avg = sum(float(item.get("percent", 0) or 0) for item in recent) / len(recent) if recent else 0
+    domain_rows = _performance_rows(metrics.get("domain_performance", {}), "domain", "Sem domínio") if metrics else []
+    tag_rows = _performance_rows(metrics.get("tag_performance", {}), "tag", "Sem tag") if metrics else []
+    recurring_errors = sum(1 for _, stats in metrics.get("error_ranking", []) if stats.get("wrong", 0) >= 2) if metrics else 0
+    pending_reviews = get_due_review_count()
+    confidence_values = [
+        result.get("confidence_level")
+        for attempt in history[-10:]
+        for result in attempt.get("question_results", [])
+        if result.get("confidence_level")
+    ]
+    confidence_avg = sum(confidence_values) / len(confidence_values) if confidence_values else 3
+
+    weak_domains = [row["label"] for row in domain_rows if row["answered"] and row["accuracy"] < 70][:3]
+    strong_domains = [row["label"] for row in domain_rows if row["answered"] and row["accuracy"] >= 80][:3]
+    weak_tags = [row["label"] for row in tag_rows if row["answered"] and row["accuracy"] < 70][:3]
+    score = recent_avg
+    if domain_rows:
+        score = (score + sum(row["accuracy"] for row in domain_rows[:5]) / min(len(domain_rows), 5)) / 2
+    if tag_rows:
+        score = (score + sum(row["accuracy"] for row in tag_rows[:5]) / min(len(tag_rows), 5)) / 2
+    score -= min(recurring_errors * 4, 20)
+    score -= min(pending_reviews * 1.5, 20)
+    score += (confidence_avg - 3) * 5
+    score = max(0, min(score, 100))
+    if score >= 75:
+        level = "Alta"
+        recommendation = "Faça uma prova real completa e revise apenas os erros."
+    elif score >= 50:
+        level = "Média"
+        recommendation = "Priorize revisões pendentes e pratique os domínios mais fracos antes da prova real."
+    else:
+        level = "Baixa"
+        recommendation = "Comece por modo estudo focado nos tópicos com mais erro e baixa confiança."
+    review_topics = [*weak_domains, *weak_tags][:5]
+    return {
+        "score": round(score),
+        "level": level,
+        "strong_points": strong_domains or ["Ainda sem pontos fortes consolidados"],
+        "weak_points": weak_domains or weak_tags or ["Ainda há poucos dados para identificar fraquezas"],
+        "review_topics": review_topics or ["Revisões pendentes e questões com erro recorrente"],
+        "recommendation": recommendation,
+        "recent_avg": recent_avg,
+        "pending_reviews": pending_reviews,
+        "recurring_errors": recurring_errors,
+        "confidence_avg": confidence_avg,
+    }
+
+
+def _parse_decimal(value: object, default: float = 0.0) -> float:
+    if value is None or value == "":
+        return default
+    try:
+        return float(str(value).strip().replace(",", "."))
+    except (TypeError, ValueError):
+        return default
+
+
+def _parse_int(value: object, default: int = 0) -> int:
+    try:
+        return int(str(value).strip())
+    except (TypeError, ValueError):
+        return default
 
 
 def _exam_groups(questions, bank) -> list[dict]:

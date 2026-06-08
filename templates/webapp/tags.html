@@ -4,16 +4,19 @@
 <section class="page-head split">
   <div>
     <h1>Tags</h1>
-    <p>Tags pré-cadastradas para classificar questões e preparar relatórios.</p>
+    <p>{{ tags|length }} tags cadastradas para classificar questões e preparar relatórios.</p>
   </div>
 </section>
-<form class="toolbar" action="{% url 'webapp:tag_add' %}" method="post">
-  {% csrf_token %}
-  <input name="name" placeholder="Nome da tag" required>
-  <button class="primary" type="submit">Adicionar tag</button>
-</form>
+<section class="toolbar admin-toolbar">
+  <form class="inline-labeled-form" action="{% url 'webapp:tag_add' %}" method="post">
+    {% csrf_token %}
+    <label><span>Nova tag</span><input name="name" required></label>
+    <button class="primary" type="submit">Adicionar tag</button>
+  </form>
+  <label class="table-search"><span>Buscar tag</span><input type="search" id="tag-search" placeholder="Digite para filtrar"></label>
+</section>
 <div class="table-wrap">
-  <table>
+  <table id="tags-table">
     <thead>
       <tr>
         <th>Tag</th>
@@ -27,10 +30,10 @@
           <td><span class="tag-pill">{{ tag.name }}</span></td>
           <td>{{ tag.question_count }}</td>
           <td class="row-actions">
-            <form action="{% url 'webapp:tag_delete' %}" method="post">
+            <form action="{% url 'webapp:tag_delete' %}" method="post" onsubmit="return confirm('Remover esta tag? As questões associadas ficarão sem esta classificação.');">
               {% csrf_token %}
               <input type="hidden" name="name" value="{{ tag.name }}">
-              <button class="link danger" type="submit">Remover</button>
+              <button class="danger-soft" type="submit">Remover</button>
             </form>
           </td>
         </tr>
@@ -40,4 +43,14 @@
     </tbody>
   </table>
 </div>
+<script>
+  const tagSearch = document.getElementById("tag-search");
+  const tagRows = Array.from(document.querySelectorAll("#tags-table tbody tr"));
+  tagSearch?.addEventListener("input", () => {
+    const term = tagSearch.value.trim().toLowerCase();
+    tagRows.forEach((row) => {
+      row.hidden = term && !row.textContent.toLowerCase().includes(term);
+    });
+  });
+</script>
 {% endblock %}

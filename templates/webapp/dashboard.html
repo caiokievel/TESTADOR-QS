@@ -6,25 +6,18 @@
     <h1>Painel</h1>
     <p>Visão geral dos estudos, desempenho e próximas ações.</p>
   </div>
-  <div class="actions-row dashboard-actions">
-    <a class="button primary" href="{% url 'webapp:bank' %}">
-      <i class="icon-base ri ri-play-circle-line me-1"></i>
-      Iniciar simulado
-    </a>
-    <a class="button" href="{% url 'webapp:question_new' %}">
-      <i class="icon-base ri ri-add-line me-1"></i>
-      Nova questão
-    </a>
-  </div>
 </section>
 
-<section class="dashboard-insight {{ insight.tone }}">
+<section class="dashboard-insight primary dashboard-hero">
   <div>
     <span class="insight-kicker">Próxima ação</span>
-    <h2>{{ insight.title }}</h2>
-    <p>{{ insight.message }}</p>
+    <h2>Comece pelo primeiro simulado</h2>
+    <p>Finalize um simulado para acompanhar sua evolução, pontos de atenção e histórico de estudos.</p>
   </div>
-  <a class="button primary" href="{% url insight.action_url %}">{{ insight.action_label }}</a>
+  <a class="button primary" href="{% url 'webapp:bank' %}">
+    <i class="icon-base ri ri-play-circle-line me-1"></i>
+    Iniciar simulado
+  </a>
 </section>
 
 <section class="stats-grid dashboard-stats">

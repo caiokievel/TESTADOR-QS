@@ -41,6 +41,7 @@ urlpatterns = [
     path("simulado/", login_required(views.exam_home), name="exam_home"),
     path("simulado/iniciar/", login_required(views.exam_start), name="exam_start"),
     path("simulado/plano/iniciar/", login_required(views.study_plan_start), name="study_plan_start"),
+    path("simulado/revisao/iniciar/", login_required(views.review_start), name="review_start"),
     path("simulado/questao/<int:index>/", login_required(views.exam_question), name="exam_question"),
     path("simulado/finalizar/", login_required(views.exam_finish), name="exam_finish"),
     path("relatorios/", login_required(views.reports), name="reports"),

@@ -73,7 +73,7 @@
         </dl>
         {% if feedback.explanation %}
           <div class="explanation">
-            <strong>Explicação</strong>
+            <strong>Explicação geral</strong>
             {% if feedback.explanation|slice:":8" == "https://" or feedback.explanation|slice:":7" == "http://" %}
               <a href="{{ feedback.explanation }}" target="_blank" rel="noopener noreferrer">{{ feedback.explanation }}</a>
             {% else %}
@@ -81,6 +81,34 @@
             {% endif %}
           </div>
         {% endif %}
+        {% if feedback.reference_url %}
+          <div class="explanation">
+            <strong>Referência oficial</strong>
+            <a href="{{ feedback.reference_url }}" target="_blank" rel="noopener noreferrer">{{ feedback.reference_url }}</a>
+          </div>
+        {% endif %}
+        {% if feedback.correct_explanation %}
+          <div class="explanation">
+            <strong>Por que a resposta correta está correta</strong>
+            <p>{{ feedback.correct_explanation|linebreaksbr }}</p>
+          </div>
+        {% endif %}
+        {% if feedback.wrong_explanations %}
+          <div class="explanation">
+            <strong>Por que as alternativas erradas estão erradas</strong>
+            {% for option, reason in feedback.wrong_explanations.items %}
+              <p><b>{{ option }}</b><br>{{ reason|linebreaksbr }}</p>
+            {% endfor %}
+          </div>
+        {% endif %}
+        <fieldset class="confidence-picker">
+          <legend>Nível de confiança</legend>
+          <label><input type="radio" name="confidence_level" value="1"> 1 - Chutei</label>
+          <label><input type="radio" name="confidence_level" value="2"> 2 - Baixa confiança</label>
+          <label><input type="radio" name="confidence_level" value="3" checked> 3 - Média confiança</label>
+          <label><input type="radio" name="confidence_level" value="4"> 4 - Alta confiança</label>
+          <label><input type="radio" name="confidence_level" value="5"> 5 - Tenho certeza</label>
+        </fieldset>
       </div>
     </section>
   {% endif %}

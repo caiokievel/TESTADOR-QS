@@ -9,7 +9,38 @@
   <a class="button primary" href="{% url 'webapp:question_new' %}">Adicionar questão</a>
 </section>
 
+<section class="toolbar filter-toolbar" aria-labelledby="advanced-filters-title">
+  <div class="toolbar-head">
+    <div>
+      <h2 id="advanced-filters-title">Filtros avançados</h2>
+      <p>Use estes campos para estudos de concursos. Certificações técnicas podem ficar sem filtro.</p>
+    </div>
+  </div>
+  <form class="advanced-filter-form" method="get">
+    <label><span>Banca</span><select name="banca"><option value="">Todas</option>{% for value in contest_filters.banca %}<option value="{{ value }}" {% if active_filters.banca == value %}selected{% endif %}>{{ value }}</option>{% endfor %}</select></label>
+    <label><span>Ano</span><select name="year"><option value="">Todos</option>{% for value in contest_filters.year %}<option value="{{ value }}" {% if active_filters.year == value %}selected{% endif %}>{{ value }}</option>{% endfor %}</select></label>
+    <label><span>Órgão</span><select name="orgao"><option value="">Todos</option>{% for value in contest_filters.orgao %}<option value="{{ value }}" {% if active_filters.orgao == value %}selected{% endif %}>{{ value }}</option>{% endfor %}</select></label>
+    <label><span>Cargo</span><select name="cargo"><option value="">Todos</option>{% for value in contest_filters.cargo %}<option value="{{ value }}" {% if active_filters.cargo == value %}selected{% endif %}>{{ value }}</option>{% endfor %}</select></label>
+    <label><span>Disciplina</span><select name="disciplina"><option value="">Todas</option>{% for value in contest_filters.disciplina %}<option value="{{ value }}" {% if active_filters.disciplina == value %}selected{% endif %}>{{ value }}</option>{% endfor %}</select></label>
+    <label><span>Assunto</span><select name="assunto"><option value="">Todos</option>{% for value in contest_filters.assunto %}<option value="{{ value }}" {% if active_filters.assunto == value %}selected{% endif %}>{{ value }}</option>{% endfor %}</select></label>
+    <label><span>Subassunto</span><select name="subassunto"><option value="">Todos</option>{% for value in contest_filters.subassunto %}<option value="{{ value }}" {% if active_filters.subassunto == value %}selected{% endif %}>{{ value }}</option>{% endfor %}</select></label>
+    <label><span>Escolaridade</span><select name="escolaridade"><option value="">Todas</option>{% for value in contest_filters.escolaridade %}<option value="{{ value }}" {% if active_filters.escolaridade == value %}selected{% endif %}>{{ value }}</option>{% endfor %}</select></label>
+    <label><span>Status da questão</span><select name="contest_status"><option value="">Todos</option>{% for value in contest_filters.contest_status %}<option value="{{ value }}" {% if active_filters.contest_status == value %}selected{% endif %}>{{ value }}</option>{% endfor %}</select></label>
+    <div class="filter-actions">
+      <button class="primary" type="submit">Filtrar</button>
+      <a class="button" href="{% url 'webapp:bank' %}">Limpar</a>
+    </div>
+  </form>
+</section>
+
 <section class="study-workspace">
+  <div class="section-label">
+    <span>1</span>
+    <div>
+      <h2>Modos de estudo</h2>
+      <p>Escolha entre feedback imediato, prova real ou revisão espaçada.</p>
+    </div>
+  </div>
   <article class="study-start-card study-mode-card">
     <div>
       <span class="insight-kicker">Modo Estudo</span>
@@ -46,7 +77,7 @@
     {% endif %}
   </article>
 
-  <article class="study-manage-card">
+  <article class="study-manage-card bank-admin-card">
     <div>
       <span class="insight-kicker">Banco</span>
       <h2>Gerenciar questões</h2>
@@ -55,6 +86,11 @@
     <form class="toolbar compact-toolbar" action="{% url 'webapp:import_questions' %}" method="post" enctype="multipart/form-data">
       {% csrf_token %}
       <input type="file" name="questions_file" accept="application/json">
+      <select name="conflict_action" aria-label="Ação para qid duplicado">
+        <option value="ignore">Duplicadas: ignorar</option>
+        <option value="update">Duplicadas: atualizar</option>
+        <option value="version">Duplicadas: nova versão</option>
+      </select>
       <button type="submit">Importar JSON</button>
       <a class="button" href="{% url 'webapp:export_questions' %}">Exportar JSON</a>
       <button type="button" data-bs-toggle="modal" data-bs-target="#json-template-modal">
@@ -64,6 +100,14 @@
       <a class="button" href="{% url 'webapp:classifications' %}">Classificações</a>
     </form>
   </article>
+
+  <div class="section-label recommendation-label">
+    <span>2</span>
+    <div>
+      <h2>Recomendação personalizada</h2>
+      <p>Use sua performance para escolher o próximo estudo.</p>
+    </div>
+  </div>
 
   <article class="study-plan-card">
     <div class="study-plan-head">
@@ -97,6 +141,61 @@
       <a class="button" href="{% url 'webapp:tags' %}">Gerenciar tags</a>
     {% endif %}
   </article>
+
+  <article class="study-review-card">
+    <div class="study-plan-head">
+      <div>
+        <span class="insight-kicker">Revisão espaçada</span>
+        <h2>Revisões Pendentes</h2>
+        <p>{{ review_due_count }} {% if review_due_count == 1 %}questão precisa{% else %}questões precisam{% endif %} ser revisada{% if review_due_count != 1 %}s{% endif %} hoje.</p>
+      </div>
+      <span class="status-pill neutral">{{ review_due_count }} hoje</span>
+    </div>
+    <form action="{% url 'webapp:review_start' %}" method="post">
+      {% csrf_token %}
+      <button class="primary" type="submit" {% if review_due_count == 0 %}disabled{% endif %}>
+        <i class="icon-base ri ri-loop-left-line me-1"></i>
+        Iniciar revisão
+      </button>
+    </form>
+    {% if review_due_count == 0 %}
+      <div class="notice inline-note">Nenhuma questão venceu para revisão hoje.</div>
+    {% endif %}
+  </article>
+
+  <article class="study-readiness-card">
+    <div class="study-plan-head">
+      <div>
+        <span class="insight-kicker">Prontidão para Prova</span>
+        <h2>{{ readiness.level }}</h2>
+        <p>Indicador calculado por simulados recentes, domínios, tags, erros recorrentes, revisões pendentes e confiança.</p>
+      </div>
+      <span class="status-pill neutral">{{ readiness.score }}%</span>
+    </div>
+    <div class="readiness-grid">
+      <div>
+        <strong>Pontos fortes</strong>
+        {% for item in readiness.strong_points %}<span>{{ item }}</span>{% endfor %}
+      </div>
+      <div>
+        <strong>Pontos fracos</strong>
+        {% for item in readiness.weak_points %}<span>{{ item }}</span>{% endfor %}
+      </div>
+      <div>
+        <strong>Revisar agora</strong>
+        {% for item in readiness.review_topics %}<span>{{ item }}</span>{% endfor %}
+      </div>
+    </div>
+    <div class="notice inline-note">{{ readiness.recommendation }}</div>
+  </article>
+</section>
+
+<section class="section-label bank-label">
+  <span>3</span>
+  <div>
+    <h2>Banco de questões e exames</h2>
+    <p>Exames disponíveis, quantidade de questões e ações administrativas.</p>
+  </div>
 </section>
 
 <section class="bank-hierarchy">
@@ -144,6 +243,15 @@
       {% csrf_token %}
       <input type="hidden" name="mode" value="study">
       <input type="hidden" name="passing_score" value="{{ passing_score }}">
+      <input type="hidden" name="banca" value="{{ active_filters.banca }}">
+      <input type="hidden" name="year" value="{{ active_filters.year }}">
+      <input type="hidden" name="orgao" value="{{ active_filters.orgao }}">
+      <input type="hidden" name="cargo" value="{{ active_filters.cargo }}">
+      <input type="hidden" name="disciplina" value="{{ active_filters.disciplina }}">
+      <input type="hidden" name="assunto" value="{{ active_filters.assunto }}">
+      <input type="hidden" name="subassunto" value="{{ active_filters.subassunto }}">
+      <input type="hidden" name="escolaridade" value="{{ active_filters.escolaridade }}">
+      <input type="hidden" name="contest_status" value="{{ active_filters.contest_status }}">
       <div class="modal-header">
         <h5 class="modal-title" id="start-study-title">Iniciar modo estudo</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
@@ -178,6 +286,15 @@
     <form class="modal-content" action="{% url 'webapp:exam_start' %}" method="post">
       {% csrf_token %}
       <input type="hidden" name="mode" value="real">
+      <input type="hidden" name="banca" value="{{ active_filters.banca }}">
+      <input type="hidden" name="year" value="{{ active_filters.year }}">
+      <input type="hidden" name="orgao" value="{{ active_filters.orgao }}">
+      <input type="hidden" name="cargo" value="{{ active_filters.cargo }}">
+      <input type="hidden" name="disciplina" value="{{ active_filters.disciplina }}">
+      <input type="hidden" name="assunto" value="{{ active_filters.assunto }}">
+      <input type="hidden" name="subassunto" value="{{ active_filters.subassunto }}">
+      <input type="hidden" name="escolaridade" value="{{ active_filters.escolaridade }}">
+      <input type="hidden" name="contest_status" value="{{ active_filters.contest_status }}">
       <div class="modal-header">
         <h5 class="modal-title" id="start-exam-title">Iniciar modo prova real</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
@@ -231,7 +348,15 @@
     "exam": "PowerSwitch Data Center Deploy",
     "domain": "VLANs e Switching",
     "question": "Refer to the exhibit. Which configuration will allow S1 to ping S2's Lo0 address?",
-    "explanation": "https://docs.exemplo.com/rota-estatica",
+    "explanation": "Explicação geral da questão.",
+    "reference_url": "https://docs.exemplo.com/rota-estatica",
+    "correct_explanation": "A rota aponta para o next-hop correto e usa a máscara adequada.",
+    "wrong_explanations": {
+      "S1(config-router)# ip route 144.254.32.1 192.168.32.2/32": "Sintaxe incorreta para a rota estática.",
+      "S1(config-router)# ip route 192.168.32.2 144.254.32.1/32": "Destino e next-hop estão invertidos."
+    },
+    "version": 1,
+    "status": "ativa",
     "tags": ["Routing", "OS10"],
     "exhibit_image": "",
     "options": [
@@ -254,6 +379,14 @@
     "domain": "STP/LACP",
     "question": "Which two protocols are used for redundancy?",
     "explanation": "Texto curto explicando a resposta.",
+    "reference_url": "",
+    "correct_explanation": "VRRP e STP são usados em cenários de redundância.",
+    "wrong_explanations": {
+      "SMTP": "SMTP é protocolo de e-mail.",
+      "SNMP": "SNMP é usado para gerenciamento/monitoramento."
+    },
+    "version": 1,
+    "status": "ativa",
     "tags": ["Redundancy"],
     "exhibit_image": "",
     "options": [
@@ -277,6 +410,11 @@
     "domain": "Troubleshooting",
     "question": "Associe cada item ao alvo correto.",
     "explanation": "",
+    "reference_url": "",
+    "correct_explanation": "Cada protocolo foi associado ao seu uso principal.",
+    "wrong_explanations": {},
+    "version": 1,
+    "status": "ativa",
     "tags": ["Conceitos"],
     "exhibit_image": "",
     "items": ["VRRP", "STP"],

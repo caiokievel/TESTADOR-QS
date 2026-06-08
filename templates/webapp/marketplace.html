@@ -11,16 +11,18 @@
 {% if request.user.is_superuser %}
   <section class="form-panel marketplace-publish">
     <h2>Publicar exame</h2>
-    <form class="marketplace-form" action="{% url 'webapp:marketplace_publish' %}" method="post">
+    <form class="marketplace-form" action="{% url 'webapp:marketplace_publish' %}" method="post" id="marketplace-publish-form">
       {% csrf_token %}
-      <select name="exam" required>
-        <option value="">Selecione um exame do banco admin</option>
-        {% for exam in available_exams %}
-          <option value="{{ exam.name }}">{{ exam.name }} - {{ exam.category }} / {{ exam.subcategory|default:"-" }}</option>
-        {% endfor %}
-      </select>
-      <input name="description" placeholder="Descrição curta do pacote">
-      <button class="primary" type="submit">
+      <label><span>Exame</span>
+        <select name="exam" required>
+          <option value="">Selecione um exame do banco admin</option>
+          {% for exam in available_exams %}
+            <option value="{{ exam.name }}">{{ exam.name }} - {{ exam.category }} / {{ exam.subcategory|default:"-" }}</option>
+          {% endfor %}
+        </select>
+      </label>
+      <label><span>Descrição curta</span><input name="description" required></label>
+      <button class="primary" type="submit" disabled>
         <i class="icon-base ri ri-upload-cloud-2-line me-1"></i>
         Publicar
       </button>
@@ -36,13 +38,16 @@
           <span class="tag-pill">{{ package.category|default:"Geral" }}</span>
           {% if package.subcategory %}<span class="tag-pill">{{ package.subcategory }}</span>{% endif %}
         </div>
-        <i class="icon-base ri ri-store-2-line"></i>
+        <span class="status-pill neutral">Publicado</span>
       </div>
       <h2>{{ package.name }}</h2>
+      {% if package.code %}<span class="package-code">{{ package.code }}</span>{% endif %}
       <p>{{ package.description|default:"Pacote de questões publicado no marketplace interno." }}</p>
       <div class="marketplace-meta">
-        <div><span>Questões</span><strong>{{ package.question_count }}</strong></div>
+        <div><span>Total de questões</span><strong>{{ package.question_count }}</strong></div>
         <div><span>Novas para você</span><strong>{{ package.importable_count }}</strong></div>
+        <div><span>Atualizado em</span><strong>{{ package.created_at|default:"-" }}</strong></div>
+        <div><span>Autor</span><strong>Admin</strong></div>
       </div>
       <div class="actions-row">
         <form action="{% url 'webapp:marketplace_import' %}" method="post">
@@ -53,13 +58,19 @@
             Importar
           </button>
         </form>
+        <button type="button" data-bs-toggle="collapse" data-bs-target="#package-details-{{ package.id }}" aria-expanded="false" aria-controls="package-details-{{ package.id }}">Ver detalhes</button>
         {% if request.user.is_superuser %}
-          <form action="{% url 'webapp:marketplace_delete' %}" method="post">
+          <form action="{% url 'webapp:marketplace_delete' %}" method="post" onsubmit="return confirm('Remover esta publicação do marketplace?');">
             {% csrf_token %}
             <input type="hidden" name="package_id" value="{{ package.id }}">
-            <button class="link danger" type="submit">Remover</button>
+            <button class="danger-soft" type="submit">Remover publicação</button>
           </form>
         {% endif %}
+      </div>
+      <div class="collapse marketplace-details" id="package-details-{{ package.id }}">
+        <div class="notice inline-note">
+          Nota mínima: {{ package.passing_score|floatformat:1 }}% · Tempo: {{ package.duration_minutes }} min · Domínios: {{ package.domains|length }}
+        </div>
       </div>
     </article>
   {% empty %}
@@ -69,4 +80,19 @@
     </section>
   {% endfor %}
 </section>
+{% if request.user.is_superuser %}
+<script>
+  const publishForm = document.getElementById("marketplace-publish-form");
+  if (publishForm) {
+    const publishButton = publishForm.querySelector("button[type='submit']");
+    const requiredFields = Array.from(publishForm.querySelectorAll("[required]"));
+    const togglePublish = () => {
+      publishButton.disabled = requiredFields.some((field) => !field.value.trim());
+    };
+    requiredFields.forEach((field) => field.addEventListener("input", togglePublish));
+    requiredFields.forEach((field) => field.addEventListener("change", togglePublish));
+    togglePublish();
+  }
+</script>
+{% endif %}
 {% endblock %}

@@ -13,8 +13,13 @@
   <div class="export-actions" aria-label="Exportar relatório">
     <span>Exportar</span>
     <div class="actions-row">
-      <a class="button" href="{% url 'webapp:export_reports_csv' %}">CSV</a>
-      <a class="button" href="{% url 'webapp:export_reports_json' %}">JSON</a>
+      {% if metrics %}
+        <a class="button" href="{% url 'webapp:export_reports_csv' %}">CSV</a>
+        <a class="button" href="{% url 'webapp:export_reports_json' %}">JSON</a>
+      {% else %}
+        <button type="button" disabled title="Finalize um simulado para liberar a exportação.">CSV</button>
+        <button type="button" disabled title="Finalize um simulado para liberar a exportação.">JSON</button>
+      {% endif %}
     </div>
   </div>
 </section>
@@ -133,9 +138,9 @@
     {% include "webapp/report_performance_table.html" with title="Por tag" rows=metrics.tag_performance_rows empty_text="Sem dados por tag." %}
   </section>
 {% else %}
-  <section class="notice empty-state">
+  <section class="notice empty-state report-empty-state">
     <h2>Nenhum simulado finalizado</h2>
-    <p>Assim que um simulado for finalizado, os indicadores e rankings aparecem aqui.</p>
+    <p>Assim que você finalizar um simulado, seus indicadores, rankings e evolução aparecerão aqui.</p>
     <a class="button primary" href="{% url 'webapp:bank' %}">Iniciar simulado</a>
   </section>
 {% endif %}

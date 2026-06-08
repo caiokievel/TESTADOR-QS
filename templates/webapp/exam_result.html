@@ -79,12 +79,32 @@
         </dl>
         {% if item.explanation %}
           <div class="explanation">
-            <strong>Explicação</strong>
+            <strong>Explicação geral</strong>
             {% if item.explanation|slice:":8" == "https://" or item.explanation|slice:":7" == "http://" %}
               <a href="{{ item.explanation }}" target="_blank" rel="noopener noreferrer">{{ item.explanation }}</a>
             {% else %}
               <p>{{ item.explanation|linebreaksbr }}</p>
             {% endif %}
+          </div>
+        {% endif %}
+        {% if item.reference_url %}
+          <div class="explanation">
+            <strong>Referência oficial</strong>
+            <a href="{{ item.reference_url }}" target="_blank" rel="noopener noreferrer">{{ item.reference_url }}</a>
+          </div>
+        {% endif %}
+        {% if item.correct_explanation %}
+          <div class="explanation">
+            <strong>Por que a resposta correta está correta</strong>
+            <p>{{ item.correct_explanation|linebreaksbr }}</p>
+          </div>
+        {% endif %}
+        {% if item.wrong_explanations %}
+          <div class="explanation">
+            <strong>Por que as alternativas erradas estão erradas</strong>
+            {% for option, reason in item.wrong_explanations.items %}
+              <p><b>{{ option }}</b><br>{{ reason|linebreaksbr }}</p>
+            {% endfor %}
           </div>
         {% endif %}
       </div>

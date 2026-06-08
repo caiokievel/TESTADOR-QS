@@ -16,6 +16,22 @@ class BaseQuestion:
     exam: str = ""
     domain: str = ""
     explanation: str = ""
+    reference_url: str = ""
+    correct_explanation: str = ""
+    wrong_explanations: Dict[str, str] = field(default_factory=dict)
+    version: int = 1
+    status: str = "ativa"
+    banca: str = ""
+    year: str = ""
+    orgao: str = ""
+    cargo: str = ""
+    disciplina: str = ""
+    assunto: str = ""
+    subassunto: str = ""
+    escolaridade: str = ""
+    contest_status: str = ""
+    created_at: str = ""
+    updated_at: str = ""
     tags: List[str] = field(default_factory=list)
     exhibit_image: str = ""
 

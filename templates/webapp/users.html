@@ -6,37 +6,30 @@
     <h1>Usuários</h1>
     <p>Gestão de acessos e permissões do sistema.</p>
   </div>
+  <button class="primary" type="button" data-bs-toggle="modal" data-bs-target="#user-new-modal">
+    <i class="icon-base ri ri-user-add-line me-1"></i>
+    Novo usuário
+  </button>
 </section>
-<section class="settings-grid">
-  <article class="form-panel">
-    <h2>Novo usuário</h2>
-    <form class="stacked-form" action="{% url 'webapp:user_add' %}" method="post">
-      {% csrf_token %}
-      <input name="username" placeholder="Login" required>
-      <input name="email" type="email" placeholder="E-mail">
-      <input name="password" type="password" placeholder="Senha" required>
-      <label class="inline-check">
-        <input type="checkbox" name="is_admin" value="1">
-        Administrador
-      </label>
-      <button class="primary" type="submit">Criar usuário</button>
-    </form>
-  </article>
+<section class="toolbar admin-toolbar">
+  <label class="table-search"><span>Buscar usuário</span><input type="search" id="user-search" placeholder="Digite para filtrar"></label>
+</section>
+<section class="settings-grid users-layout">
   <article class="form-panel wide-panel">
     <h2>Usuários cadastrados</h2>
     <div class="table-wrap flat">
-      <table>
+      <table id="users-table">
         <thead><tr><th>Usuário</th><th>E-mail</th><th>Perfil</th><th>Status</th><th>Último login</th><th></th></tr></thead>
         <tbody>
           {% for item in users %}
             <tr>
               <td>{{ item.username }}</td>
               <td>{{ item.email|default:"-" }}</td>
-              <td>{% if item.is_superuser %}<span class="tag-pill">Admin</span>{% else %}<span class="text-body-secondary">Usuário</span>{% endif %}</td>
+              <td>{% if item.is_superuser %}<span class="tag-pill">Admin</span>{% elif item.is_staff %}<span class="tag-pill">Editor</span>{% else %}<span class="text-body-secondary">Usuário</span>{% endif %}</td>
               <td><span class="status-pill {% if item.is_active %}ok{% else %}miss{% endif %}">{% if item.is_active %}Ativo{% else %}Inativo{% endif %}</span></td>
               <td>{{ item.last_login|default:"-" }}</td>
               <td class="row-actions">
-                <button class="icon-action" type="button" data-bs-toggle="modal" data-bs-target="#user-edit-modal" data-user-id="{{ item.id }}" data-user-username="{{ item.username }}" data-user-email="{{ item.email }}" data-user-active="{% if item.is_active %}1{% else %}0{% endif %}" data-user-admin="{% if item.is_superuser %}1{% else %}0{% endif %}" title="Editar usuário" aria-label="Editar {{ item.username }}">
+                <button class="icon-action" type="button" data-bs-toggle="modal" data-bs-target="#user-edit-modal" data-user-id="{{ item.id }}" data-user-username="{{ item.username }}" data-user-email="{{ item.email }}" data-user-active="{% if item.is_active %}1{% else %}0{% endif %}" data-user-profile="{% if item.is_superuser %}admin{% elif item.is_staff %}editor{% else %}user{% endif %}" title="Editar usuário" aria-label="Editar {{ item.username }}">
                   <i class="icon-base ri ri-pencil-line"></i>
                 </button>
                 <button class="icon-action" type="button" data-bs-toggle="modal" data-bs-target="#user-password-modal" data-user-id="{{ item.id }}" data-user-username="{{ item.username }}" title="Alterar senha" aria-label="Alterar senha de {{ item.username }}">
@@ -52,6 +45,40 @@
     </div>
   </article>
 </section>
+
+<div class="modal fade" id="user-new-modal" tabindex="-1" aria-labelledby="user-new-title" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <form class="modal-content" action="{% url 'webapp:user_add' %}" method="post">
+      {% csrf_token %}
+      <div class="modal-header">
+        <h5 class="modal-title" id="user-new-title">Novo usuário</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+      </div>
+      <div class="modal-body modal-form">
+        <label>Nome ou login<input name="username" required></label>
+        <label>E-mail<input name="email" type="email"></label>
+        <label>Senha temporária<input name="password" type="password" required></label>
+        <label>Perfil
+          <select name="profile">
+            <option value="user">Usuário</option>
+            <option value="editor">Editor</option>
+            <option value="admin">Admin</option>
+          </select>
+        </label>
+        <label>Status
+          <select name="is_active">
+            <option value="1">Ativo</option>
+            <option value="">Inativo</option>
+          </select>
+        </label>
+      </div>
+      <div class="modal-footer">
+        <button type="button" data-bs-dismiss="modal">Cancelar</button>
+        <button class="primary" type="submit">Criar usuário</button>
+      </div>
+    </form>
+  </div>
+</div>
 
 <div class="modal fade" id="user-edit-modal" tabindex="-1" aria-labelledby="user-edit-title" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered">
@@ -69,13 +96,18 @@
         <label>E-mail
           <input name="email" id="user-edit-email" type="email">
         </label>
-        <label class="inline-check">
-          <input type="checkbox" name="is_active" id="user-edit-active" value="1">
-          Ativo
+        <label>Status
+          <select name="is_active" id="user-edit-active">
+            <option value="1">Ativo</option>
+            <option value="">Inativo</option>
+          </select>
         </label>
-        <label class="inline-check">
-          <input type="checkbox" name="is_admin" id="user-edit-admin" value="1">
-          Administrador
+        <label>Perfil
+          <select name="profile" id="user-edit-profile">
+            <option value="user">Usuário</option>
+            <option value="editor">Editor</option>
+            <option value="admin">Admin</option>
+          </select>
         </label>
       </div>
       <div class="modal-footer">
@@ -116,8 +148,8 @@
     document.getElementById("user-edit-id").value = button.dataset.userId;
     document.getElementById("user-edit-username").value = button.dataset.userUsername;
     document.getElementById("user-edit-email").value = button.dataset.userEmail;
-    document.getElementById("user-edit-active").checked = button.dataset.userActive === "1";
-    document.getElementById("user-edit-admin").checked = button.dataset.userAdmin === "1";
+    document.getElementById("user-edit-active").value = button.dataset.userActive === "1" ? "1" : "";
+    document.getElementById("user-edit-profile").value = button.dataset.userProfile || "user";
   });
 
   const userPasswordModal = document.getElementById("user-password-modal");
@@ -125,6 +157,15 @@
     const button = event.relatedTarget;
     document.getElementById("user-password-id").value = button.dataset.userId;
     document.getElementById("user-password-name").textContent = button.dataset.userUsername;
+  });
+
+  const userSearch = document.getElementById("user-search");
+  const userRows = Array.from(document.querySelectorAll("#users-table tbody tr"));
+  userSearch?.addEventListener("input", () => {
+    const term = userSearch.value.trim().toLowerCase();
+    userRows.forEach((row) => {
+      row.hidden = term && !row.textContent.toLowerCase().includes(term);
+    });
   });
 </script>
 {% endblock %}
