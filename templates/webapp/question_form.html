@@ -4,7 +4,7 @@
 <section class="page-head">
   <h1>{% if existing %}Editar Questão{% else %}Nova Questão{% endif %}</h1>
 </section>
-<form class="form-panel" method="post" enctype="multipart/form-data">
+<form class="form-panel" id="question-form-main" method="post" enctype="multipart/form-data">
   {% csrf_token %}
   <label>ID
     <input name="qid" value="{{ qid }}" required>
@@ -116,6 +116,32 @@
     <input type="checkbox" name="allow_multiple" value="1" {% if allow_multiple %}checked{% endif %}>
     Permitir múltiplas respostas para questões multiple_choice
   </label>
+  <section class="question-builder" id="multiple-choice-builder">
+    <div class="question-builder-head">
+      <div>
+        <h2>Alternativas e resposta correta</h2>
+        <p>Edite as alternativas em campos separados e marque a resposta correta. Para questões de uma resposta, apenas uma alternativa pode ficar marcada.</p>
+      </div>
+      <button class="button" type="button" id="add-option-row">
+        <i class="icon-base ri ri-add-line me-1"></i>
+        Adicionar alternativa
+      </button>
+    </div>
+    <div class="option-builder-list" id="option-builder-list"></div>
+  </section>
+  <section class="question-builder" id="drag-drop-builder">
+    <div class="question-builder-head">
+      <div>
+        <h2>Associações drag and drop</h2>
+        <p>Informe cada item e o alvo correto. O sistema monta automaticamente a estrutura necessária para a questão.</p>
+      </div>
+      <button class="button" type="button" id="add-mapping-row">
+        <i class="icon-base ri ri-add-line me-1"></i>
+        Adicionar associação
+      </button>
+    </div>
+    <div class="mapping-builder-list" id="mapping-builder-list"></div>
+  </section>
   <div class="tag-dropdown-field">
     <div class="field-label">Tags</div>
     <div class="dropdown tag-dropdown">
@@ -137,14 +163,54 @@
     </div>
     <div class="tag-list" id="selected-tag-list"></div>
   </div>
-  <label>Estrutura JSON
-    <textarea name="payload" rows="12" spellcheck="false">{{ payload }}</textarea>
-  </label>
+  <input type="hidden" name="payload" id="payload-field" value="{{ payload|escape }}">
   <div class="actions-row">
     <button class="primary" type="submit">Salvar</button>
+    <button type="button" id="preview-question-button" data-bs-toggle="modal" data-bs-target="#question-preview-modal">
+      <i class="icon-base ri ri-eye-line me-1"></i>
+      Visualizar questão
+    </button>
     <a class="button" href="{% url 'webapp:bank' %}">Cancelar</a>
   </div>
 </form>
+
+<div class="modal fade" id="question-preview-modal" tabindex="-1" aria-labelledby="question-preview-title" aria-hidden="true">
+  <div class="modal-dialog modal-xl modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="question-preview-title">Visualizar questão</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+      </div>
+      <div class="modal-body">
+        <article class="exam-card question-preview-card">
+          <div class="question-preview-meta">
+            <span class="tag-pill" id="preview-type"></span>
+            <span class="tag-pill" id="preview-exam"></span>
+            <span class="tag-pill" id="preview-domain" hidden></span>
+          </div>
+          <div class="question-text" id="preview-question-text"></div>
+          <figure class="question-exhibit" id="preview-exhibit-wrap" hidden>
+            <img id="preview-exhibit-image" alt="Imagem de apoio da questão">
+          </figure>
+          <div class="answers" id="preview-options"></div>
+          <div class="mapping-list" id="preview-mapping"></div>
+          <section class="explanation" id="preview-explanation-wrap" hidden>
+            <strong>Explicação</strong>
+            <div id="preview-explanation"></div>
+          </section>
+          <section class="explanation" id="preview-correct-explanation-wrap" hidden>
+            <strong>Motivo da resposta correta</strong>
+            <div id="preview-correct-explanation"></div>
+          </section>
+        </article>
+      </div>
+      <div class="modal-footer">
+        <button type="button" data-bs-dismiss="modal">Fechar</button>
+        <button class="primary" type="submit" form="question-form-main">Salvar questão</button>
+      </div>
+    </div>
+  </div>
+</div>
 <script>
   const zone = document.getElementById("exhibit-zone");
   const fileInput = document.getElementById("exhibit-file");
@@ -155,6 +221,36 @@
   const tagCheckboxes = Array.from(document.querySelectorAll(".tag-checkbox"));
   const examSelect = document.getElementById("question-exam-select");
   const domainSelect = document.getElementById("question-domain-select");
+  const form = document.querySelector("form.form-panel");
+  const typeSelect = document.querySelector("select[name='type']");
+  const allowMultipleInput = document.querySelector("input[name='allow_multiple']");
+  const payloadField = document.getElementById("payload-field");
+  const multipleChoiceBuilder = document.getElementById("multiple-choice-builder");
+  const dragDropBuilder = document.getElementById("drag-drop-builder");
+  const optionBuilderList = document.getElementById("option-builder-list");
+  const mappingBuilderList = document.getElementById("mapping-builder-list");
+  const addOptionRowButton = document.getElementById("add-option-row");
+  const addMappingRowButton = document.getElementById("add-mapping-row");
+  const previewModal = document.getElementById("question-preview-modal");
+  const previewType = document.getElementById("preview-type");
+  const previewExam = document.getElementById("preview-exam");
+  const previewDomain = document.getElementById("preview-domain");
+  const previewQuestionText = document.getElementById("preview-question-text");
+  const previewExhibitWrap = document.getElementById("preview-exhibit-wrap");
+  const previewExhibitImage = document.getElementById("preview-exhibit-image");
+  const previewOptions = document.getElementById("preview-options");
+  const previewMapping = document.getElementById("preview-mapping");
+  const previewExplanationWrap = document.getElementById("preview-explanation-wrap");
+  const previewExplanation = document.getElementById("preview-explanation");
+  const previewCorrectExplanationWrap = document.getElementById("preview-correct-explanation-wrap");
+  const previewCorrectExplanation = document.getElementById("preview-correct-explanation");
+  let initialPayload = {};
+
+  try {
+    initialPayload = JSON.parse(payloadField.value || "{}");
+  } catch {
+    initialPayload = {};
+  }
 
   function showPreview(src) {
     preview.src = src;
@@ -220,5 +316,248 @@
 
   examSelect.addEventListener("change", refreshDomains);
   refreshDomains();
+
+  function optionRowTemplate(value = "", checked = false, wrongExplanation = "") {
+    const row = document.createElement("div");
+    row.className = "builder-row option-builder-row";
+    row.innerHTML = `
+      <label class="builder-check">
+        <input type="checkbox" class="builder-correct" ${checked ? "checked" : ""}>
+        <span>Correta</span>
+      </label>
+      <label class="builder-main-field">
+        <span>Alternativa</span>
+        <textarea class="builder-option-text" rows="2" required>${escapeHtml(value)}</textarea>
+      </label>
+      <label class="builder-main-field">
+        <span>Explicação se estiver errada</span>
+        <textarea class="builder-wrong-explanation" rows="2">${escapeHtml(wrongExplanation)}</textarea>
+      </label>
+      <button class="icon-action builder-remove" type="button" aria-label="Remover alternativa" title="Remover alternativa">
+        <i class="icon-base ri ri-delete-bin-line"></i>
+      </button>
+    `;
+    row.querySelector(".builder-remove").addEventListener("click", () => {
+      if (optionBuilderList.children.length > 2) row.remove();
+    });
+    row.querySelector(".builder-correct").addEventListener("change", (event) => {
+      if (!allowMultipleInput.checked && event.target.checked) {
+        optionBuilderList.querySelectorAll(".builder-correct").forEach((checkbox) => {
+          if (checkbox !== event.target) checkbox.checked = false;
+        });
+      }
+    });
+    return row;
+  }
+
+  function mappingRowTemplate(item = "", target = "") {
+    const row = document.createElement("div");
+    row.className = "builder-row mapping-builder-row";
+    row.innerHTML = `
+      <label class="builder-main-field">
+        <span>Item</span>
+        <input class="builder-item" value="${escapeHtml(item)}" required>
+      </label>
+      <label class="builder-main-field">
+        <span>Alvo correto</span>
+        <input class="builder-target" value="${escapeHtml(target)}" required>
+      </label>
+      <button class="icon-action builder-remove" type="button" aria-label="Remover associação" title="Remover associação">
+        <i class="icon-base ri ri-delete-bin-line"></i>
+      </button>
+    `;
+    row.querySelector(".builder-remove").addEventListener("click", () => {
+      if (mappingBuilderList.children.length > 1) row.remove();
+    });
+    return row;
+  }
+
+  function seedQuestionBuilder() {
+    const options = Array.isArray(initialPayload.options) ? initialPayload.options : [];
+    const correctAnswers = Array.isArray(initialPayload.correct_answers) ? initialPayload.correct_answers : [];
+    const wrongExplanations = initialPayload.wrong_explanations || {};
+    if (options.length) {
+      options.forEach((option) => optionBuilderList.appendChild(optionRowTemplate(option, correctAnswers.includes(option), wrongExplanations[option] || "")));
+    } else {
+      optionBuilderList.appendChild(optionRowTemplate());
+      optionBuilderList.appendChild(optionRowTemplate());
+      optionBuilderList.appendChild(optionRowTemplate());
+      optionBuilderList.appendChild(optionRowTemplate());
+    }
+
+    const mapping = initialPayload.correct_mapping || {};
+    const items = Array.isArray(initialPayload.items) ? initialPayload.items : Object.keys(mapping);
+    if (items.length) {
+      items.forEach((item) => mappingBuilderList.appendChild(mappingRowTemplate(item, mapping[item] || "")));
+    } else {
+      mappingBuilderList.appendChild(mappingRowTemplate());
+    }
+  }
+
+  function refreshQuestionBuilderMode() {
+    const isDragDrop = typeSelect.value === "drag_and_drop";
+    multipleChoiceBuilder.hidden = isDragDrop;
+    dragDropBuilder.hidden = !isDragDrop;
+    allowMultipleInput.closest("label").hidden = isDragDrop;
+    multipleChoiceBuilder.querySelectorAll("input, textarea, button").forEach((field) => {
+      if (field !== addOptionRowButton) field.disabled = isDragDrop;
+    });
+    dragDropBuilder.querySelectorAll("input, textarea, button").forEach((field) => {
+      if (field !== addMappingRowButton) field.disabled = !isDragDrop;
+    });
+    addOptionRowButton.disabled = isDragDrop;
+    addMappingRowButton.disabled = !isDragDrop;
+  }
+
+  function buildPayloadFromFields() {
+    if (typeSelect.value === "drag_and_drop") {
+      const rows = Array.from(mappingBuilderList.querySelectorAll(".mapping-builder-row"));
+      const correctMapping = {};
+      rows.forEach((row) => {
+        const item = row.querySelector(".builder-item").value.trim();
+        const target = row.querySelector(".builder-target").value.trim();
+        if (item && target) correctMapping[item] = target;
+      });
+      return {
+        items: Object.keys(correctMapping),
+        targets: Array.from(new Set(Object.values(correctMapping))),
+        correct_mapping: correctMapping
+      };
+    }
+
+    const rows = Array.from(optionBuilderList.querySelectorAll(".option-builder-row"));
+    const options = [];
+    const correctAnswers = [];
+    const wrongExplanations = {};
+    rows.forEach((row) => {
+      const option = row.querySelector(".builder-option-text").value.trim();
+      const explanation = row.querySelector(".builder-wrong-explanation").value.trim();
+      if (!option) return;
+      options.push(option);
+      if (row.querySelector(".builder-correct").checked) correctAnswers.push(option);
+      if (explanation) wrongExplanations[option] = explanation;
+    });
+    return {
+      options,
+      correct_answers: correctAnswers,
+      wrong_explanations: wrongExplanations
+    };
+  }
+
+  function validateGuidedPayload(payload) {
+    if (typeSelect.value === "drag_and_drop") {
+      if (!payload.items.length) return "Adicione pelo menos uma associação.";
+      return "";
+    }
+    if (payload.options.length < 2) return "Adicione pelo menos duas alternativas.";
+    if (!payload.correct_answers.length) return "Marque a resposta correta.";
+    if (!allowMultipleInput.checked && payload.correct_answers.length > 1) return "Para resposta única, marque somente uma alternativa.";
+    return "";
+  }
+
+  function renderRichText(value) {
+    const source = String(value || "");
+    const pattern = /```([A-Za-z0-9_-]+)?\s*\n?([\s\S]*?)```/g;
+    let output = "";
+    let cursor = 0;
+    let match;
+    while ((match = pattern.exec(source)) !== null) {
+      output += renderInlineText(source.slice(cursor, match.index));
+      const language = (match[1] || "text").trim().toLowerCase();
+      const code = match[2].replace(/^\n|\n$/g, "");
+      output += `<pre class="question-code-block" data-language="${escapeHtml(language)}"><code>${escapeHtml(code)}</code></pre>`;
+      cursor = pattern.lastIndex;
+    }
+    output += renderInlineText(source.slice(cursor));
+    return output;
+  }
+
+  function renderInlineText(value) {
+    return escapeHtml(value)
+      .replace(/`([^`\n]+)`/g, '<code class="question-inline-code">$1</code>')
+      .replace(/\n/g, "<br>");
+  }
+
+  function refreshQuestionPreview() {
+    const payload = buildPayloadFromFields();
+    const qtype = typeSelect.value;
+    const selectedExam = examSelect.selectedOptions[0]?.textContent.trim() || "Sem exame";
+    const selectedDomain = domainSelect.value.trim();
+
+    previewType.textContent = qtype === "drag_and_drop" ? "Drag and drop" : allowMultipleInput.checked ? "Múltipla resposta" : "Múltipla escolha";
+    previewExam.textContent = selectedExam;
+    previewDomain.hidden = !selectedDomain;
+    previewDomain.textContent = selectedDomain;
+    previewQuestionText.innerHTML = renderRichText(document.querySelector("textarea[name='question']").value);
+
+    const previewImageSource = pastedInput.value || preview.getAttribute("src") || "";
+    previewExhibitWrap.hidden = !previewImageSource;
+    if (previewImageSource) previewExhibitImage.src = previewImageSource;
+
+    previewOptions.innerHTML = "";
+    previewMapping.innerHTML = "";
+    if (qtype === "drag_and_drop") {
+      previewOptions.hidden = true;
+      previewMapping.hidden = false;
+      payload.items.forEach((item) => {
+        const row = document.createElement("div");
+        row.className = "mapping-row preview-mapping-row";
+        row.innerHTML = `<span>${renderRichText(item)}</span><strong>${renderRichText(payload.correct_mapping[item] || "")}</strong>`;
+        previewMapping.appendChild(row);
+      });
+    } else {
+      previewOptions.hidden = false;
+      previewMapping.hidden = true;
+      payload.options.forEach((option) => {
+        const row = document.createElement("div");
+        const isCorrect = payload.correct_answers.includes(option);
+        row.className = `choice preview-choice ${isCorrect ? "correct" : ""}`;
+        row.innerHTML = `<span>${renderRichText(option)}</span>${isCorrect ? '<em>Correta</em>' : ""}`;
+        previewOptions.appendChild(row);
+      });
+    }
+
+    const explanationValue = document.querySelector("textarea[name='explanation']").value.trim();
+    previewExplanationWrap.hidden = !explanationValue;
+    previewExplanation.innerHTML = renderRichText(explanationValue);
+
+    const correctExplanationValue = document.querySelector("textarea[name='correct_explanation']").value.trim();
+    previewCorrectExplanationWrap.hidden = !correctExplanationValue;
+    previewCorrectExplanation.innerHTML = renderRichText(correctExplanationValue);
+  }
+
+  addOptionRowButton.addEventListener("click", () => optionBuilderList.appendChild(optionRowTemplate()));
+  addMappingRowButton.addEventListener("click", () => mappingBuilderList.appendChild(mappingRowTemplate()));
+  allowMultipleInput.addEventListener("change", () => {
+    if (!allowMultipleInput.checked) {
+      const checked = Array.from(optionBuilderList.querySelectorAll(".builder-correct:checked"));
+      checked.slice(1).forEach((checkbox) => checkbox.checked = false);
+    }
+  });
+  typeSelect.addEventListener("change", refreshQuestionBuilderMode);
+  form.addEventListener("submit", (event) => {
+    const payload = buildPayloadFromFields();
+    const error = validateGuidedPayload(payload);
+    if (error) {
+      event.preventDefault();
+      alert(error);
+      return;
+    }
+    payloadField.value = JSON.stringify(payload);
+  });
+  previewModal.addEventListener("show.bs.modal", refreshQuestionPreview);
+
+  seedQuestionBuilder();
+  refreshQuestionBuilderMode();
+
+  function escapeHtml(value) {
+    return String(value ?? "").replace(/[&<>"']/g, (char) => ({
+      "&": "&amp;",
+      "<": "&lt;",
+      ">": "&gt;",
+      '"': "&quot;",
+      "'": "&#39;"
+    }[char]));
+  }
 </script>
 {% endblock %}

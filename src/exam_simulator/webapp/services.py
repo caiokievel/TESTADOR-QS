@@ -279,13 +279,33 @@ class DatabaseReportManager:
         self.owner = owner
         self.visible = visible
 
-    def load_history(self) -> list[dict]:
-        queryset = db.Simulation.objects.filter(mode=db.Simulation.MODE_REAL)
+    def load_history(self, scope: str = "all") -> list[dict]:
+        scope = scope if scope in {"all", "study", "real"} else "all"
+        queryset = db.Simulation.objects.all()
+        if scope == "real":
+            queryset = queryset.filter(mode=db.Simulation.MODE_REAL)
+        elif scope == "study":
+            queryset = queryset.filter(mode=db.Simulation.MODE_STUDY)
+        else:
+            queryset = queryset.filter(mode__in=[db.Simulation.MODE_REAL, db.Simulation.MODE_STUDY])
         if not self.visible:
             queryset = queryset.filter(owner=self.owner)
         history = []
         for simulation in queryset.prefetch_related("attempts").order_by("finished_at", "created_at"):
             history.append(_simulation_to_attempt(simulation))
+        if scope in {"all", "study"}:
+            standalone_attempts = db.QuestionAttempt.objects.filter(simulation__isnull=True).select_related(
+                "question",
+                "question__category",
+                "question__subcategory",
+                "question__exam",
+                "question__domain",
+            ).prefetch_related("question__tags")
+            if not self.visible:
+                standalone_attempts = standalone_attempts.filter(owner=self.owner)
+            for attempt in standalone_attempts.order_by("answered_at"):
+                history.append(_question_attempt_to_report_attempt(attempt))
+        history.sort(key=lambda item: item.get("finished_at") or item.get("started_at") or "")
         return history
 
     def save_attempt(self, attempt: dict) -> None:
@@ -353,9 +373,9 @@ class DatabaseReportManager:
                     stats.last_answered_at = finished_at
                     stats.save()
 
-    def metrics(self) -> dict:
+    def metrics(self, scope: str = "all") -> dict:
         manager = object.__new__(ReportManager)
-        manager.load_history = self.load_history
+        manager.load_history = lambda: self.load_history(scope)
         return ReportManager.metrics(manager)
 
 
@@ -605,6 +625,64 @@ def _simulation_to_attempt(simulation: db.Simulation) -> dict:
     }
 
 
+def _question_attempt_to_report_attempt(attempt: db.QuestionAttempt) -> dict:
+    question = attempt.question
+    category = question.category.name if question and question.category else "General"
+    subcategory = question.subcategory.name if question and question.subcategory else ""
+    exam = question.exam.name if question and question.exam else category
+    domain = question.domain.name if question and question.domain else ""
+    tags = list(question.tags.order_by("name").values_list("name", flat=True)) if question else []
+    answered_at = _iso(attempt.answered_at)
+    result = {
+        "qid": attempt.qid,
+        "category": category,
+        "subcategory": subcategory,
+        "exam": exam,
+        "domain": domain,
+        "question": question.question if question else "",
+        "explanation": question.explanation if question else "",
+        "reference_url": question.reference_url if question else "",
+        "correct_explanation": question.correct_explanation if question else "",
+        "wrong_explanations": _wrong_explanations_from_question(question),
+        "version": question.version if question else 1,
+        "status": question.status if question else "",
+        "tags": tags,
+        "exhibit_image": question.exhibit_image if question else "",
+        "is_correct": attempt.is_correct,
+        "user_answer": "",
+        "correct_answer": "",
+        "confidence_level": attempt.confidence_level,
+    }
+    return {
+        "started_at": answered_at,
+        "finished_at": answered_at,
+        "duration_seconds": 0,
+        "total": 1,
+        "answered": 1,
+        "correct": 1 if attempt.is_correct else 0,
+        "wrong": 0 if attempt.is_correct else 1,
+        "percent": 100 if attempt.is_correct else 0,
+        "approved": attempt.is_correct,
+        "passing_score": 0,
+        "mode": db.Simulation.MODE_STUDY,
+        "question_results": [result],
+    }
+
+
+def _wrong_explanations_from_question(question: db.Question | None) -> dict:
+    if not question:
+        return {}
+    if question.type == db.Question.MULTIPLE_CHOICE:
+        return {
+            option.text: option.explanation
+            for option in question.options.all()
+            if option.explanation
+        }
+    if isinstance(question.correct_mapping, dict):
+        return question.correct_mapping.get("_wrong_explanations", {})
+    return {}
+
+
 def _exam_to_dict(exam: db.Exam) -> dict:
     return {
         "code": exam.code,
@@ -706,7 +784,7 @@ def _normalize_exam_payload(item: dict) -> dict:
         "name": _normalize_tag(item.get("name", "")),
         "category": _normalize_tag(item.get("category", "")),
         "subcategory": _normalize_tag(item.get("subcategory", "")),
-        "passing_score": _as_float(item.get("passing_score"), 90.0),
+        "passing_score": max(min(_as_float(item.get("passing_score"), 90.0), 100), 0),
         "duration_minutes": _as_int(item.get("duration_minutes"), 0),
         "question_count": _as_int(item.get("question_count"), 0),
         "domains": _normalize_domains(item.get("domains", [])),
@@ -734,8 +812,11 @@ def _normalize_tag(tag: object) -> str:
 
 
 def _as_float(value: object, default: float = 0.0) -> float:
+    if value is None or value == "":
+        return default
     try:
-        return float(value)
+        cleaned = str(value).strip().replace("%", "").replace(",", ".")
+        return float(cleaned)
     except (TypeError, ValueError):
         return default
 

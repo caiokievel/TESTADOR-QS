@@ -1,4 +1,5 @@
 {% extends "webapp/base.html" %}
+{% load webapp_extras %}
 {% block title %}{{ exam }} - Testador QS{% endblock %}
 {% block content %}
 <section class="page-head split">
@@ -11,8 +12,8 @@
     <a class="button primary" href="{% url 'webapp:question_new' %}">Adicionar questão</a>
   </div>
 </section>
-<div class="table-wrap">
-  <table>
+<div class="table-wrap question-list-wrap">
+  <table class="question-list-table">
     <thead>
       <tr>
         <th>ID</th>
@@ -38,7 +39,7 @@
             </div>
           </td>
           <td>{% if q.exhibit_image %}<span class="tag-pill">Sim</span>{% else %}<span class="text-body-secondary">-</span>{% endif %}</td>
-          <td>{{ q.question }}</td>
+          <td><div class="question-table-text">{{ q.question|rich_question }}</div></td>
           <td class="row-actions">
             <a class="button link-button" href="{% url 'webapp:question_edit' q.qid %}">
               <i class="icon-base ri ri-pencil-line me-1"></i>

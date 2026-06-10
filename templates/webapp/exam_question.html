@@ -14,7 +14,7 @@
 </section>
 <form class="exam-card" method="post">
   {% csrf_token %}
-  <p class="question-text">{{ question.question }}</p>
+  <div class="question-text">{{ question.question|rich_question }}</div>
   {% if exhibit_filename %}
     <figure class="question-exhibit">
       <img src="{% url 'webapp:exhibit_image' exhibit_filename %}" alt="Imagem de apoio da questão">
@@ -29,7 +29,7 @@
           {% else %}
             <input type="radio" name="answer" value="{{ option }}" {% if answer and option in answer %}checked{% endif %} {% if feedback %}disabled{% endif %}>
           {% endif %}
-          <span>{{ option }}</span>
+          <span>{{ option|rich_question }}</span>
         </label>
       {% endfor %}
     </div>
@@ -37,7 +37,7 @@
     <div class="mapping-list">
       {% for item in question.items %}
         <label class="mapping-row">
-          <span>{{ item }}</span>
+          <span>{{ item|rich_question }}</span>
           <select name="mapping_{{ forloop.counter0 }}">
             <option value="">Selecione</option>
             {% for target in question.targets %}

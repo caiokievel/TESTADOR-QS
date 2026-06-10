@@ -979,19 +979,35 @@ def exam_finish(request: HttpRequest) -> HttpResponse:
 
 
 def reports(request: HttpRequest) -> HttpResponse:
+    return _reports_page(request, "all")
+
+
+def study_reports(request: HttpRequest) -> HttpResponse:
+    return _reports_page(request, "study")
+
+
+def real_exam_reports(request: HttpRequest) -> HttpResponse:
+    return _reports_page(request, "real")
+
+
+def _reports_page(request: HttpRequest, scope: str) -> HttpResponse:
     question_count = len(get_visible_bank().questions)
+    report_copy = _report_scope_copy(scope)
     return render(
         request,
         "webapp/reports.html",
         {
-            "metrics": _template_metrics(get_visible_reports().metrics(), question_count),
+            "metrics": _template_metrics(get_visible_reports().metrics(scope), question_count),
             "question_count": question_count,
+            "report_scope": scope,
+            "report_copy": report_copy,
         },
     )
 
 
 def export_reports_csv(request: HttpRequest) -> HttpResponse:
-    metrics = get_reports().metrics()
+    scope = _report_scope(request)
+    metrics = get_reports().metrics(scope)
     response = HttpResponse(content_type="text/csv")
     response["Content-Disposition"] = 'attachment; filename="reports.csv"'
     writer = csv.writer(response)
@@ -1004,7 +1020,8 @@ def export_reports_csv(request: HttpRequest) -> HttpResponse:
 
 
 def export_reports_json(request: HttpRequest) -> HttpResponse:
-    response = HttpResponse(json.dumps(_plain_data(get_reports().metrics()), indent=2, ensure_ascii=False), content_type="application/json")
+    scope = _report_scope(request)
+    response = HttpResponse(json.dumps(_plain_data(get_reports().metrics(scope)), indent=2, ensure_ascii=False), content_type="application/json")
     response["Content-Disposition"] = 'attachment; filename="reports.json"'
     return response
 
@@ -1482,15 +1499,9 @@ def _normalize_exam_config(item: dict) -> dict:
         if not name or name.lower() in seen:
             continue
         seen.add(name.lower())
-        try:
-            weight = float(domain.get("weight", 0))
-        except (TypeError, ValueError):
-            weight = 0
+        weight = _parse_decimal(domain.get("weight", 0), 0)
         domains.append({"name": name, "weight": max(min(weight, 100), 0)})
-    try:
-        passing_score = float(item.get("passing_score", 90.0))
-    except (TypeError, ValueError):
-        passing_score = 90.0
+    passing_score = max(min(_parse_decimal(item.get("passing_score", 90.0), 90.0), 100), 0)
     try:
         duration_minutes = max(int(item.get("duration_minutes", 0)), 0)
     except (TypeError, ValueError):
@@ -1568,6 +1579,38 @@ def _template_metrics(metrics: dict, question_count: int = 0) -> dict:
     prepared["tag_performance_rows"] = _performance_rows(metrics.get("tag_performance", {}), "tag")
     prepared["insight"] = _report_insight(prepared)
     return prepared
+
+
+def _report_scope(request: HttpRequest) -> str:
+    scope = request.GET.get("scope", "all")
+    return scope if scope in {"all", "study", "real"} else "all"
+
+
+def _report_scope_copy(scope: str) -> dict:
+    copies = {
+        "all": {
+            "title": "Relatórios gerais",
+            "description": "Consolidado de estudos e provas reais finalizadas.",
+            "attempt_label": "Registros finalizados",
+            "empty_title": "Nenhum estudo ou prova finalizada",
+            "empty_message": "Assim que você finalizar estudos ou provas reais, seus indicadores, rankings e evolução aparecerão aqui.",
+        },
+        "study": {
+            "title": "Relatórios de estudos",
+            "description": "Desempenho das questões respondidas no Modo Estudo e revisões.",
+            "attempt_label": "Estudos registrados",
+            "empty_title": "Nenhum estudo finalizado",
+            "empty_message": "Responda questões no Modo Estudo para acompanhar acertos, erros, tags e tópicos de revisão.",
+        },
+        "real": {
+            "title": "Relatórios de provas reais",
+            "description": "Resultados separados das provas reais finalizadas.",
+            "attempt_label": "Provas finalizadas",
+            "empty_title": "Nenhuma prova real finalizada",
+            "empty_message": "Finalize uma prova real para acompanhar aprovação, nota mínima e desempenho por domínio.",
+        },
+    }
+    return copies.get(scope, copies["all"])
 
 
 def _report_insight(metrics: dict) -> dict:
@@ -2058,7 +2101,8 @@ def _parse_decimal(value: object, default: float = 0.0) -> float:
     if value is None or value == "":
         return default
     try:
-        return float(str(value).strip().replace(",", "."))
+        cleaned = str(value).strip().replace("%", "").replace(",", ".")
+        return float(cleaned)
     except (TypeError, ValueError):
         return default
 

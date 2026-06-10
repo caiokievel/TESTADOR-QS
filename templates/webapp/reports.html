@@ -3,19 +3,19 @@
 {% block content %}
 <section class="page-head split">
   <div>
-    <h1>Relatórios</h1>
+    <h1>{{ report_copy.title }}</h1>
     {% if metrics %}
-      <p>Consolidado de {{ metrics.summary.attempts }} simulados finalizados.</p>
+      <p>{{ report_copy.description }} {{ metrics.summary.attempts }} registro{% if metrics.summary.attempts != 1 %}s{% endif %} encontrado{% if metrics.summary.attempts != 1 %}s{% endif %}.</p>
     {% else %}
-      <p>Sem histórico ainda.</p>
+      <p>{{ report_copy.description }}</p>
     {% endif %}
   </div>
   <div class="export-actions" aria-label="Exportar relatório">
     <span>Exportar</span>
     <div class="actions-row">
       {% if metrics %}
-        <a class="button" href="{% url 'webapp:export_reports_csv' %}">CSV</a>
-        <a class="button" href="{% url 'webapp:export_reports_json' %}">JSON</a>
+        <a class="button" href="{% url 'webapp:export_reports_csv' %}?scope={{ report_scope }}">CSV</a>
+        <a class="button" href="{% url 'webapp:export_reports_json' %}?scope={{ report_scope }}">JSON</a>
       {% else %}
         <button type="button" disabled title="Finalize um simulado para liberar a exportação.">CSV</button>
         <button type="button" disabled title="Finalize um simulado para liberar a exportação.">JSON</button>
@@ -23,6 +23,21 @@
     </div>
   </div>
 </section>
+
+<nav class="report-tabs" aria-label="Tipos de relatório">
+  <a class="{% if report_scope == 'all' %}active{% endif %}" href="{% url 'webapp:reports' %}">
+    <i class="icon-base ri ri-dashboard-line me-1"></i>
+    Geral
+  </a>
+  <a class="{% if report_scope == 'study' %}active{% endif %}" href="{% url 'webapp:reports_study' %}">
+    <i class="icon-base ri ri-book-open-line me-1"></i>
+    Estudos
+  </a>
+  <a class="{% if report_scope == 'real' %}active{% endif %}" href="{% url 'webapp:reports_real' %}">
+    <i class="icon-base ri ri-timer-flash-line me-1"></i>
+    Provas reais
+  </a>
+</nav>
 
 {% if metrics %}
   <section class="dashboard-insight primary report-insight">
@@ -48,7 +63,7 @@
       <small>{{ metrics.summary.correct }} acerto{% if metrics.summary.correct != 1 %}s{% endif %} em {{ metrics.summary.answered }} resposta{% if metrics.summary.answered != 1 %}s{% endif %}</small>
     </article>
     <article class="stat">
-      <span>Simulados finalizados</span>
+      <span>{{ report_copy.attempt_label }}</span>
       <strong>{{ metrics.summary.attempts }}</strong>
       <small>Últimos resultados registrados</small>
     </article>
@@ -139,8 +154,8 @@
   </section>
 {% else %}
   <section class="notice empty-state report-empty-state">
-    <h2>Nenhum simulado finalizado</h2>
-    <p>Assim que você finalizar um simulado, seus indicadores, rankings e evolução aparecerão aqui.</p>
+    <h2>{{ report_copy.empty_title }}</h2>
+    <p>{{ report_copy.empty_message }}</p>
     <a class="button primary" href="{% url 'webapp:bank' %}">Iniciar simulado</a>
   </section>
 {% endif %}

@@ -1,4 +1,5 @@
 {% extends "webapp/base.html" %}
+{% load webapp_extras %}
 {% block title %}Resultado - Testador QS{% endblock %}
 {% block content %}
 <section class="page-head">
@@ -61,7 +62,7 @@
       </div>
       <div>
         <h3>{{ item.qid }} - {{ item.category }}{% if item.subcategory %} / {{ item.subcategory }}{% endif %} / {{ item.exam }}{% if item.domain %} / {{ item.domain }}{% endif %}</h3>
-        <p>{{ item.question }}</p>
+        <div class="question-text compact">{{ item.question|rich_question }}</div>
         {% if item.exhibit_filename %}
           <figure class="question-exhibit">
             <img src="{% url 'webapp:exhibit_image' item.exhibit_filename %}" alt="Imagem de apoio da questão">
